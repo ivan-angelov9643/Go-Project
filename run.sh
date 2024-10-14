@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BINARY_FILE_PATH="bin/main"
-MAIN_FILE_PATH="main/main.go"
+MAIN_FILE_PATH="todo-app/main/main.go"
 
 set -e
 ROOT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
