@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#NOT USED AT THE MOMENT
+
 BINARY_FILE_PATH="bin/main"
 TODO_APP_DIR="todo-app"
 
