@@ -1,4 +1,5 @@
 BINARY_FILE_PATH=bin/main
+BIN_DIR_PATH=bin
 MAIN_FILE_PATH=todo-app/main/main.go
 
 default: build
@@ -24,7 +25,7 @@ test:
 clean:
 	@echo "Cleaning up..."
 	go clean
-	rm -f $(BINARY_FILE_PATH)
+	rm -fR $(BIN_DIR_PATH)
 	
 deps:
 	@echo "Installing dependencies..."
