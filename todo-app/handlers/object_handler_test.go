@@ -1,7 +1,7 @@
 package handlers_test
 
 import (
-	"awesomeProject/handlers"
+	"awesomeProject/todo-app/handlers"
 	"net/http"
 	"net/http/httptest"
 	"testing"
