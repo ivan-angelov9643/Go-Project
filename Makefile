@@ -10,11 +10,8 @@ build:
   		echo "Building the binary..."; \
         go build -o $(BINARY_FILE_PATH) $(MAIN_FILE_PATH); \
   	fi;
-
-
-run: build
-	@echo "Running the app..."
-	./bin/main
+	echo "Building the binary..."; \
+    go build -o $(BINARY_FILE_PATH) $(MAIN_FILE_PATH); \
 
 fmt:
 	@echo "Formatting code..."
