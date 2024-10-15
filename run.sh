@@ -2,9 +2,14 @@
 
 BINARY_FILE_PATH="bin/main"
 MAIN_FILE_PATH="todo-app/main/main.go"
+ENV_FILE="config.env"
 
 set -e
 ROOT_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+if [ -f "${ROOT_PATH}/${ENV_FILE}" ]; then
+    export $(grep -v '^#' ${ROOT_PATH}/${ENV_FILE} | xargs)
+fi
 
 while [[ $# -gt 0 ]]
 do
@@ -12,7 +17,6 @@ do
        case ${key} in
             --debug)
                 DEBUG=true
-                DEBUG_PORT=40000
                 shift
             ;;
             --*)
@@ -30,6 +34,10 @@ function cleanup() {
 }
 
 trap cleanup EXIT
+
+if [[ -z ${DEBUG_PORT} ]]; then
+    DEBUG_PORT=40000
+fi
 
 if [[ ${DEBUG} == true ]]; then
     echo "Running in debug mode on port ${DEBUG_PORT}..."
