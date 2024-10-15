@@ -12,8 +12,7 @@ build:
         go build -o $(BINARY_FILE_PATH) $(MAIN_FILE_PATH); \
   	fi;
 	echo "Building the binary..."; \
-	CGO_ENABLED=0 \
-    go build -o $(BINARY_FILE_PATH) $(MAIN_FILE_PATH); \
+	CGO_ENABLED=0 go build -o $(BINARY_FILE_PATH) $(MAIN_FILE_PATH); \
 
 fmt:
 	@echo "Formatting code..."

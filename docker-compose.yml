@@ -1,0 +1,8 @@
+services:
+  todo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: release
+    ports:
+      - "8080:8080"
