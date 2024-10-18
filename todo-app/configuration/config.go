@@ -43,8 +43,6 @@ func (config Config) SetLogSeverity() {
 		log.SetLevel(log.PanicLevel)
 	default:
 		log.Error("Unrecognized log severity: %s", config.LogSeverity)
-	}
-}
 
 func (config Config) LogDebugConfigAttributes() {
 	log.Debug("Configuration:")
