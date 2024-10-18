@@ -8,22 +8,25 @@ import (
 	"net/http"
 )
 
+func StartWebServer(config *configuration.Config) {
+	router := mux.NewRouter()
+	router.Handle("/api/object1", &handlers.ObjectHandler{Text: "object1"})
+	router.Handle("/api/object2", &handlers.ObjectHandler{Text: "object2"})
+
+	log.Info("Starting web server...")
+	err := http.ListenAndServe(":"+config.Port, router)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
+}
+
 func main() {
 	log.Info("Starting app...")
+
 	config, err := configuration.LoadConfig(".")
 	if err != nil {
 		log.Fatal("Cannot load configuration: ", err)
 	}
 
-	router := mux.NewRouter()
-
-	router.Handle("/api/object1", &handlers.ObjectHandler{Text: "object1"})
-	router.Handle("/api/object2", &handlers.ObjectHandler{Text: "object2"})
-
-	log.Info("Starting web server")
-	err = http.ListenAndServe(":"+config.Port, router)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
-
+	StartWebServer(config)
 }
