@@ -36,12 +36,12 @@ func (m *TagManager) GetAll() []*structs.Tag {
 	return allTags
 }
 
-func (m *TagManager) Get(id uuid.UUID) (*structs.Tag, error) {
-	log.Debugf("Fetching tag with ID: %s", id)
-	tag, exists := m.tags[id]
+func (m *TagManager) Get(idToGet uuid.UUID) (*structs.Tag, error) {
+	log.Debugf("Fetching tag with ID: %s", idToGet)
+	tag, exists := m.tags[idToGet]
 	if !exists {
-		log.Errorf("[Get] Tag with ID %s not found", id)
-		return nil, fmt.Errorf("[Get] Tag with id %s not found", id)
+		log.Errorf("[Get] Tag with ID %s not found", idToGet)
+		return nil, fmt.Errorf("[Get] Tag with id %s not found", idToGet)
 	}
 	return &tag, nil
 }

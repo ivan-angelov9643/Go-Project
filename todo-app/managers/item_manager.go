@@ -57,12 +57,12 @@ func (m *ItemManager) GetAll() []*structs.Item {
 	return allItems
 }
 
-func (m *ItemManager) Get(id uuid.UUID) (*structs.Item, error) {
-	log.Debugf("Fetching item with ID: %s", id)
-	item, exists := m.items[id]
+func (m *ItemManager) Get(idToGet uuid.UUID) (*structs.Item, error) {
+	log.Debugf("Fetching item with ID: %s", idToGet)
+	item, exists := m.items[idToGet]
 	if !exists {
-		log.Errorf("[Get] Item with ID %s not found", id)
-		return nil, fmt.Errorf("[Get] Item with id %s not found", id)
+		log.Errorf("[Get] Item with ID %s not found", idToGet)
+		return nil, fmt.Errorf("[Get] Item with id %s not found", idToGet)
 	}
 	return &item, nil
 }

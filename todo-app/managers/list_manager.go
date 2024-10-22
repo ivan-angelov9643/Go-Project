@@ -61,12 +61,12 @@ func (m *ListManager) GetAll() []*structs.List {
 	return allLists
 }
 
-func (m *ListManager) Get(id uuid.UUID) (*structs.List, error) {
-	log.Debugf("Fetching list with ID: %s", id)
-	list, exists := m.lists[id]
+func (m *ListManager) Get(idToGet uuid.UUID) (*structs.List, error) {
+	log.Debugf("Fetching list with ID: %s", idToGet)
+	list, exists := m.lists[idToGet]
 	if !exists {
-		log.Errorf("[Get] List with ID %s not found", id)
-		return nil, fmt.Errorf("[Get] List with id %s not found", id)
+		log.Errorf("[Get] List with ID %s not found", idToGet)
+		return nil, fmt.Errorf("[Get] List with id %s not found", idToGet)
 	}
 	return &list, nil
 }

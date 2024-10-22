@@ -57,7 +57,7 @@ func (config Config) LogDebugConfigAttributes() {
 }
 
 func LoadConfig(path string) (*Config, error) {
-	config := &Config{"8080", "text", "debug"} // set default value for port
+	config := &Config{"8080", "text", "debug"}
 
 	if _, err := os.Stat("./" + global_constants.ConfigFileName); errors.Is(err, os.ErrNotExist) {
 		log.Error(global_constants.ConfigFileName + " does not exist")
