@@ -61,44 +61,48 @@ func (m *ItemManager) Get(id uuid.UUID) (*structs.Item, error) {
 	log.Debugf("Fetching item with ID: %s", id)
 	item, exists := m.items[id]
 	if !exists {
-		log.Errorf("Item with ID %s not found", id)
-		return nil, fmt.Errorf("item with id %s not found", id)
+		log.Errorf("[Get] Item with ID %s not found", id)
+		return nil, fmt.Errorf("[Get] Item with id %s not found", id)
 	}
 	return &item, nil
 }
 
-func (m *ItemManager) Create(item structs.Item) error {
-	log.Debugf("Creating new item with ID: %s", item.ID)
-	_, exists := m.items[item.ID]
+func (m *ItemManager) Create(newItem structs.Item) (structs.Item, error) {
+	if newItem.ID == uuid.Nil {
+		newItem.ID = uuid.New()
+	}
+	log.Debugf("Creating new item with ID: %s", newItem.ID)
+	_, exists := m.items[newItem.ID]
 	if exists {
-		log.Errorf("Item with ID %s already exists", item.ID)
-		return fmt.Errorf("item with id %s already exists", item.ID)
+		log.Errorf("[Create] Item with ID %s already exists", newItem.ID)
+		return structs.Item{}, fmt.Errorf("[Create] Item with id %s already exists", newItem.ID)
 	}
-	m.items[item.ID] = item
-	log.Debugf("Successfully created item with ID: %s", item.ID)
-	return nil
+	m.items[newItem.ID] = newItem
+	log.Debugf("Successfully created item with ID: %s", newItem.ID)
+	return newItem, nil
 }
 
-func (m *ItemManager) Update(id uuid.UUID, updated structs.Item) error {
-	log.Debugf("Updating item with ID: %s", id)
-	_, exists := m.items[id]
+func (m *ItemManager) Update(updatedItem structs.Item) (structs.Item, error) {
+	log.Debugf("Updating item with ID: %s", updatedItem.ID)
+	_, exists := m.items[updatedItem.ID]
 	if !exists {
-		log.Errorf("Item with ID %s not found", id)
-		return fmt.Errorf("item with id %s not found", id)
+		log.Errorf("[Update] Item with ID %s not found", updatedItem.ID)
+		return structs.Item{}, fmt.Errorf("[Update] Item with id %s not found", updatedItem.ID)
 	}
-	m.items[id] = updated
-	log.Debugf("Successfully updated item with ID: %s", id)
-	return nil
+	m.items[updatedItem.ID] = updatedItem
+	log.Debugf("Successfully updated item with ID: %s", updatedItem.ID)
+	return updatedItem, nil
 }
 
-func (m *ItemManager) Delete(id uuid.UUID) error {
-	log.Debugf("Deleting item with ID: %s", id)
-	_, exists := m.items[id]
+func (m *ItemManager) Delete(idToDelete uuid.UUID) (structs.Item, error) {
+	log.Debugf("Deleting item with ID: %s", idToDelete)
+	_, exists := m.items[idToDelete]
 	if !exists {
-		log.Errorf("Item with ID %s not found", id)
-		return fmt.Errorf("item with id %s not found", id)
+		log.Errorf("[Delete] Item with ID %s not found", idToDelete)
+		return structs.Item{}, fmt.Errorf("[Delete] Item with id %s not found", idToDelete)
 	}
-	delete(m.items, id)
-	log.Debugf("Successfully deleted item with ID: %s", id)
-	return nil
+	deletedItem := m.items[idToDelete]
+	delete(m.items, idToDelete)
+	log.Debugf("Successfully deleted item with ID: %s", idToDelete)
+	return deletedItem, nil
 }

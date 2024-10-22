@@ -40,44 +40,48 @@ func (m *TagManager) Get(id uuid.UUID) (*structs.Tag, error) {
 	log.Debugf("Fetching tag with ID: %s", id)
 	tag, exists := m.tags[id]
 	if !exists {
-		log.Errorf("Tag with ID %s not found", id)
-		return nil, fmt.Errorf("tag with id %s not found", id)
+		log.Errorf("[Get] Tag with ID %s not found", id)
+		return nil, fmt.Errorf("[Get] Tag with id %s not found", id)
 	}
 	return &tag, nil
 }
 
-func (m *TagManager) Create(tag structs.Tag) error {
-	log.Debugf("Creating new tag with ID: %s", tag.ID)
-	_, exists := m.tags[tag.ID]
+func (m *TagManager) Create(newTag structs.Tag) (structs.Tag, error) {
+	if newTag.ID == uuid.Nil {
+		newTag.ID = uuid.New()
+	}
+	log.Debugf("Creating new tag with ID: %s", newTag.ID)
+	_, exists := m.tags[newTag.ID]
 	if exists {
-		log.Errorf("Tag with ID %s already exists", tag.ID)
-		return fmt.Errorf("tag with id %s already exists", tag.ID)
+		log.Errorf("[Create] Tag with ID %s already exists", newTag.ID)
+		return structs.Tag{}, fmt.Errorf("[Create] Tag with id %s already exists", newTag.ID)
 	}
-	m.tags[tag.ID] = tag
-	log.Debugf("Successfully created tag with ID: %s", tag.ID)
-	return nil
+	m.tags[newTag.ID] = newTag
+	log.Debugf("Successfully created tag with ID: %s", newTag.ID)
+	return newTag, nil
 }
 
-func (m *TagManager) Update(id uuid.UUID, updated structs.Tag) error {
-	log.Debugf("Updating tag with ID: %s", id)
-	_, exists := m.tags[id]
+func (m *TagManager) Update(updatedTag structs.Tag) (structs.Tag, error) {
+	log.Debugf("Updating tag with ID: %s", updatedTag.ID)
+	_, exists := m.tags[updatedTag.ID]
 	if !exists {
-		log.Errorf("Tag with ID %s not found", id)
-		return fmt.Errorf("tag with id %s not found", id)
+		log.Errorf("[Update] Tag with ID %s not found", updatedTag.ID)
+		return structs.Tag{}, fmt.Errorf("[Update] Tag with id %s not found", updatedTag.ID)
 	}
-	m.tags[id] = updated
-	log.Debugf("Successfully updated tag with ID: %s", id)
-	return nil
+	m.tags[updatedTag.ID] = updatedTag
+	log.Debugf("Successfully updated tag with ID: %s", updatedTag.ID)
+	return updatedTag, nil
 }
 
-func (m *TagManager) Delete(id uuid.UUID) error {
-	log.Debugf("Deleting tag with ID: %s", id)
-	_, exists := m.tags[id]
+func (m *TagManager) Delete(idToDelete uuid.UUID) (structs.Tag, error) {
+	log.Debugf("Deleting tag with ID: %s", idToDelete)
+	_, exists := m.tags[idToDelete]
 	if !exists {
-		log.Errorf("Tag with ID %s not found", id)
-		return fmt.Errorf("tag with id %s not found", id)
+		log.Errorf("[Delete] Tag with ID %s not found", idToDelete)
+		return structs.Tag{}, fmt.Errorf("[Delete] Tag with id %s not found", idToDelete)
 	}
-	delete(m.tags, id)
-	log.Debugf("Successfully deleted tag with ID: %s", id)
-	return nil
+	deletedTag := m.tags[idToDelete]
+	delete(m.tags, idToDelete)
+	log.Debugf("Successfully deleted tag with ID: %s", idToDelete)
+	return deletedTag, nil
 }

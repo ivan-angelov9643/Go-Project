@@ -70,7 +70,7 @@ func LoadConfig(path string) (*Config, error) {
 
 		err := viper.ReadInConfig()
 		if err != nil {
-			log.Errorf("Error reading config file, %s", err)
+			log.Errorf("Error reading config file, %v", err)
 			return nil, err
 		}
 
