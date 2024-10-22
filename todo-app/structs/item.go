@@ -1,10 +1,13 @@
 package structs
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type Item struct {
-	ID           int
-	ListID       int
+	ID           uuid.UUID
+	ListID       uuid.UUID
 	Tittle       string
 	Description  string
 	Tags         []Tag

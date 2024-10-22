@@ -3,6 +3,7 @@ package configuration
 import (
 	"awesomeProject/todo-app/global_constants"
 	"errors"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
@@ -14,18 +15,19 @@ type Config struct {
 	LogSeverity string `mapstructure:"LOG_SEVERITY"`
 }
 
-func (config Config) SetLogFormat() {
+func (config Config) SetLogFormat() error {
 	switch config.LogFormat {
 	case "json":
 		log.SetFormatter(&log.JSONFormatter{})
 	case "text":
 		log.SetFormatter(&log.TextFormatter{})
 	default:
-		log.Error("Unrecognized log format: %s", config.LogFormat)
+		return fmt.Errorf("unrecognized log format: %s", config.LogFormat)
 	}
+	return nil
 }
 
-func (config Config) SetLogSeverity() {
+func (config Config) SetLogSeverity() error {
 	switch config.LogSeverity {
 	case "trace":
 		log.SetLevel(log.TraceLevel)
@@ -42,8 +44,9 @@ func (config Config) SetLogSeverity() {
 	case "panic":
 		log.SetLevel(log.PanicLevel)
 	default:
-		log.Error("Unrecognized log severity: %s", config.LogSeverity)
+		return fmt.Errorf("unrecognized log severity: %s", config.LogSeverity)
 	}
+	return nil
 }
 
 func (config Config) LogDebugConfigAttributes() {
@@ -67,21 +70,29 @@ func LoadConfig(path string) (*Config, error) {
 
 		err := viper.ReadInConfig()
 		if err != nil {
-			log.Error("Error reading config file, %s", err)
+			log.Errorf("Error reading config file, %s", err)
 			return nil, err
 		}
 
 		err = viper.Unmarshal(config)
 		if err != nil {
-			log.Error("Unable to decode config, %v", err)
+			log.Errorf("Unable to decode config, %v", err)
 			return nil, err
 		}
 
 		log.Info("Successfully loaded config file")
 	}
 
-	config.SetLogFormat()
-	config.SetLogSeverity()
+	err := config.SetLogFormat()
+	if err != nil {
+		log.Errorf("Unable to se log format, %v", err)
+		return nil, err
+	}
+	err = config.SetLogSeverity()
+	if err != nil {
+		log.Errorf("Unable to set log severity, %v", err)
+		return nil, err
+	}
 	config.LogDebugConfigAttributes()
 
 	return config, nil

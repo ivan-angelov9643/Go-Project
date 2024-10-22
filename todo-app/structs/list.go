@@ -1,9 +1,12 @@
 package structs
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type List struct {
-	ID           int
+	ID           uuid.UUID
 	Name         string
 	Description  string
 	CreationTime time.Time
