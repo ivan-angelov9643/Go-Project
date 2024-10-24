@@ -3,6 +3,7 @@ package main
 import (
 	"awesomeProject/todo-app/configuration"
 	"awesomeProject/todo-app/handlers"
+	"awesomeProject/todo-app/middlewares"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -10,7 +11,8 @@ import (
 
 func StartWebServer(config *configuration.Config) {
 	router := mux.NewRouter()
-	router.Handle("/api/object1", &handlers.ObjectHandler{Text: "object1"})
+	router.Use(middlewares.SetJSONMiddleware)
+	router.Handle("/api/object1", middlewares.AuthorizationMiddleware(&handlers.ObjectHandler{Text: "object1"}))
 	router.Handle("/api/object2", &handlers.ObjectHandler{Text: "object2"})
 
 	log.Info("Starting web server...")

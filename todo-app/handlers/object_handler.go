@@ -12,7 +12,7 @@ type ObjectHandler struct {
 func (handler *ObjectHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
 	if len(handler.Text) == 0 {
 		log.Error("Object handler text string is empty")
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		http.Error(w, "Object handler text string is empty", http.StatusInternalServerError)
 		return
 	}
 	_, err := w.Write([]byte(handler.Text))
