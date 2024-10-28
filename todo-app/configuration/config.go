@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"awesomeProject/todo-app/global_constants"
+	"awesomeProject/todo-app/global"
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -59,8 +59,8 @@ func (config Config) LogDebugConfigAttributes() {
 func LoadConfig(path string) (*Config, error) {
 	config := &Config{"8080", "text", "debug"}
 
-	if _, err := os.Stat("./" + global_constants.ConfigFileName); errors.Is(err, os.ErrNotExist) {
-		log.Error(global_constants.ConfigFileName + " does not exist")
+	if _, err := os.Stat("./" + global.ConfigFileName); errors.Is(err, os.ErrNotExist) {
+		log.Error(global.ConfigFileName + " does not exist")
 		log.Info("Using default configuration")
 	} else {
 		viper.AddConfigPath(path)

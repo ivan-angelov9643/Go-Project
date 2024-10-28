@@ -1,12 +1,25 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
 
 type ObjectHandler struct {
 	Text string
+}
+
+func CreateObjectHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		text := vars["object"]
+		handler := &ObjectHandler{
+			Text: fmt.Sprintf("%s", text),
+		}
+		handler.ServeHTTP(w, r)
+	}
 }
 
 func (handler *ObjectHandler) ServeHTTP(w http.ResponseWriter, _ *http.Request) {
