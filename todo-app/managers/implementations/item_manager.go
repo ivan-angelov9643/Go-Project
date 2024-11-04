@@ -1,4 +1,4 @@
-package managers
+package implementations
 
 import (
 	"awesomeProject/todo-app/structs"
@@ -24,11 +24,11 @@ func NewItemManager() *ItemManager {
 			itemID1: {
 				ID:          itemID1,
 				ListID:      listID1,
-				Tittle:      "Item 1",
+				Title:       "Item 1",
 				Description: "Description for item 1",
 				Tags: []structs.Tag{
-					{ID: uuid.New(), Name: "Tag1"},
-					{ID: uuid.New(), Name: "Tag2"},
+					{Name: "Tag1"},
+					{Name: "Tag2"},
 				},
 				Completed:    false,
 				CreationTime: time.Now(),
@@ -36,10 +36,10 @@ func NewItemManager() *ItemManager {
 			itemID2: {
 				ID:          itemID2,
 				ListID:      listID1,
-				Tittle:      "Item 2",
+				Title:       "Item 2",
 				Description: "Description for item 2",
 				Tags: []structs.Tag{
-					{ID: uuid.New(), Name: "Tag3"},
+					{Name: "Tag3"},
 				},
 				Completed:    true,
 				CreationTime: time.Now().Add(-time.Hour * 24),
@@ -48,27 +48,27 @@ func NewItemManager() *ItemManager {
 	}
 }
 
-func (m *ItemManager) GetAll() []*structs.Item {
+func (m *ItemManager) GetAll() []structs.Item {
 	log.Info("[ItemManager.GetAll] Fetching all items")
 
-	allItems := make([]*structs.Item, 0, len(m.items))
+	allItems := make([]structs.Item, 0, len(m.items))
 	for _, item := range m.items {
-		allItems = append(allItems, &item)
+		allItems = append(allItems, item)
 	}
 
 	return allItems
 }
 
-func (m *ItemManager) Get(idToGet uuid.UUID) (*structs.Item, error) {
+func (m *ItemManager) Get(idToGet uuid.UUID) (structs.Item, error) {
 	log.Infof("[ItemManager.Get] Fetching item with ID: %s", idToGet)
 
 	item, exists := m.items[idToGet]
 	if !exists {
 		log.Errorf("[ItemManager.Get] Item with ID %s not found", idToGet)
-		return nil, fmt.Errorf("[ItemManager.Get] Item with id %s not found", idToGet)
+		return structs.Item{}, fmt.Errorf("[ItemManager.Get] Item with id %s not found", idToGet)
 	}
 
-	return &item, nil
+	return item, nil
 }
 
 func (m *ItemManager) Create(newItem structs.Item) (structs.Item, error) {

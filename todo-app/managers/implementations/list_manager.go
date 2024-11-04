@@ -1,4 +1,4 @@
-package managers
+package implementations
 
 import (
 	"awesomeProject/todo-app/structs"
@@ -30,11 +30,11 @@ func NewListManager() *ListManager {
 					{
 						ID:          itemID1,
 						ListID:      listID1,
-						Tittle:      "Item 1",
+						Title:       "Item 1",
 						Description: "Description for item 1",
 						Tags: []structs.Tag{
-							{ID: uuid.New(), Name: "Tag1"},
-							{ID: uuid.New(), Name: "Tag2"},
+							{Name: "Tag1"},
+							{Name: "Tag2"},
 						},
 						Completed:    false,
 						CreationTime: time.Now(),
@@ -52,27 +52,27 @@ func NewListManager() *ListManager {
 	}
 }
 
-func (m *ListManager) GetAll() []*structs.List {
+func (m *ListManager) GetAll() []structs.List {
 	log.Info("[ListManager.GetAll] Fetching all lists")
 
-	allLists := make([]*structs.List, 0, len(m.lists))
+	allLists := make([]structs.List, 0, len(m.lists))
 	for _, list := range m.lists {
-		allLists = append(allLists, &list)
+		allLists = append(allLists, list)
 	}
 
 	return allLists
 }
 
-func (m *ListManager) Get(idToGet uuid.UUID) (*structs.List, error) {
+func (m *ListManager) Get(idToGet uuid.UUID) (structs.List, error) {
 	log.Infof("[ListManager.Get] Fetching list with ID: %s", idToGet)
 
 	list, exists := m.lists[idToGet]
 	if !exists {
 		log.Errorf("[ListManager.Get] List with ID %s not found", idToGet)
-		return nil, fmt.Errorf("[ListManager.Get] List with id %s not found", idToGet)
+		return structs.List{}, fmt.Errorf("[ListManager.Get] List with id %s not found", idToGet)
 	}
 
-	return &list, nil
+	return list, nil
 }
 
 func (m *ListManager) Create(newList structs.List) (structs.List, error) {

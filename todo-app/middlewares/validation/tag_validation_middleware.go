@@ -3,23 +3,26 @@ package validation
 import (
 	"awesomeProject/todo-app/global"
 	"awesomeProject/todo-app/structs"
+	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 )
 
-func ValidateTag(next http.Handler) http.Handler {
+func ValidateTagMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Info("[ValidateTag] Validating Tag")
+		log.Info("[ValidateTagMiddleware] Validating Tag")
 		var tag structs.Tag
 
-		err := json.NewDecoder(r.Body).Decode(&tag)
+		bodyBytes := global.ReadBody(w, r, "ValidateTagMiddleware")
+
+		err := json.NewDecoder(bytes.NewReader(bodyBytes)).Decode(&tag)
 		if err != nil {
 			global.HttpError(
 				w,
-				"[ValidateTag] Failed to decode JSON",
+				"[ValidateTagMiddleware] Failed to decode JSON",
 				"Invalid JSON format in request body",
 				http.StatusBadRequest,
 				err,
@@ -27,10 +30,11 @@ func ValidateTag(next http.Handler) http.Handler {
 			return
 		}
 
-		if err := validateTagName(tag.Name); err != nil {
+		err = validateTagFields(tag)
+		if err != nil {
 			global.HttpError(
 				w,
-				"[ValidateTag] Name validation failed",
+				"[ValidateTagMiddleware] validation failed",
 				err.Error(),
 				http.StatusBadRequest,
 				err,
@@ -42,12 +46,18 @@ func ValidateTag(next http.Handler) http.Handler {
 	})
 }
 
-func validateTagName(name string) error {
-	if strings.TrimSpace(name) == "" {
-		return fmt.Errorf("tag name cannot be empty")
+func validateTagFields(tag structs.Tag) error {
+	if tag.Name == "" {
+		return errors.New("tag name cannot be empty")
 	}
-	if len(name) > 100 {
-		return fmt.Errorf("tag name cannot exceed 100 characters")
+
+	if strings.ContainsAny(tag.Name, " \t\n") {
+		return errors.New("tag name cannot contain whitespace")
 	}
+
+	if len(tag.Name) > 100 {
+		return errors.New("tag name cannot exceed 100 characters")
+	}
+
 	return nil
 }
