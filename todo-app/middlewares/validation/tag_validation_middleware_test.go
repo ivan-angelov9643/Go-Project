@@ -1,7 +1,6 @@
-package test
+package validation
 
 import (
-	"awesomeProject/todo-app/middlewares/validation"
 	"awesomeProject/todo-app/structs"
 	"bytes"
 	"encoding/json"
@@ -70,7 +69,7 @@ func TestValidateTagMiddleware(t *testing.T) {
 				w.WriteHeader(http.StatusOK)
 			})
 
-			handler := validation.ValidateTagMiddleware(nextHandler)
+			handler := ValidateTagMiddleware(nextHandler)
 			handler.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.expectedStatus, rec.Code)

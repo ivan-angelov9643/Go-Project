@@ -10,6 +10,8 @@ import (
 func HttpError(w http.ResponseWriter, logMessage string, httpMessage string, code int, err error) {
 	log.Errorf("%s: %v", logMessage, err)
 	http.Error(w, httpMessage, code)
+	// return json
+	// { "error": "message", "status": int }
 }
 
 func ReadBody(w http.ResponseWriter, r *http.Request, functionCalled string) []byte {

@@ -1,7 +1,6 @@
-package test
+package handlers
 
 import (
-	"awesomeProject/todo-app/handlers"
 	"awesomeProject/todo-app/managers/interfaces/automock"
 	"awesomeProject/todo-app/structs"
 	"bytes"
@@ -14,9 +13,9 @@ import (
 	"testing"
 )
 
-func setupTagHandlerTests() (*handlers.TagHandler, *automock.TagManager) {
+func setupTagHandlerTests() (*TagHandler, *automock.TagManager) {
 	mockTagManager := &automock.TagManager{}
-	tagHandler := handlers.NewTagHandler(mockTagManager)
+	tagHandler := NewTagHandler(mockTagManager)
 	return tagHandler, mockTagManager
 }
 

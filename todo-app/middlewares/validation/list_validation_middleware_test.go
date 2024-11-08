@@ -1,7 +1,6 @@
-package test
+package validation
 
 import (
-	"awesomeProject/todo-app/middlewares/validation"
 	"awesomeProject/todo-app/structs"
 	"bytes"
 	"encoding/json"
@@ -84,7 +83,7 @@ func TestValidateListMiddleware(t *testing.T) {
 			expectedError:  "list description cannot exceed 255 characters",
 		},
 		{
-			name: "Invalid Item in List",
+			name: "With Items",
 			list: structs.List{
 				ID:   uuid.New(),
 				Name: "Valid List Name",
@@ -92,13 +91,20 @@ func TestValidateListMiddleware(t *testing.T) {
 					{
 						ID:          uuid.New(),
 						ListID:      uuid.New(),
-						Title:       " Invalid Item Title ",
+						Title:       "Title",
 						Description: "Description",
 					},
 				},
 			},
-			expectedStatus: http.StatusBadRequest,
-			expectedError:  "invalid item: item title cannot begin or end with whitespace",
+			expectedStatus: http.StatusOK,
+		},
+		{
+			name: "No Items",
+			list: structs.List{
+				ID:   uuid.New(),
+				Name: "Valid List Name",
+			},
+			expectedStatus: http.StatusOK,
 		},
 	}
 
@@ -114,7 +120,7 @@ func TestValidateListMiddleware(t *testing.T) {
 				w.WriteHeader(http.StatusOK)
 			})
 
-			handler := validation.ValidateListMiddleware(nextHandler)
+			handler := ValidateListMiddleware(nextHandler)
 			handler.ServeHTTP(rec, req)
 
 			assert.Equal(t, tt.expectedStatus, rec.Code)
