@@ -8,7 +8,7 @@ import (
 type Item struct {
 	ID           uuid.UUID
 	ListID       uuid.UUID
-	Tittle       string
+	Title        string
 	Description  string
 	Tags         []Tag
 	Completed    bool

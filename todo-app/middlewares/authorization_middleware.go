@@ -18,7 +18,7 @@ func WriteErrorJSON(w http.ResponseWriter, statusCode int, errorMessage string) 
 
 	err := json.NewEncoder(w).Encode(errJson)
 	if err != nil {
-		log.Errorf("Error encoding error response: %v", err)
+		log.Errorf("[WriteErrorJSON] Error encoding error response: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -28,7 +28,7 @@ func AuthorizationMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if authHeader != "Bearer abc" {
-			log.Errorf("Unauthorized access attempt: missing or invalid Authorization header: %s", authHeader)
+			log.Errorf("[AuthorizationMiddleware] Unauthorized access attempt: missing or invalid Authorization header: %s", authHeader)
 
 			WriteErrorJSON(w, http.StatusUnauthorized,
 				fmt.Sprintf("Unauthorized access attempt: missing or invalid Authorization header: %s",

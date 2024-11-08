@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	"awesomeProject/todo-app/global_constants"
+	"awesomeProject/todo-app/global"
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -50,18 +50,18 @@ func (config Config) SetLogSeverity() error {
 }
 
 func (config Config) LogDebugConfigAttributes() {
-	log.Debug("Configuration:")
-	log.Debug("		port: " + config.Port)
-	log.Debug("		log format: " + config.LogFormat)
-	log.Debug("		log severity: " + config.LogSeverity)
+	log.Debug("[LoadConfig] Configuration:")
+	log.Debug("[LoadConfig]		port: " + config.Port)
+	log.Debug("[LoadConfig]		log format: " + config.LogFormat)
+	log.Debug("[LoadConfig]		log severity: " + config.LogSeverity)
 }
 
 func LoadConfig(path string) (*Config, error) {
 	config := &Config{"8080", "text", "debug"}
 
-	if _, err := os.Stat("./" + global_constants.ConfigFileName); errors.Is(err, os.ErrNotExist) {
-		log.Error(global_constants.ConfigFileName + " does not exist")
-		log.Info("Using default configuration")
+	if _, err := os.Stat("./" + global.ConfigFileName); errors.Is(err, os.ErrNotExist) {
+		log.Error("[LoadConfig] " + global.ConfigFileName + " does not exist")
+		log.Info("[LoadConfig] Using default configuration")
 	} else {
 		viper.AddConfigPath(path)
 		viper.SetConfigName("config")
@@ -70,27 +70,27 @@ func LoadConfig(path string) (*Config, error) {
 
 		err := viper.ReadInConfig()
 		if err != nil {
-			log.Errorf("Error reading config file, %v", err)
+			log.Errorf("[LoadConfig] Error reading config file, %v", err)
 			return nil, err
 		}
 
 		err = viper.Unmarshal(config)
 		if err != nil {
-			log.Errorf("Unable to decode config, %v", err)
+			log.Errorf("[LoadConfig] Unable to decode config, %v", err)
 			return nil, err
 		}
 
-		log.Info("Successfully loaded config file")
+		log.Info("[LoadConfig] Successfully loaded config file")
 	}
 
 	err := config.SetLogFormat()
 	if err != nil {
-		log.Errorf("Unable to se log format, %v", err)
+		log.Errorf("[LoadConfig] Unable to se log format, %v", err)
 		return nil, err
 	}
 	err = config.SetLogSeverity()
 	if err != nil {
-		log.Errorf("Unable to set log severity, %v", err)
+		log.Errorf("[LoadConfig] Unable to set log severity, %v", err)
 		return nil, err
 	}
 	config.LogDebugConfigAttributes()

@@ -1,4 +1,4 @@
-package managers
+package implementations
 
 import (
 	"awesomeProject/todo-app/structs"
@@ -13,7 +13,7 @@ type ListManager struct {
 }
 
 func NewListManager() *ListManager {
-	log.Debug("Initializing ListManager")
+	log.Info("[NewListManager] Initializing ListManager")
 
 	listID1 := uuid.New()
 	listID2 := uuid.New()
@@ -30,11 +30,11 @@ func NewListManager() *ListManager {
 					{
 						ID:          itemID1,
 						ListID:      listID1,
-						Tittle:      "Item 1",
+						Title:       "Item 1",
 						Description: "Description for item 1",
 						Tags: []structs.Tag{
-							{ID: uuid.New(), Name: "Tag1"},
-							{ID: uuid.New(), Name: "Tag2"},
+							{Name: "Tag1"},
+							{Name: "Tag2"},
 						},
 						Completed:    false,
 						CreationTime: time.Now(),
@@ -52,61 +52,72 @@ func NewListManager() *ListManager {
 	}
 }
 
-func (m *ListManager) GetAll() []*structs.List {
-	log.Debug("Fetching all lists")
-	allLists := make([]*structs.List, 0, len(m.lists))
+func (m *ListManager) GetAll() []structs.List {
+	log.Info("[ListManager.GetAll] Fetching all lists")
+
+	allLists := make([]structs.List, 0, len(m.lists))
 	for _, list := range m.lists {
-		allLists = append(allLists, &list)
+		allLists = append(allLists, list)
 	}
+
 	return allLists
 }
 
-func (m *ListManager) Get(idToGet uuid.UUID) (*structs.List, error) {
-	log.Debugf("Fetching list with ID: %s", idToGet)
+func (m *ListManager) Get(idToGet uuid.UUID) (structs.List, error) {
+	log.Infof("[ListManager.Get] Fetching list with ID: %s", idToGet)
+
 	list, exists := m.lists[idToGet]
 	if !exists {
-		log.Errorf("[Get] List with ID %s not found", idToGet)
-		return nil, fmt.Errorf("[Get] List with id %s not found", idToGet)
+		log.Errorf("[ListManager.Get] List with ID %s not found", idToGet)
+		return structs.List{}, fmt.Errorf("[ListManager.Get] List with id %s not found", idToGet)
 	}
-	return &list, nil
+
+	return list, nil
 }
 
 func (m *ListManager) Create(newList structs.List) (structs.List, error) {
+	log.Info("[ListManager.Create] Creating new list")
+
 	if newList.ID == uuid.Nil {
 		newList.ID = uuid.New()
 	}
-	log.Debugf("Creating new list with ID: %s", newList.ID)
+
 	_, exists := m.lists[newList.ID]
 	if exists {
-		log.Errorf("[Create] List with ID %s already exists", newList.ID)
-		return structs.List{}, fmt.Errorf("[Create] List with id %s already exists", newList.ID)
+		log.Errorf("[ListManager.Create] List with ID %s already exists", newList.ID)
+		return structs.List{}, fmt.Errorf("[ListManager.Create] List with id %s already exists", newList.ID)
 	}
+
 	m.lists[newList.ID] = newList
-	log.Debugf("Successfully created list with ID: %s", newList.ID)
+	log.Infof("[ListManager.Create] Successfully created list with ID: %s", newList.ID)
 	return newList, nil
 }
 
 func (m *ListManager) Update(updatedList structs.List) (structs.List, error) {
-	log.Debugf("Updating list with ID: %s", updatedList.ID)
+	log.Infof("[ListManager.Update] Updating list with ID: %s", updatedList.ID)
+
 	_, exists := m.lists[updatedList.ID]
 	if !exists {
-		log.Errorf("[Update] List with ID %s not found", updatedList.ID)
-		return structs.List{}, fmt.Errorf("[Update] List with id %s not found", updatedList.ID)
+		log.Errorf("[ListManager.Update] List with ID %s not found", updatedList.ID)
+		return structs.List{}, fmt.Errorf("[ListManager.Update] List with id %s not found", updatedList.ID)
 	}
+
 	m.lists[updatedList.ID] = updatedList
-	log.Debugf("Successfully updated list with ID: %s", updatedList.ID)
+	log.Infof("[ListManager.Update] Successfully updated list with ID: %s", updatedList.ID)
 	return updatedList, nil
 }
 
 func (m *ListManager) Delete(idToDelete uuid.UUID) (structs.List, error) {
-	log.Debugf("Deleting list with ID: %s", idToDelete)
+	log.Infof("[ListManager.Delete] Deleting list with ID: %s", idToDelete)
+
 	_, exists := m.lists[idToDelete]
 	if !exists {
-		log.Errorf("[Delete] List with ID %s not found", idToDelete)
-		return structs.List{}, fmt.Errorf("[Delete] List with id %s not found", idToDelete)
+		log.Errorf("[ListManager.Delete] List with ID %s not found", idToDelete)
+		return structs.List{}, fmt.Errorf("[ListManager.Delete] List with id %s not found", idToDelete)
 	}
+
 	deletedList := m.lists[idToDelete]
 	delete(m.lists, idToDelete)
-	log.Debugf("Successfully deleted list with ID: %s", idToDelete)
+	log.Infof("[ListManager.Delete] Successfully deleted list with ID: %s", idToDelete)
 	return deletedList, nil
 }
