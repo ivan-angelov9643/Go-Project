@@ -1,2 +1,2 @@
-# todo-app-ivan
-Sample TODO list application used for onboarding
+# Library Management System
+Sample Library Management System application used for onboarding
