@@ -3,7 +3,7 @@
 package automock
 
 import (
-	structs "awesomeProject/todo-app/structs"
+	structs "awesomeProject/todo-app/models"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -55,7 +55,7 @@ type TagManager_Create_Call struct {
 }
 
 // Create is a helper method to define mock.On call
-//   - _a0 structs.Tag
+//   - _a0 models.Tag
 func (_e *TagManager_Expecter) Create(_a0 interface{}) *TagManager_Create_Call {
 	return &TagManager_Create_Call{Call: _e.mock.On("Create", _a0)}
 }

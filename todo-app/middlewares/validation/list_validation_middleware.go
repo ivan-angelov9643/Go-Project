@@ -2,7 +2,7 @@ package validation
 
 import (
 	"awesomeProject/todo-app/global"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -14,7 +14,7 @@ import (
 func ValidateListMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Info("[ValidateListMiddleware] Validating List")
-		var list structs.List
+		var list models.List
 
 		bodyBytes := global.ReadBody(w, r, "ValidateListMiddleware")
 
@@ -46,7 +46,7 @@ func ValidateListMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func validateListFields(list structs.List) error {
+func validateListFields(list models.List) error {
 	if list.Name == "" {
 		return errors.New("list name cannot be empty")
 	}

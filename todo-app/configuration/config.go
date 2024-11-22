@@ -13,9 +13,15 @@ type Config struct {
 	Port        string `mapstructure:"PORT"`
 	LogFormat   string `mapstructure:"LOG_FORMAT"`
 	LogSeverity string `mapstructure:"LOG_SEVERITY"`
+
+	DBHost     string `mapstructure:"DB_HOST"`
+	DBPort     string `mapstructure:"DB_PORT"`
+	DBUser     string `mapstructure:"DB_USER"`
+	DBPassword string `mapstructure:"DB_PASSWORD"`
+	DBName     string `mapstructure:"DB_NAME"`
 }
 
-func (config Config) SetLogFormat() error {
+func (config Config) setLogFormat() error {
 	switch config.LogFormat {
 	case "json":
 		log.SetFormatter(&log.JSONFormatter{})
@@ -27,7 +33,7 @@ func (config Config) SetLogFormat() error {
 	return nil
 }
 
-func (config Config) SetLogSeverity() error {
+func (config Config) setLogSeverity() error {
 	switch config.LogSeverity {
 	case "trace":
 		log.SetLevel(log.TraceLevel)
@@ -49,16 +55,39 @@ func (config Config) SetLogSeverity() error {
 	return nil
 }
 
-func (config Config) LogDebugConfigAttributes() {
-	log.Debug("[LoadConfig] Configuration:")
-	log.Debug("[LoadConfig]		port: " + config.Port)
-	log.Debug("[LoadConfig]		log format: " + config.LogFormat)
-	log.Debug("[LoadConfig]		log severity: " + config.LogSeverity)
+func (config Config) logDebugConfigAttributes() {
+	log.Debug("[logDebugConfigAttributes] Configuration:")
+	log.Debug("[logDebugConfigAttributes]		port: " + config.Port)
+	log.Debug("[logDebugConfigAttributes]		log format: " + config.LogFormat)
+	log.Debug("[logDebugConfigAttributes]		log severity: " + config.LogSeverity)
+}
+
+func validateDbEnvVars(config *Config) error {
+	//log
+	field := ""
+	if config.DBHost == "" {
+		field = "DB_HOST"
+	} else if config.DBPort == "" {
+		field = "DB_PORT"
+	} else if config.DBUser == "" {
+		field = "DB_USER"
+	} else if config.DBPassword == "" {
+		field = "DB_PASSWORD"
+	} else if config.DBName == "" {
+		field = "DB_NAME"
+	}
+	if field != "" {
+		return fmt.Errorf("[validateDbEnvVars] %s is not present in %s", field, global.ConfigFileName)
+	}
+	return nil
 }
 
 func LoadConfig(path string) (*Config, error) {
-	config := &Config{"8080", "text", "debug"}
-
+	config := &Config{
+		Port:        "8080",
+		LogFormat:   "text",
+		LogSeverity: "debug",
+	}
 	if _, err := os.Stat("./" + global.ConfigFileName); errors.Is(err, os.ErrNotExist) {
 		log.Error("[LoadConfig] " + global.ConfigFileName + " does not exist")
 		log.Info("[LoadConfig] Using default configuration")
@@ -80,20 +109,26 @@ func LoadConfig(path string) (*Config, error) {
 			return nil, err
 		}
 
+		err = validateDbEnvVars(config)
+		if err != nil {
+			log.Errorf("[LoadConfig] Error parsing env vars, %v", err)
+			return nil, err
+		}
+
 		log.Info("[LoadConfig] Successfully loaded config file")
 	}
 
-	err := config.SetLogFormat()
+	err := config.setLogFormat()
 	if err != nil {
 		log.Errorf("[LoadConfig] Unable to se log format, %v", err)
 		return nil, err
 	}
-	err = config.SetLogSeverity()
+	err = config.setLogSeverity()
 	if err != nil {
 		log.Errorf("[LoadConfig] Unable to set log severity, %v", err)
 		return nil, err
 	}
-	config.LogDebugConfigAttributes()
+	config.logDebugConfigAttributes()
 
 	return config, nil
 }

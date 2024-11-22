@@ -3,7 +3,7 @@ package handlers
 import (
 	"awesomeProject/todo-app/global"
 	"awesomeProject/todo-app/managers/interfaces"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -81,7 +81,7 @@ func (h *ItemHandler) Get(w http.ResponseWriter, r *http.Request) {
 func (h *ItemHandler) Create(w http.ResponseWriter, r *http.Request) {
 	log.Info("[ItemHandler.Create] Creating new item")
 
-	var newItem structs.Item
+	var newItem models.Item
 	err := json.NewDecoder(r.Body).Decode(&newItem)
 	if err != nil {
 		global.HttpError(
@@ -134,7 +134,7 @@ func (h *ItemHandler) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var updatedItemBody structs.Item
+	var updatedItemBody models.Item
 	err = json.NewDecoder(r.Body).Decode(&updatedItemBody)
 	if err != nil {
 		global.HttpError(

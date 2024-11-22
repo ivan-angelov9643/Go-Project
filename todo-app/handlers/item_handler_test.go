@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/todo-app/managers/interfaces/automock"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -23,14 +23,10 @@ func setupItemHandlerTests() (*ItemHandler, *automock.ItemManager) {
 func TestItemHandler_GetAll_Success(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
-	items := []structs.Item{
+	items := []models.Item{
 		{ID: uuid.New(), Title: "Item1", Completed: false},
 		{ID: uuid.New(), Title: "Item2", Completed: true},
 	}
-	//items := []structs.Item{
-	//	{ID: uuid.New(), Title: "Item1", Completed: false, CreationTime: time.Now()},
-	//	{ID: uuid.New(), Title: "Item2", Completed: true, CreationTime: time.Now()},
-	//}
 	mockItemManager.On("GetAll").Return(items)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/items", nil)
@@ -39,7 +35,7 @@ func TestItemHandler_GetAll_Success(t *testing.T) {
 	itemHandler.GetAll(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result []structs.Item
+	var result []models.Item
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, items, result)
@@ -51,8 +47,7 @@ func TestItemHandler_Get_Success(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
 	itemID := uuid.New()
-	item := structs.Item{ID: itemID, Title: "Item1", Completed: false}
-	//item := structs.Item{ID: itemID, Title: "Item1", Completed: false, CreationTime: time.Now()}
+	item := models.Item{ID: itemID, Title: "Item1", Completed: false}
 	mockItemManager.On("Get", itemID).Return(item, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/items/"+itemID.String(), nil)
@@ -62,7 +57,7 @@ func TestItemHandler_Get_Success(t *testing.T) {
 	itemHandler.Get(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Item
+	var result models.Item
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, item, result)
@@ -74,7 +69,7 @@ func TestItemHandler_Get_NotFound(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
 	nonexistentID := uuid.New()
-	mockItemManager.On("Get", nonexistentID).Return(structs.Item{}, errors.New("not found"))
+	mockItemManager.On("Get", nonexistentID).Return(models.Item{}, errors.New("not found"))
 
 	req := httptest.NewRequest(http.MethodGet, "/api/items/"+nonexistentID.String(), nil)
 	req = mux.SetURLVars(req, map[string]string{"id": nonexistentID.String()})
@@ -90,8 +85,7 @@ func TestItemHandler_Get_NotFound(t *testing.T) {
 func TestItemHandler_Create_Success(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
-	newItem := structs.Item{Title: "NewItem", Completed: false}
-	//newItem := structs.Item{Title: "NewItem", Completed: false, CreationTime: time.Now()}
+	newItem := models.Item{Title: "NewItem", Completed: false}
 	createdItem := newItem
 	createdItem.ID = uuid.New()
 	mockItemManager.On("Create", newItem).Return(createdItem, nil)
@@ -103,7 +97,7 @@ func TestItemHandler_Create_Success(t *testing.T) {
 	itemHandler.Create(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Item
+	var result models.Item
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, createdItem, result)
@@ -128,8 +122,7 @@ func TestItemHandler_Update_Success(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
 	itemID := uuid.New()
-	updateItem := structs.Item{ID: itemID, Title: "UpdatedItem", Completed: true}
-	//updateItem := structs.Item{ID: itemID, Title: "UpdatedItem", Completed: true, CreationTime: time.Now()}
+	updateItem := models.Item{ID: itemID, Title: "UpdatedItem", Completed: true}
 	mockItemManager.On("Update", updateItem).Return(updateItem, nil)
 
 	body, _ := json.Marshal(updateItem)
@@ -140,7 +133,7 @@ func TestItemHandler_Update_Success(t *testing.T) {
 	itemHandler.Update(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Item
+	var result models.Item
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, updateItem, result)
@@ -165,8 +158,7 @@ func TestItemHandler_Delete_Success(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
 	itemID := uuid.New()
-	deletedItem := structs.Item{ID: itemID, Title: "DeletedItem", Completed: true}
-	//deletedItem := structs.Item{ID: itemID, Title: "DeletedItem", Completed: true, CreationTime: time.Now()}
+	deletedItem := models.Item{ID: itemID, Title: "DeletedItem", Completed: true}
 	mockItemManager.On("Delete", itemID).Return(deletedItem, nil)
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/items/"+itemID.String(), nil)
@@ -176,7 +168,7 @@ func TestItemHandler_Delete_Success(t *testing.T) {
 	itemHandler.Delete(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Item
+	var result models.Item
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, deletedItem, result)
@@ -188,7 +180,7 @@ func TestItemHandler_Delete_NotFound(t *testing.T) {
 	itemHandler, mockItemManager := setupItemHandlerTests()
 
 	nonexistentID := uuid.New()
-	mockItemManager.On("Delete", nonexistentID).Return(structs.Item{}, errors.New("not found"))
+	mockItemManager.On("Delete", nonexistentID).Return(models.Item{}, errors.New("not found"))
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/items/"+nonexistentID.String(), nil)
 	req = mux.SetURLVars(req, map[string]string{"id": nonexistentID.String()})

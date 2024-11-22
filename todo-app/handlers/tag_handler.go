@@ -3,7 +3,7 @@ package handlers
 import (
 	"awesomeProject/todo-app/global"
 	"awesomeProject/todo-app/managers/interfaces"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
@@ -70,7 +70,7 @@ func (h *TagHandler) Get(w http.ResponseWriter, r *http.Request) {
 func (h *TagHandler) Create(w http.ResponseWriter, r *http.Request) {
 	log.Info("[TagHandler.Create] Creating new tag")
 
-	var newTag structs.Tag
+	var newTag models.Tag
 	err := json.NewDecoder(r.Body).Decode(&newTag)
 	if err != nil {
 		global.HttpError(

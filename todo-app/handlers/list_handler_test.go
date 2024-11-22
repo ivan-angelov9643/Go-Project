@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/todo-app/managers/interfaces/automock"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -23,14 +23,10 @@ func setupListHandlerTests() (*ListHandler, *automock.ListManager) {
 func TestListHandler_GetAll_Success(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
-	lists := []structs.List{
+	lists := []models.List{
 		{ID: uuid.New(), Name: "List1", Description: "First list"},
 		{ID: uuid.New(), Name: "List2", Description: "Second list"},
 	}
-	//lists := []structs.List{
-	//	{ID: uuid.New(), Name: "List1", Description: "First list", CreationTime: time.Now()},
-	//	{ID: uuid.New(), Name: "List2", Description: "Second list", CreationTime: time.Now()},
-	//}
 	mockListManager.On("GetAll").Return(lists)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/lists", nil)
@@ -39,7 +35,7 @@ func TestListHandler_GetAll_Success(t *testing.T) {
 	listHandler.GetAll(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result []structs.List
+	var result []models.List
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, lists, result)
@@ -51,8 +47,7 @@ func TestListHandler_Get_Success(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
 	listID := uuid.New()
-	list := structs.List{ID: listID, Name: "List1", Description: "First list"}
-	//list := structs.List{ID: listID, Name: "List1", Description: "First list", CreationTime: time.Now()}
+	list := models.List{ID: listID, Name: "List1", Description: "First list"}
 	mockListManager.On("Get", listID).Return(list, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/lists/"+listID.String(), nil)
@@ -62,7 +57,7 @@ func TestListHandler_Get_Success(t *testing.T) {
 	listHandler.Get(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.List
+	var result models.List
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, list, result)
@@ -74,7 +69,7 @@ func TestListHandler_Get_NotFound(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
 	nonexistentID := uuid.New()
-	mockListManager.On("Get", nonexistentID).Return(structs.List{}, errors.New("not found"))
+	mockListManager.On("Get", nonexistentID).Return(models.List{}, errors.New("not found"))
 
 	req := httptest.NewRequest(http.MethodGet, "/api/lists/"+nonexistentID.String(), nil)
 	req = mux.SetURLVars(req, map[string]string{"id": nonexistentID.String()})
@@ -90,8 +85,7 @@ func TestListHandler_Get_NotFound(t *testing.T) {
 func TestListHandler_Create_Success(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
-	newList := structs.List{Name: "New List", Description: "A new list"}
-	//newList := structs.List{Name: "New List", Description: "A new list", CreationTime: time.Now()}
+	newList := models.List{Name: "New List", Description: "A new list"}
 	createdList := newList
 	createdList.ID = uuid.New()
 	mockListManager.On("Create", newList).Return(createdList, nil)
@@ -103,7 +97,7 @@ func TestListHandler_Create_Success(t *testing.T) {
 	listHandler.Create(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.List
+	var result models.List
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, createdList, result)
@@ -128,8 +122,7 @@ func TestListHandler_Update_Success(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
 	listID := uuid.New()
-	updateList := structs.List{ID: listID, Name: "UpdatedList", Description: "Updated description"}
-	//updateList := structs.List{ID: listID, Name: "UpdatedList", Description: "Updated description", CreationTime: time.Now()}
+	updateList := models.List{ID: listID, Name: "UpdatedList", Description: "Updated description"}
 	mockListManager.On("Update", updateList).Return(updateList, nil)
 
 	body, _ := json.Marshal(updateList)
@@ -140,7 +133,7 @@ func TestListHandler_Update_Success(t *testing.T) {
 	listHandler.Update(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.List
+	var result models.List
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, updateList, result)
@@ -164,8 +157,7 @@ func TestListHandler_Delete_Success(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
 	listID := uuid.New()
-	deletedList := structs.List{ID: listID, Name: "ListToDelete", Description: "A list to be deleted"}
-	//deletedList := structs.List{ID: listID, Name: "ListToDelete", Description: "A list to be deleted", CreationTime: time.Now()}
+	deletedList := models.List{ID: listID, Name: "ListToDelete", Description: "A list to be deleted"}
 	mockListManager.On("Delete", listID).Return(deletedList, nil)
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/lists/"+listID.String(), nil)
@@ -175,7 +167,7 @@ func TestListHandler_Delete_Success(t *testing.T) {
 	listHandler.Delete(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.List
+	var result models.List
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, deletedList, result)
@@ -187,7 +179,7 @@ func TestListHandler_Delete_NotFound(t *testing.T) {
 	listHandler, mockListManager := setupListHandlerTests()
 
 	nonexistentID := uuid.New()
-	mockListManager.On("Delete", nonexistentID).Return(structs.List{}, errors.New("not found"))
+	mockListManager.On("Delete", nonexistentID).Return(models.List{}, errors.New("not found"))
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/lists/"+nonexistentID.String(), nil)
 	req = mux.SetURLVars(req, map[string]string{"id": nonexistentID.String()})

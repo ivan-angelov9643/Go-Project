@@ -3,7 +3,7 @@
 package automock
 
 import (
-	structs "awesomeProject/todo-app/structs"
+	structs "awesomeProject/todo-app/models"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -57,7 +57,7 @@ type ItemManager_Create_Call struct {
 }
 
 // Create is a helper method to define mock.On call
-//   - _a0 structs.Item
+//   - _a0 models.Item
 func (_e *ItemManager_Expecter) Create(_a0 interface{}) *ItemManager_Create_Call {
 	return &ItemManager_Create_Call{Call: _e.mock.On("Create", _a0)}
 }
@@ -272,7 +272,7 @@ type ItemManager_Update_Call struct {
 }
 
 // Update is a helper method to define mock.On call
-//   - _a0 structs.Item
+//   - _a0 models.Item
 func (_e *ItemManager_Expecter) Update(_a0 interface{}) *ItemManager_Update_Call {
 	return &ItemManager_Update_Call{Call: _e.mock.On("Update", _a0)}
 }

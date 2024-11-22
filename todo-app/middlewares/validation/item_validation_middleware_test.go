@@ -1,7 +1,7 @@
 package validation
 
 import (
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -18,18 +18,18 @@ import (
 func TestValidateItemMiddleware(t *testing.T) {
 	tests := []struct {
 		name           string
-		item           structs.Item
+		item           models.Item
 		expectedStatus int
 		expectedError  string
 	}{
 		{
 			name: "Valid Item",
-			item: structs.Item{
+			item: models.Item{
 				ID:           uuid.New(),
 				ListID:       uuid.New(),
 				Title:        "Valid Title",
 				Description:  "A valid description",
-				Tags:         []structs.Tag{{Name: "Tag1"}},
+				Tags:         []models.Tag{{Name: "Tag1"}},
 				Completed:    false,
 				CreationTime: time.Now(),
 			},
@@ -37,7 +37,7 @@ func TestValidateItemMiddleware(t *testing.T) {
 		},
 		{
 			name: "Empty Title",
-			item: structs.Item{
+			item: models.Item{
 				ID:          uuid.New(),
 				ListID:      uuid.New(),
 				Title:       "",
@@ -48,7 +48,7 @@ func TestValidateItemMiddleware(t *testing.T) {
 		},
 		{
 			name: "Title with Whitespace",
-			item: structs.Item{
+			item: models.Item{
 				ID:          uuid.New(),
 				ListID:      uuid.New(),
 				Title:       " Invalid Title ",
@@ -59,7 +59,7 @@ func TestValidateItemMiddleware(t *testing.T) {
 		},
 		{
 			name: "Title Exceeds Length Limit",
-			item: structs.Item{
+			item: models.Item{
 				ID:          uuid.New(),
 				ListID:      uuid.New(),
 				Title:       strings.Repeat("a", 101),
@@ -70,7 +70,7 @@ func TestValidateItemMiddleware(t *testing.T) {
 		},
 		{
 			name: "Description Exceeds Length Limit",
-			item: structs.Item{
+			item: models.Item{
 				ID:          uuid.New(),
 				ListID:      uuid.New(),
 				Title:       "Valid Title",
@@ -81,18 +81,18 @@ func TestValidateItemMiddleware(t *testing.T) {
 		},
 		{
 			name: "With Tags",
-			item: structs.Item{
+			item: models.Item{
 				ID:          uuid.New(),
 				ListID:      uuid.New(),
 				Title:       "Valid Title",
 				Description: "Description",
-				Tags:        []structs.Tag{{Name: "Tag1"}},
+				Tags:        []models.Tag{{Name: "Tag1"}},
 			},
 			expectedStatus: http.StatusOK,
 		},
 		{
 			name: "No Tags",
-			item: structs.Item{
+			item: models.Item{
 				ID:          uuid.New(),
 				ListID:      uuid.New(),
 				Title:       "Valid Title",

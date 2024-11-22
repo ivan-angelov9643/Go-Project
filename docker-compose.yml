@@ -1,8 +1,29 @@
+networks:
+  library-app-network:
+
 services:
   todo-app:
     build:
       context: .
       dockerfile: Dockerfile
       target: release
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
     ports:
       - "8080:8080"
+  db:
+    image: postgres:17
+    restart: always
+    hostname: db
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"

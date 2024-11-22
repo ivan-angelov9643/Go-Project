@@ -1,7 +1,7 @@
 package validation
 
 import (
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -17,24 +17,24 @@ import (
 func TestValidateListMiddleware(t *testing.T) {
 	tests := []struct {
 		name           string
-		list           structs.List
+		list           models.List
 		expectedStatus int
 		expectedError  string
 	}{
 		{
 			name: "Valid List",
-			list: structs.List{
+			list: models.List{
 				ID:           uuid.New(),
 				Name:         "Valid List Name",
 				Description:  "A valid list description",
 				CreationTime: time.Now(),
-				Items: []structs.Item{
+				Items: []models.Item{
 					{
 						ID:           uuid.New(),
 						ListID:       uuid.New(),
 						Title:        "Valid Item Title",
 						Description:  "A valid item description",
-						Tags:         []structs.Tag{{Name: "Tag1"}},
+						Tags:         []models.Tag{{Name: "Tag1"}},
 						Completed:    false,
 						CreationTime: time.Now(),
 					},
@@ -44,7 +44,7 @@ func TestValidateListMiddleware(t *testing.T) {
 		},
 		{
 			name: "Empty List Name",
-			list: structs.List{
+			list: models.List{
 				ID:          uuid.New(),
 				Name:        "",
 				Description: "Description",
@@ -54,7 +54,7 @@ func TestValidateListMiddleware(t *testing.T) {
 		},
 		{
 			name: "List Name with Whitespace",
-			list: structs.List{
+			list: models.List{
 				ID:          uuid.New(),
 				Name:        " Invalid List Name ",
 				Description: "Description",
@@ -64,7 +64,7 @@ func TestValidateListMiddleware(t *testing.T) {
 		},
 		{
 			name: "List Name Exceeds Length Limit",
-			list: structs.List{
+			list: models.List{
 				ID:          uuid.New(),
 				Name:        strings.Repeat("a", 101),
 				Description: "Description",
@@ -74,7 +74,7 @@ func TestValidateListMiddleware(t *testing.T) {
 		},
 		{
 			name: "List Description Exceeds Length Limit",
-			list: structs.List{
+			list: models.List{
 				ID:          uuid.New(),
 				Name:        "Valid List Name",
 				Description: strings.Repeat("a", 256),
@@ -84,10 +84,10 @@ func TestValidateListMiddleware(t *testing.T) {
 		},
 		{
 			name: "With Items",
-			list: structs.List{
+			list: models.List{
 				ID:   uuid.New(),
 				Name: "Valid List Name",
-				Items: []structs.Item{
+				Items: []models.Item{
 					{
 						ID:          uuid.New(),
 						ListID:      uuid.New(),
@@ -100,7 +100,7 @@ func TestValidateListMiddleware(t *testing.T) {
 		},
 		{
 			name: "No Items",
-			list: structs.List{
+			list: models.List{
 				ID:   uuid.New(),
 				Name: "Valid List Name",
 			},

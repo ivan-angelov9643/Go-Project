@@ -2,7 +2,7 @@ package validation
 
 import (
 	"awesomeProject/todo-app/global"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -14,7 +14,7 @@ import (
 func ValidateItemMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Info("[ValidateItem] Validating Item")
-		var item structs.Item
+		var item models.Item
 
 		bodyBytes := global.ReadBody(w, r, "ValidateItemMiddleware")
 
@@ -46,7 +46,7 @@ func ValidateItemMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func validateItemFields(item structs.Item) error {
+func validateItemFields(item models.Item) error {
 	if item.Title == "" {
 		return errors.New("item title cannot be empty")
 	}

@@ -2,7 +2,7 @@ package validation
 
 import (
 	"awesomeProject/todo-app/global"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -14,7 +14,7 @@ import (
 func ValidateTagMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Info("[ValidateTagMiddleware] Validating Tag")
-		var tag structs.Tag
+		var tag models.Tag
 
 		bodyBytes := global.ReadBody(w, r, "ValidateTagMiddleware")
 
@@ -46,7 +46,7 @@ func ValidateTagMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func validateTagFields(tag structs.Tag) error {
+func validateTagFields(tag models.Tag) error {
 	if tag.Name == "" {
 		return errors.New("tag name cannot be empty")
 	}

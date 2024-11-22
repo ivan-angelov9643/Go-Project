@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/todo-app/managers/interfaces/automock"
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -22,7 +22,7 @@ func setupTagHandlerTests() (*TagHandler, *automock.TagManager) {
 func TestTagHandler_GetAll_Success(t *testing.T) {
 	tagHandler, mockTagManager := setupTagHandlerTests()
 
-	tags := []structs.Tag{
+	tags := []models.Tag{
 		{Name: "Tag1"},
 		{Name: "Tag2"},
 	}
@@ -34,7 +34,7 @@ func TestTagHandler_GetAll_Success(t *testing.T) {
 	tagHandler.GetAll(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result []structs.Tag
+	var result []models.Tag
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, tags, result)
@@ -45,7 +45,7 @@ func TestTagHandler_GetAll_Success(t *testing.T) {
 func TestTagHandler_Get_Success(t *testing.T) {
 	tagHandler, mockTagManager := setupTagHandlerTests()
 
-	tag := structs.Tag{Name: "Tag1"}
+	tag := models.Tag{Name: "Tag1"}
 	mockTagManager.On("Get", "Tag1").Return(tag, nil)
 
 	req := httptest.NewRequest(http.MethodGet, "/api/tags/Tag1", nil)
@@ -55,7 +55,7 @@ func TestTagHandler_Get_Success(t *testing.T) {
 	tagHandler.Get(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Tag
+	var result models.Tag
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, tag, result)
@@ -66,7 +66,7 @@ func TestTagHandler_Get_Success(t *testing.T) {
 func TestTagHandler_Get_NotFound(t *testing.T) {
 	tagHandler, mockTagManager := setupTagHandlerTests()
 
-	mockTagManager.On("Get", "UnknownTag").Return(structs.Tag{}, errors.New("not found"))
+	mockTagManager.On("Get", "UnknownTag").Return(models.Tag{}, errors.New("not found"))
 
 	req := httptest.NewRequest(http.MethodGet, "/api/tags/UnknownTag", nil)
 	req = mux.SetURLVars(req, map[string]string{"name": "UnknownTag"})
@@ -82,7 +82,7 @@ func TestTagHandler_Get_NotFound(t *testing.T) {
 func TestTagHandler_Create_Success(t *testing.T) {
 	tagHandler, mockTagManager := setupTagHandlerTests()
 
-	newTag := structs.Tag{Name: "NewTag"}
+	newTag := models.Tag{Name: "NewTag"}
 	mockTagManager.On("Create", newTag).Return(newTag, nil)
 
 	body, _ := json.Marshal(newTag)
@@ -92,7 +92,7 @@ func TestTagHandler_Create_Success(t *testing.T) {
 	tagHandler.Create(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Tag
+	var result models.Tag
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, newTag, result)
@@ -116,7 +116,7 @@ func TestTagHandler_Create_InvalidJSON(t *testing.T) {
 func TestTagHandler_Delete_Success(t *testing.T) {
 	tagHandler, mockTagManager := setupTagHandlerTests()
 
-	deletedTag := structs.Tag{Name: "TagToDelete"}
+	deletedTag := models.Tag{Name: "TagToDelete"}
 	mockTagManager.On("Delete", "TagToDelete").Return(deletedTag, nil)
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/tags/TagToDelete", nil)
@@ -126,7 +126,7 @@ func TestTagHandler_Delete_Success(t *testing.T) {
 	tagHandler.Delete(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	var result structs.Tag
+	var result models.Tag
 	err := json.NewDecoder(rec.Body).Decode(&result)
 	assert.NoError(t, err)
 	assert.Equal(t, deletedTag, result)
@@ -138,7 +138,7 @@ func TestTagHandler_Delete_NotFound(t *testing.T) {
 	tagHandler, mockTagManager := setupTagHandlerTests()
 
 	mockTagManager.On("Delete", "NonexistentTag").
-		Return(structs.Tag{}, errors.New("not found"))
+		Return(models.Tag{}, errors.New("not found"))
 
 	req := httptest.NewRequest(http.MethodDelete, "/api/tags/NonexistentTag", nil)
 	req = mux.SetURLVars(req, map[string]string{"name": "NonexistentTag"})

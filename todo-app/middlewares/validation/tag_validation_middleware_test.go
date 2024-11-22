@@ -1,7 +1,7 @@
 package validation
 
 import (
-	"awesomeProject/todo-app/structs"
+	"awesomeProject/todo-app/models"
 	"bytes"
 	"encoding/json"
 	"net/http"
@@ -16,30 +16,30 @@ import (
 func TestValidateTagMiddleware(t *testing.T) {
 	tests := []struct {
 		name           string
-		tag            structs.Tag
+		tag            models.Tag
 		expectedStatus int
 		expectedError  string
 	}{
 		{
 			name:           "Valid Tag",
-			tag:            structs.Tag{Name: "ValidTagName"},
+			tag:            models.Tag{Name: "ValidTagName"},
 			expectedStatus: http.StatusOK,
 		},
 		{
 			name:           "Empty Tag Name",
-			tag:            structs.Tag{Name: ""},
+			tag:            models.Tag{Name: ""},
 			expectedStatus: http.StatusBadRequest,
 			expectedError:  "tag name cannot be empty",
 		},
 		{
 			name:           "Tag Name with Whitespace",
-			tag:            structs.Tag{Name: "Invalid Tag"},
+			tag:            models.Tag{Name: "Invalid Tag"},
 			expectedStatus: http.StatusBadRequest,
 			expectedError:  "tag name cannot contain whitespace",
 		},
 		{
 			name:           "Tag Name Exceeds 100 Characters",
-			tag:            structs.Tag{Name: strings.Repeat("a", 101)},
+			tag:            models.Tag{Name: strings.Repeat("a", 101)},
 			expectedStatus: http.StatusBadRequest,
 			expectedError:  "tag name cannot exceed 100 characters",
 		},
