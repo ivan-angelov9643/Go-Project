@@ -8,5 +8,7 @@ FROM alpine:3 AS release
 WORKDIR /
 COPY --from=builder /app/bin/main /main
 
+COPY .env /.env
+
 ENTRYPOINT [ "./main" ]
 EXPOSE 8080

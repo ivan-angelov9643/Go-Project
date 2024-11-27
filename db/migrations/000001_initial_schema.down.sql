@@ -1,10 +1,11 @@
 BEGIN;
 
-DROP TABLE review;
-DROP TABLE reservation;
-DROP TABLE loan;
-DROP TABLE book;
-DROP TABLE author;
-DROP TABLE category;
+DROP TABLE users
+DROP TABLE reviews;
+DROP TABLE reservations;
+DROP TABLE loans;
+DROP TABLE books;
+DROP TABLE authors;
+DROP TABLE categories;
 
 COMMIT;
