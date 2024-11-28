@@ -113,15 +113,4 @@ func main() {
 	db := ConnectToDatabase(config)
 
 	StartWebServer(config, db)
-
-	//err = db.AutoMigrate(&models.Author{})
-	//if err != nil {
-	//	log.Errorf("[main] Cannot migrate authors: %v", err)
-	//}
-	//newAuthor := models.Author{
-	//	FirstName:   "Jane",
-	//	LastName:    "Austen",
-	//	Nationality: "British",
-	//}
-	//db.Create(&newAuthor)
 }
