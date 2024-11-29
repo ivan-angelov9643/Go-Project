@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers/interfaces"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -12,10 +12,10 @@ import (
 )
 
 type AuthorHandler struct {
-	authorManager interfaces.AuthorManager
+	authorManager managers.AuthorManagerInterface
 }
 
-func NewAuthorHandler(authorManager interfaces.AuthorManager) *AuthorHandler {
+func NewAuthorHandler(authorManager managers.AuthorManagerInterface) *AuthorHandler {
 	return &AuthorHandler{authorManager}
 }
 

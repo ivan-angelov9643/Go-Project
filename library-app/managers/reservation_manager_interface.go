@@ -1,4 +1,4 @@
-package interfaces
+package managers
 
 import (
 	"awesomeProject/library-app/global/db_error"
@@ -7,7 +7,7 @@ import (
 )
 
 //go:generate mockery --name=ReservationManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
-type ReservationManager interface {
+type ReservationManagerInterface interface {
 	GetAll() ([]models.Reservation, *db_error.DBError)
 	Get(uuid uuid.UUID) (models.Reservation, *db_error.DBError)
 	Create(models.Reservation) (models.Reservation, *db_error.DBError)

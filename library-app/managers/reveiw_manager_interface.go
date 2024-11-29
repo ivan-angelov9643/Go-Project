@@ -1,4 +1,4 @@
-package interfaces
+package managers
 
 import (
 	"awesomeProject/library-app/global/db_error"
@@ -7,7 +7,7 @@ import (
 )
 
 //go:generate mockery --name=ReviewManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
-type ReviewManager interface {
+type ReviewManagerInterface interface {
 	GetAll() ([]models.Review, *db_error.DBError)
 	Get(uuid uuid.UUID) (models.Review, *db_error.DBError)
 	Create(models.Review) (models.Review, *db_error.DBError)

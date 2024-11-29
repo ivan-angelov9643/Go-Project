@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers/interfaces"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -12,10 +12,10 @@ import (
 )
 
 type ReservationHandler struct {
-	reservationManager interfaces.ReservationManager
+	reservationManager managers.ReservationManagerInterface
 }
 
-func NewReservationHandler(reservationManager interfaces.ReservationManager) *ReservationHandler {
+func NewReservationHandler(reservationManager managers.ReservationManagerInterface) *ReservationHandler {
 	return &ReservationHandler{reservationManager}
 }
 

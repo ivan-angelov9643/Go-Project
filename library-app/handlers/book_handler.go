@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers/interfaces"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -12,10 +12,10 @@ import (
 )
 
 type BookHandler struct {
-	bookManager interfaces.BookManager
+	bookManager managers.BookManagerInterface
 }
 
-func NewBookHandler(bookManager interfaces.BookManager) *BookHandler {
+func NewBookHandler(bookManager managers.BookManagerInterface) *BookHandler {
 	return &BookHandler{bookManager}
 }
 

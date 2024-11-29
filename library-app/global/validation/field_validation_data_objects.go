@@ -8,7 +8,7 @@ import (
 
 var (
 	NameRegex        = "^[A-Z]{1}[a-z]+$"
-	NameRegexMessage = "%s must only contain uppercase letters followed by lowercase English letters only."
+	NameRegexMessage = "%s must start with uppercase letter followed by lowercase English letters only."
 	AuthorValidation = []FieldValidationData{
 		&StringFieldValidationData{
 			FieldName:               "First Name",

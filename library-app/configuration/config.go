@@ -43,7 +43,7 @@ func (config Config) setLogSeverity() error {
 		log.SetLevel(log.InfoLevel)
 	case "warn":
 		log.SetLevel(log.WarnLevel)
-	case "db_error":
+	case "error":
 		log.SetLevel(log.ErrorLevel)
 	case "fatal":
 		log.SetLevel(log.FatalLevel)
@@ -62,7 +62,7 @@ func (config Config) logDebugConfigAttributes() {
 	log.Debug("[logDebugConfigAttributes]		log severity: " + config.LogSeverity)
 }
 
-func validateDbEnvVars(config *Config) error {
+func validateDBEnvVars(config *Config) error {
 	//log
 	field := ""
 	if config.POSTGRESHost == "" {
@@ -77,7 +77,7 @@ func validateDbEnvVars(config *Config) error {
 		field = "POSTGRES_DB"
 	}
 	if field != "" {
-		return fmt.Errorf("[validateDbEnvVars] %s is not present in %s", field, global.ConfigFileName)
+		return fmt.Errorf("[validateDBEnvVars] %s is not present in %s", field, global.ConfigFileName)
 	}
 	return nil
 }
@@ -111,7 +111,7 @@ func LoadConfig(path string) (*Config, error) {
 			return nil, err
 		}
 
-		err = validateDbEnvVars(config)
+		err = validateDBEnvVars(config)
 		if err != nil {
 			log.Errorf("[LoadConfig] Error parsing env vars, %v", err)
 			return nil, err

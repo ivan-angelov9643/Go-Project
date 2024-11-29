@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers/interfaces"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -12,10 +12,10 @@ import (
 )
 
 type LoanHandler struct {
-	loanManager interfaces.LoanManager
+	loanManager managers.LoanManagerInterface
 }
 
-func NewLoanHandler(loanManager interfaces.LoanManager) *LoanHandler {
+func NewLoanHandler(loanManager managers.LoanManagerInterface) *LoanHandler {
 	return &LoanHandler{loanManager}
 }
 

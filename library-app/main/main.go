@@ -4,7 +4,7 @@ import (
 	"awesomeProject/library-app/configuration"
 	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/handlers"
-	"awesomeProject/library-app/managers/implementations"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/middlewares"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -32,12 +32,12 @@ func DefineRoutes(router *mux.Router, db *gorm.DB) {
 	log.Info("[DefineRoutes] Defining routes...")
 	router.Use(middlewares.SetJSONMiddleware)
 
-	authorHandler := handlers.NewAuthorHandler(implementations.NewAuthorManager(db))
-	categoryHandler := handlers.NewCategoryHandler(implementations.NewCategoryManager(db))
-	bookHandler := handlers.NewBookHandler(implementations.NewBookManager(db))
-	loanHandler := handlers.NewLoanHandler(implementations.NewLoanManager(db))
-	reservationHandler := handlers.NewReservationHandler(implementations.NewReservationManager(db))
-	reviewHandler := handlers.NewReviewHandler(implementations.NewReviewManager(db))
+	authorHandler := handlers.NewAuthorHandler(managers.NewAuthorManager(db))
+	categoryHandler := handlers.NewCategoryHandler(managers.NewCategoryManager(db))
+	bookHandler := handlers.NewBookHandler(managers.NewBookManager(db))
+	loanHandler := handlers.NewLoanHandler(managers.NewLoanManager(db))
+	reservationHandler := handlers.NewReservationHandler(managers.NewReservationManager(db))
+	reviewHandler := handlers.NewReviewHandler(managers.NewReviewManager(db))
 
 	router.HandleFunc("/api/authors", authorHandler.GetAll).Methods(http.MethodGet)
 	router.HandleFunc("/api/authors", authorHandler.Create).Methods(http.MethodPost)

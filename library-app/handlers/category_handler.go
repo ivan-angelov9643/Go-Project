@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers/interfaces"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
@@ -12,10 +12,10 @@ import (
 )
 
 type CategoryHandler struct {
-	categoryManager interfaces.CategoryManager
+	categoryManager managers.CategoryManagerInterface
 }
 
-func NewCategoryHandler(categoryManager interfaces.CategoryManager) *CategoryHandler {
+func NewCategoryHandler(categoryManager managers.CategoryManagerInterface) *CategoryHandler {
 	return &CategoryHandler{categoryManager}
 }
 

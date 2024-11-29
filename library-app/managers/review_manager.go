@@ -1,4 +1,4 @@
-package implementations
+package managers
 
 import (
 	"awesomeProject/library-app/global/db_error"

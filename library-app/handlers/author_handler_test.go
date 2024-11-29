@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"awesomeProject/library-app/managers/interfaces/automock"
+	"awesomeProject/library-app/managers/automock"
 	"awesomeProject/library-app/models"
 	"bytes"
 	"encoding/json"

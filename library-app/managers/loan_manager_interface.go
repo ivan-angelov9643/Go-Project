@@ -1,4 +1,4 @@
-package interfaces
+package managers
 
 import (
 	"awesomeProject/library-app/global/db_error"
@@ -7,7 +7,7 @@ import (
 )
 
 //go:generate mockery --name=LoanManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
-type LoanManager interface {
+type LoanManagerInterface interface {
 	GetAll() ([]models.Loan, *db_error.DBError)
 	Get(uuid uuid.UUID) (models.Loan, *db_error.DBError)
 	Create(models.Loan) (models.Loan, *db_error.DBError)
