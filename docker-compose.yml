@@ -11,10 +11,12 @@ services:
       - migrations
     environment:
       - POSTGRES_HOST=db
+    env_file:
+      - .env
     ports:
       - "8080:8080"
   db:
-    image: postgres:17
+    image: postgres:${POSTGRES_VERSION}
     restart: always
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -h db -p ${POSTGRES_PORT} -U ${POSTGRES_USER}" ]
