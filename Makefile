@@ -1,6 +1,6 @@
 BINARY_FILE_PATH=bin/main
 BIN_DIR_PATH=bin
-MAIN_FILE_PATH=todo-app/main/main.go
+MAIN_FILE_PATH=library-app/main/main.go
 
 default: build
 

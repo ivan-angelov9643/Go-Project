@@ -1,8 +1,50 @@
+#networks:
+#  library-app-network:
+
 services:
-  todo-app:
+  library-app:
     build:
       context: .
       dockerfile: Dockerfile
       target: release
+    depends_on:
+      - migrations
+    environment:
+      - POSTGRES_HOST=db
+    env_file:
+      - .env
     ports:
       - "8080:8080"
+  db:
+    image: postgres:${POSTGRES_VERSION}
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -h db -p ${POSTGRES_PORT} -U ${POSTGRES_USER}" ]
+      interval: 3s
+      timeout: 1s
+      retries: 10
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile-migrations
+      target: release
+    restart: on-failure
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_SSL=${POSTGRES_SSL}
+    volumes:
+      - ./db:/db
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${POSTGRES_SSL}", "-path", "/db/migrations", "up"]

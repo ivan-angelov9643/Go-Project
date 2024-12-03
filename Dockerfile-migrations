@@ -1,0 +1,6 @@
+FROM migrate/migrate:v4.18.1 as release
+COPY ./db/migrations /db/migrations
+
+# docker build -t my-migrations-image .
+# docker run --rm my-migrations-image -path=/db/migrations -database /
+# "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST_COMPOSE}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${POSTGRES_SSL}" up
