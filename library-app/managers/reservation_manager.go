@@ -19,7 +19,7 @@ func NewReservationManager(db *gorm.DB) *ReservationManager {
 	return &ReservationManager{db}
 }
 
-func (m *ReservationManager) GetAll() ([]models.Reservation, *db_error.DBError) {
+func (m *ReservationManager) GetAll() ([]models.Reservation, error) {
 	log.Info("[ReservationManager.GetAll] Fetching all reservations")
 
 	var allReservations []models.Reservation
@@ -33,7 +33,7 @@ func (m *ReservationManager) GetAll() ([]models.Reservation, *db_error.DBError) 
 	return allReservations, nil
 }
 
-func (m *ReservationManager) Get(idToGet uuid.UUID) (models.Reservation, *db_error.DBError) {
+func (m *ReservationManager) Get(idToGet uuid.UUID) (models.Reservation, error) {
 	log.Infof("[ReservationManager.Get] Fetching reservation with ID: %s", idToGet)
 
 	var reservation models.Reservation
@@ -47,7 +47,7 @@ func (m *ReservationManager) Get(idToGet uuid.UUID) (models.Reservation, *db_err
 	return reservation, nil
 }
 
-func (m *ReservationManager) Create(newReservation models.Reservation) (models.Reservation, *db_error.DBError) {
+func (m *ReservationManager) Create(newReservation models.Reservation) (models.Reservation, error) {
 	log.Infof("[ReservationManager.Create] Creating new reservation")
 
 	err := newReservation.Validate()
@@ -67,7 +67,7 @@ func (m *ReservationManager) Create(newReservation models.Reservation) (models.R
 	return newReservation, nil
 }
 
-func (m *ReservationManager) Update(updatedReservation models.Reservation) (models.Reservation, *db_error.DBError) {
+func (m *ReservationManager) Update(updatedReservation models.Reservation) (models.Reservation, error) {
 	log.Infof("[ReservationManager.Update] Updating reservation with ID: %s", updatedReservation.ID)
 
 	err := updatedReservation.Validate()
@@ -96,7 +96,7 @@ func (m *ReservationManager) Update(updatedReservation models.Reservation) (mode
 	return updatedReservation, nil
 }
 
-func (m *ReservationManager) Delete(idToDelete uuid.UUID) (models.Reservation, *db_error.DBError) {
+func (m *ReservationManager) Delete(idToDelete uuid.UUID) (models.Reservation, error) {
 	log.Infof("[ReservationManager.Delete] Deleting reservation with ID: %s", idToDelete)
 
 	var reservation models.Reservation

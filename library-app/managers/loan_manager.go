@@ -19,7 +19,7 @@ func NewLoanManager(db *gorm.DB) *LoanManager {
 	return &LoanManager{db}
 }
 
-func (m *LoanManager) GetAll() ([]models.Loan, *db_error.DBError) {
+func (m *LoanManager) GetAll() ([]models.Loan, error) {
 	log.Info("[LoanManager.GetAll] Fetching all loans")
 
 	var allLoans []models.Loan
@@ -33,7 +33,7 @@ func (m *LoanManager) GetAll() ([]models.Loan, *db_error.DBError) {
 	return allLoans, nil
 }
 
-func (m *LoanManager) Get(idToGet uuid.UUID) (models.Loan, *db_error.DBError) {
+func (m *LoanManager) Get(idToGet uuid.UUID) (models.Loan, error) {
 	log.Infof("[LoanManager.Get] Fetching loan with ID: %s", idToGet)
 
 	var loan models.Loan
@@ -47,7 +47,7 @@ func (m *LoanManager) Get(idToGet uuid.UUID) (models.Loan, *db_error.DBError) {
 	return loan, nil
 }
 
-func (m *LoanManager) Create(newLoan models.Loan) (models.Loan, *db_error.DBError) {
+func (m *LoanManager) Create(newLoan models.Loan) (models.Loan, error) {
 	log.Infof("[LoanManager.Create] Creating new loan")
 
 	err := newLoan.Validate()
@@ -67,7 +67,7 @@ func (m *LoanManager) Create(newLoan models.Loan) (models.Loan, *db_error.DBErro
 	return newLoan, nil
 }
 
-func (m *LoanManager) Update(updatedLoan models.Loan) (models.Loan, *db_error.DBError) {
+func (m *LoanManager) Update(updatedLoan models.Loan) (models.Loan, error) {
 	log.Infof("[LoanManager.Update] Updating loan with ID: %s", updatedLoan.ID)
 
 	err := updatedLoan.Validate()
@@ -96,7 +96,7 @@ func (m *LoanManager) Update(updatedLoan models.Loan) (models.Loan, *db_error.DB
 	return updatedLoan, nil
 }
 
-func (m *LoanManager) Delete(idToDelete uuid.UUID) (models.Loan, *db_error.DBError) {
+func (m *LoanManager) Delete(idToDelete uuid.UUID) (models.Loan, error) {
 	log.Infof("[LoanManager.Delete] Deleting loan with ID: %s", idToDelete)
 
 	var loan models.Loan

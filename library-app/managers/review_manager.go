@@ -19,7 +19,7 @@ func NewReviewManager(db *gorm.DB) *ReviewManager {
 	return &ReviewManager{db}
 }
 
-func (m *ReviewManager) GetAll() ([]models.Review, *db_error.DBError) {
+func (m *ReviewManager) GetAll() ([]models.Review, error) {
 	log.Info("[ReviewManager.GetAll] Fetching all reviews")
 
 	var allReviews []models.Review
@@ -33,7 +33,7 @@ func (m *ReviewManager) GetAll() ([]models.Review, *db_error.DBError) {
 	return allReviews, nil
 }
 
-func (m *ReviewManager) Get(idToGet uuid.UUID) (models.Review, *db_error.DBError) {
+func (m *ReviewManager) Get(idToGet uuid.UUID) (models.Review, error) {
 	log.Infof("[ReviewManager.Get] Fetching review with ID: %s", idToGet)
 
 	var review models.Review
@@ -47,7 +47,7 @@ func (m *ReviewManager) Get(idToGet uuid.UUID) (models.Review, *db_error.DBError
 	return review, nil
 }
 
-func (m *ReviewManager) Create(newReview models.Review) (models.Review, *db_error.DBError) {
+func (m *ReviewManager) Create(newReview models.Review) (models.Review, error) {
 	log.Infof("[ReviewManager.Create] Creating new review")
 
 	err := newReview.Validate()
@@ -67,7 +67,7 @@ func (m *ReviewManager) Create(newReview models.Review) (models.Review, *db_erro
 	return newReview, nil
 }
 
-func (m *ReviewManager) Update(updatedReview models.Review) (models.Review, *db_error.DBError) {
+func (m *ReviewManager) Update(updatedReview models.Review) (models.Review, error) {
 	log.Infof("[ReviewManager.Update] Updating review with ID: %s", updatedReview.ID)
 
 	err := updatedReview.Validate()
@@ -96,7 +96,7 @@ func (m *ReviewManager) Update(updatedReview models.Review) (models.Review, *db_
 	return updatedReview, nil
 }
 
-func (m *ReviewManager) Delete(idToDelete uuid.UUID) (models.Review, *db_error.DBError) {
+func (m *ReviewManager) Delete(idToDelete uuid.UUID) (models.Review, error) {
 	log.Infof("[ReviewManager.Delete] Deleting review with ID: %s", idToDelete)
 
 	var review models.Review

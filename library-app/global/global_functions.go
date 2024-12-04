@@ -4,6 +4,7 @@ import (
 	"awesomeProject/library-app/global/db_error"
 	"bytes"
 	"encoding/json"
+	"errors"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -30,17 +31,22 @@ func HttpError(w http.ResponseWriter, logMessage string, httpMessage string, cod
 	}
 }
 
-func HttpDBError(w http.ResponseWriter, err *db_error.DBError) {
+func HttpDBError(w http.ResponseWriter, err error) {
 	var (
 		code        int
 		httpMessage string
 		logMessage  string
 	)
 
-	switch err.Type {
+	var dbError *db_error.DBError
+	if !errors.As(err, &dbError) {
+		dbError = db_error.NewDBError(db_error.InternalError, "Error is not db error")
+	}
+
+	switch dbError.Type {
 	case db_error.ValidationError:
 		code = http.StatusBadRequest
-		httpMessage = err.Error()
+		httpMessage = dbError.Error()
 		logMessage = "Validation Error"
 	case db_error.NotFoundError:
 		code = http.StatusNotFound
@@ -56,7 +62,7 @@ func HttpDBError(w http.ResponseWriter, err *db_error.DBError) {
 		logMessage = "Unknown Error"
 	}
 
-	log.Errorf("%s: %v", logMessage, err.Error())
+	log.Errorf("%s: %v", logMessage, dbError.Error())
 
 	errorResponse := ErrorResponse{
 		Error:  httpMessage,

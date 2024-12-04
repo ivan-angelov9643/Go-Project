@@ -35,6 +35,6 @@ func NewDBError(Type ErrorType, format string, args ...interface{}) *DBError {
 	}
 }
 
-func (e *DBError) Error() string {
+func (e DBError) Error() string {
 	return e.Err
 }

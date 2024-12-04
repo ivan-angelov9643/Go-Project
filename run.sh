@@ -42,6 +42,9 @@ function cleanup() {
        rm  ${ROOT_PATH}/${BINARY_FILE_PATH}
     fi
 
+    echo "Remove Keycloak container"
+    docker rm --force ${KEYCLOAK_CONTAINER}
+
     if [[ ${PRESERVE_DB} = false ]]; then
         echo "Remove DB container"
         docker rm --force ${POSTGRES_CONTAINER}
@@ -92,12 +95,22 @@ else
     echo "Execute DB Migrations ..."
     migrate -path ${ROOT_PATH}/db/migrations -database "${CONNECTION_STRING}" up
 
+
 #    echo "Load initial content ..."
 #    ls -d ${ROOT_PATH}/db/init/* | sort | xargs -I {} cat {} |\
 #        docker exec -i ${POSTGRES_CONTAINER} psql -U "${POSTGRES_USER}" -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -d "${POSTGRES_DB}"
 fi
 
 echo "Migration version: $(migrate -path ${ROOT_PATH}/db/migrations -database "${CONNECTION_STRING}" version 2>&1)"
+
+echo "Create Keycloak container ${KEYCLOAK_CONTAINER} on ${KEYCLOAK_PORT} ..."
+docker run -d --name ${KEYCLOAK_CONTAINER} \
+                -e KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN} \
+                -e KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD} \
+                -p ${KEYCLOAK_PORT}:${KEYCLOAK_PORT} \
+                -v ./keycloak:/opt/keycloak/data/import \
+                keycloak/keycloak:${KEYCLOAK_VERSION} \
+                start-dev --http-port ${KEYCLOAK_PORT} --import-realm
 
 if [[ -z ${DEBUG_PORT} ]]; then
     DEBUG_PORT=40000

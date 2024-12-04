@@ -19,7 +19,7 @@ func NewBookManager(db *gorm.DB) *BookManager {
 	return &BookManager{db}
 }
 
-func (m *BookManager) GetAll() ([]models.Book, *db_error.DBError) {
+func (m *BookManager) GetAll() ([]models.Book, error) {
 	log.Info("[BookManager.GetAll] Fetching all books")
 
 	var allBooks []models.Book
@@ -33,7 +33,7 @@ func (m *BookManager) GetAll() ([]models.Book, *db_error.DBError) {
 	return allBooks, nil
 }
 
-func (m *BookManager) Get(idToGet uuid.UUID) (models.Book, *db_error.DBError) {
+func (m *BookManager) Get(idToGet uuid.UUID) (models.Book, error) {
 	log.Infof("[BookManager.Get] Fetching book with ID: %s", idToGet)
 
 	var book models.Book
@@ -47,7 +47,7 @@ func (m *BookManager) Get(idToGet uuid.UUID) (models.Book, *db_error.DBError) {
 	return book, nil
 }
 
-func (m *BookManager) Create(newBook models.Book) (models.Book, *db_error.DBError) {
+func (m *BookManager) Create(newBook models.Book) (models.Book, error) {
 	log.Infof("[BookManager.Create] Creating new book")
 
 	err := newBook.Validate()
@@ -67,7 +67,7 @@ func (m *BookManager) Create(newBook models.Book) (models.Book, *db_error.DBErro
 	return newBook, nil
 }
 
-func (m *BookManager) Update(updatedBook models.Book) (models.Book, *db_error.DBError) {
+func (m *BookManager) Update(updatedBook models.Book) (models.Book, error) {
 	log.Infof("[BookManager.Update] Updating book with ID: %s", updatedBook.ID)
 
 	err := updatedBook.Validate()
@@ -96,7 +96,7 @@ func (m *BookManager) Update(updatedBook models.Book) (models.Book, *db_error.DB
 	return updatedBook, nil
 }
 
-func (m *BookManager) Delete(idToDelete uuid.UUID) (models.Book, *db_error.DBError) {
+func (m *BookManager) Delete(idToDelete uuid.UUID) (models.Book, error) {
 	log.Infof("[BookManager.Delete] Deleting book with ID: %s", idToDelete)
 
 	var book models.Book
