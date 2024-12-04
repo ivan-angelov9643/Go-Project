@@ -19,7 +19,7 @@ func NewAuthorManager(db *gorm.DB) *AuthorManager {
 	return &AuthorManager{db}
 }
 
-func (m *AuthorManager) GetAll() ([]models.Author, *db_error.DBError) {
+func (m *AuthorManager) GetAll() ([]models.Author, error) {
 	log.Info("[AuthorManager.GetAll] Fetching all authors")
 
 	var allAuthors []models.Author
@@ -33,7 +33,7 @@ func (m *AuthorManager) GetAll() ([]models.Author, *db_error.DBError) {
 	return allAuthors, nil
 }
 
-func (m *AuthorManager) Get(idToGet uuid.UUID) (models.Author, *db_error.DBError) {
+func (m *AuthorManager) Get(idToGet uuid.UUID) (models.Author, error) {
 	log.Infof("[AuthorManager.Get] Fetching author with ID: %s", idToGet)
 
 	var author models.Author
@@ -47,7 +47,7 @@ func (m *AuthorManager) Get(idToGet uuid.UUID) (models.Author, *db_error.DBError
 	return author, nil
 }
 
-func (m *AuthorManager) Create(newAuthor models.Author) (models.Author, *db_error.DBError) {
+func (m *AuthorManager) Create(newAuthor models.Author) (models.Author, error) {
 	log.Infof("[AuthorManager.Create] Creating new author")
 
 	err := newAuthor.Validate()
@@ -67,7 +67,7 @@ func (m *AuthorManager) Create(newAuthor models.Author) (models.Author, *db_erro
 	return newAuthor, nil
 }
 
-func (m *AuthorManager) Update(updatedAuthor models.Author) (models.Author, *db_error.DBError) {
+func (m *AuthorManager) Update(updatedAuthor models.Author) (models.Author, error) {
 	log.Infof("[AuthorManager.Update] Updating author with ID: %s", updatedAuthor.ID)
 
 	err := updatedAuthor.Validate()
@@ -96,7 +96,7 @@ func (m *AuthorManager) Update(updatedAuthor models.Author) (models.Author, *db_
 	return updatedAuthor, nil
 }
 
-func (m *AuthorManager) Delete(idToDelete uuid.UUID) (models.Author, *db_error.DBError) {
+func (m *AuthorManager) Delete(idToDelete uuid.UUID) (models.Author, error) {
 	log.Infof("[AuthorManager.Delete] Deleting author with ID: %s", idToDelete)
 
 	var author models.Author

@@ -9,6 +9,40 @@ import (
 var (
 	NameRegex        = "^[A-Z]{1}[a-z]+$"
 	NameRegexMessage = "%s must start with uppercase letter followed by lowercase English letters only."
+	UserValidation   = []FieldValidationData{
+		&StringFieldValidationData{
+			FieldName:               "Preferred UserName",
+			MinLength:               global.IntPtr(1),
+			MaxLength:               global.IntPtr(100),
+			CanBeEmpty:              false,
+			Regex:                   regexp.MustCompile("^[A-Za-z0-9_]+$"),
+			RegexFormatErrorMessage: global.StrPtr("Preferred user name must be alphanumeric and can include underscores."),
+		},
+		&StringFieldValidationData{
+			FieldName:               "Given Name",
+			MinLength:               global.IntPtr(1),
+			MaxLength:               global.IntPtr(100),
+			CanBeEmpty:              false,
+			Regex:                   regexp.MustCompile(NameRegex),
+			RegexFormatErrorMessage: &NameRegexMessage,
+		},
+		&StringFieldValidationData{
+			FieldName:               "Family Name",
+			MinLength:               global.IntPtr(1),
+			MaxLength:               global.IntPtr(100),
+			CanBeEmpty:              false,
+			Regex:                   regexp.MustCompile(NameRegex),
+			RegexFormatErrorMessage: &NameRegexMessage,
+		},
+		&StringFieldValidationData{
+			FieldName:               "Email",
+			MinLength:               global.IntPtr(5),
+			MaxLength:               global.IntPtr(100),
+			CanBeEmpty:              false,
+			Regex:                   regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`),
+			RegexFormatErrorMessage: global.StrPtr("Email must be a valid email address."),
+		},
+	}
 	AuthorValidation = []FieldValidationData{
 		&StringFieldValidationData{
 			FieldName:               "First Name",

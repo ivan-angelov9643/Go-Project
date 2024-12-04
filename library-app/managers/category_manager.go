@@ -19,7 +19,7 @@ func NewCategoryManager(db *gorm.DB) *CategoryManager {
 	return &CategoryManager{db}
 }
 
-func (m *CategoryManager) GetAll() ([]models.Category, *db_error.DBError) {
+func (m *CategoryManager) GetAll() ([]models.Category, error) {
 	log.Info("[CategoryManager.GetAll] Fetching all categories")
 
 	var allCategories []models.Category
@@ -33,7 +33,7 @@ func (m *CategoryManager) GetAll() ([]models.Category, *db_error.DBError) {
 	return allCategories, nil
 }
 
-func (m *CategoryManager) Get(idToGet uuid.UUID) (models.Category, *db_error.DBError) {
+func (m *CategoryManager) Get(idToGet uuid.UUID) (models.Category, error) {
 	log.Infof("[CategoryManager.Get] Fetching category with ID: %s", idToGet)
 
 	var category models.Category
@@ -47,7 +47,7 @@ func (m *CategoryManager) Get(idToGet uuid.UUID) (models.Category, *db_error.DBE
 	return category, nil
 }
 
-func (m *CategoryManager) Create(newCategory models.Category) (models.Category, *db_error.DBError) {
+func (m *CategoryManager) Create(newCategory models.Category) (models.Category, error) {
 	log.Infof("[CategoryManager.Create] Creating new category")
 
 	err := newCategory.Validate()
@@ -67,7 +67,7 @@ func (m *CategoryManager) Create(newCategory models.Category) (models.Category, 
 	return newCategory, nil
 }
 
-func (m *CategoryManager) Update(updatedCategory models.Category) (models.Category, *db_error.DBError) {
+func (m *CategoryManager) Update(updatedCategory models.Category) (models.Category, error) {
 	log.Infof("[CategoryManager.Update] Updating category with ID: %s", updatedCategory.ID)
 
 	err := updatedCategory.Validate()
@@ -96,7 +96,7 @@ func (m *CategoryManager) Update(updatedCategory models.Category) (models.Catego
 	return updatedCategory, nil
 }
 
-func (m *CategoryManager) Delete(idToDelete uuid.UUID) (models.Category, *db_error.DBError) {
+func (m *CategoryManager) Delete(idToDelete uuid.UUID) (models.Category, error) {
 	log.Infof("[CategoryManager.Delete] Deleting category with ID: %s", idToDelete)
 
 	var category models.Category

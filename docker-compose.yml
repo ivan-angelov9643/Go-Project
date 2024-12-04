@@ -2,6 +2,19 @@
 #  library-app-network:
 
 services:
+  keycloak:
+    image: keycloak/keycloak:25.0.6
+    restart: always
+    hostname: keycloak
+    ports:
+      - "8086:8086"
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_HOSTNAME=keycloak
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import
+    command: [ "start-dev", "--import-realm", "--http-port", "8086" ]
   library-app:
     build:
       context: .
@@ -9,6 +22,7 @@ services:
       target: release
     depends_on:
       - migrations
+      - keycloak
     environment:
       - POSTGRES_HOST=db
     env_file:
