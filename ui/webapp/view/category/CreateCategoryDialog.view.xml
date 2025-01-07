@@ -1,0 +1,49 @@
+<mvc:View
+        controllerName="library-app.controller.category.CreateCategoryDialog"
+        xmlns="sap.m"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="createCategoryDialog"
+            title="Create Category"
+            initialFocus="categoryNameInput"
+            afterClose=".onDialogClose">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ColumnLayout"
+                    columnsM="1"
+                    columnsL="1"
+                    columnsXL="1">
+                <f:content>
+                    <Label text="Category Name" />
+                    <Input
+                            id="categoryNameInput"
+                            value="{dialogCategory>/name}" />
+                    <Label text="Description" />
+                    <TextArea
+                            id="categoryDescriptionInput"
+                            value="{dialogCategory>/description}"
+                            rows="3"
+                            placeholder="Optional" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Create"
+                            press=".onCreateCategory" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelCreate" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

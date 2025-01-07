@@ -1,0 +1,72 @@
+<mvc:View
+		controllerName="library-app.controller.user.Users"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page>
+		<l:BlockLayout
+				id="BlockLayoutUsers"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							items="{path:'user>/users', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Users"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="Preferred Username"/>
+							</Column>
+							<Column>
+								<Text text="Given Name"/>
+							</Column>
+							<Column>
+								<Text text="Family Name"/>
+							</Column>
+							<Column>
+								<Text text="Email"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{user>preferred_username}"/>
+									<Text text="{user>given_name}"/>
+									<Text text="{user>family_name}"/>
+									<Text text="{user>email}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Edit"
+												icon="sap-icon://edit"
+												press="onEditUser"
+												class="sapUiTinyMarginEnd"/>
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteUser"/>
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

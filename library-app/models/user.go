@@ -7,7 +7,7 @@ import (
 
 type User struct {
 	BaseModel
-	PreferredUserName string `json:"preferred_user_name"`
+	PreferredUsername string `json:"preferred_username"`
 	GivenName         string `json:"given_name"`
 	FamilyName        string `json:"family_name"`
 	Email             string `json:"email"`
@@ -21,7 +21,7 @@ func (user *User) Validate() error {
 
 		switch validationData.GetFieldName() {
 		case "Preferred UserName":
-			fieldValue = user.PreferredUserName
+			fieldValue = user.PreferredUsername
 		case "Given Name":
 			fieldValue = user.GivenName
 		case "Family Name":

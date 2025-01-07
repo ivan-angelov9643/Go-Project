@@ -1,0 +1,170 @@
+<mvc:View
+		controllerName="library-app.controller.book.Books"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns:f="sap.f"
+		xmlns:form="sap.ui.layout.form">
+	<f:FlexibleColumnLayout id="flexibleColumnLayout">
+		<f:beginColumnPages>
+			<Page>
+				<l:BlockLayout id="BlockLayoutBooks" background="Default">
+					<l:BlockLayoutRow>
+						<l:BlockLayoutCell backgroundColorSet="ColorSet9" backgroundColorShade="ShadeA" width="3">
+							<Table
+									id="booksTable"
+									items="{path: 'book>/books', templateShareable: false}"
+									fixedLayout="false"
+									mode="SingleSelectMaster"
+									selectionChange="onSelectBook">
+								<headerToolbar>
+									<Toolbar design="Transparent">
+										<Title text="Books" level="H3"/>
+										<Button tooltip="Refresh" icon="sap-icon://refresh" press="loadData"/>
+										<Button text="Create" icon="sap-icon://add" press="onCreateBook" type="Ghost" class="sapUiTinyMarginBegin"/>
+									</Toolbar>
+								</headerToolbar>
+								<columns>
+									<Column><Text text="Title"/></Column>
+									<Column><Text text="Author"/></Column>
+									<Column><Text text="Category"/></Column>
+									<Column><Text text="Language"/></Column>
+								</columns>
+								<items>
+									<ColumnListItem type="Navigation">
+										<cells>
+											<Text text="{book>title}"/>
+											<Text text="{book>author_name}"/>
+											<Text text="{book>category_name}"/>
+											<Text text="{book>language}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+						</l:BlockLayoutCell>
+					</l:BlockLayoutRow>
+				</l:BlockLayout>
+			</Page>
+		</f:beginColumnPages>
+
+		<f:midColumnPages>
+			<Page showHeader="false">
+				<VBox class="sapUiSmallMargin">
+					<HBox alignItems="Center" justifyContent="Start" class="sapUiSmallMarginBottom">
+						<Button
+								icon="sap-icon://navigation-left-arrow"
+								tooltip="Back"
+								press="onNavBack"
+								type="Transparent" />
+						<Title text="Book Details" level="H2" class="sapUiTinyMarginBegin" />
+					</HBox>
+					<form:Form>
+						<form:layout>
+							<form:ResponsiveGridLayout
+								labelSpanXL="9"
+								labelSpanL="8"
+								labelSpanM="7"
+								labelSpanS="6"
+								adjustLabelSpan="false"
+								singleContainerFullSize="true"
+								/>
+						</form:layout>
+						<form:formContainers>
+							<form:FormContainer>
+								<form:formElements>
+									<form:FormElement label="Title">
+										<form:fields><Text text="{selectedBook>/title}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Author">
+										<form:fields><Text text="{selectedBook>/author_name}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Category">
+										<form:fields><Text text="{selectedBook>/category_name}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Language">
+										<form:fields><Text text="{selectedBook>/language}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Year">
+										<form:fields><Text text="{selectedBook>/year}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Total Copies">
+										<form:fields><Text text="{selectedBook>/total_copies}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Available Copies">
+										<form:fields><Text text="{selectedBook>/available_copies}" /></form:fields>
+									</form:FormElement>
+								</form:formElements>
+							</form:FormContainer>
+						</form:formContainers>
+					</form:Form>
+				</VBox>
+				<HBox justifyContent="Center">
+					<Button text="Edit" icon="sap-icon://edit" press="onEditBook" class="sapUiTinyMarginEnd"/>
+					<Button text="Delete" icon="sap-icon://delete" press="onDeleteBook" class="sapUiTinyMarginEnd"/>
+					<Button text="Reserve" icon="sap-icon://appointment" press="onReserveBook" type="Accept" class="sapUiTinyMarginEnd"/>
+					<Button text="Rate" icon="sap-icon://favorite" press="onRateBook" type="Emphasized"/>
+				</HBox>
+<!--				<VBox class="sapUiSmallMargin">-->
+<!--					<form:Form>-->
+<!--						<form:layout>-->
+<!--							<form:ResponsiveGridLayout-->
+<!--									labelSpanXL="9"-->
+<!--									labelSpanL="8"-->
+<!--									labelSpanM="7"-->
+<!--									labelSpanS="6"-->
+<!--									adjustLabelSpan="false"-->
+<!--									singleContainerFullSize="true"-->
+<!--							/>-->
+<!--						</form:layout>-->
+<!--						<form:title>-->
+<!--							<core:Title text="Title" />-->
+<!--						</form:title>-->
+<!--						<form:formContainers>-->
+<!--							<form:FormContainer-->
+<!--									binding="{review>/reviews}"-->
+<!--									title="{review>user_name}">-->
+<!--								<form:formElements>-->
+<!--									<form:FormElement label="Rating">-->
+<!--										<form:fields>-->
+<!--											<RatingIndicator-->
+<!--													maxValue="5"-->
+<!--													value="{review>rating}"-->
+<!--													enabled="false" />-->
+<!--										</form:fields>-->
+<!--									</form:FormElement>-->
+<!--									<form:FormElement label="Content">-->
+<!--										<form:fields>-->
+<!--											<Text text="{review>content}" />-->
+<!--										</form:fields>-->
+<!--									</form:FormElement>-->
+<!--									<form:FormElement label="Date">-->
+<!--										<form:fields>-->
+<!--											<Text-->
+<!--													text="{path: 'review>created_at', type: 'sap.ui.model.type.DateTime', formatOptions: {style: 'medium'}}" />-->
+<!--										</form:fields>-->
+<!--									</form:FormElement>-->
+<!--								</form:formElements>-->
+<!--							</form:FormContainer>-->
+<!--						</form:formContainers>-->
+<!--					</form:Form>-->
+<!--				</VBox>-->
+
+				<Title text="Reviews" level="H2" class="sapUiSmallMargin" />
+				<List
+						id="reviewsList"
+						items="{review>/reviews}"
+						class="sapUiSmallMargin">
+					<items>
+						<StandardListItem
+								title="{review>user_name} rated {review>rating}/5"
+								description="{review>content}"
+								icon="sap-icon://comment">
+						</StandardListItem>
+					</items>
+				</List>
+
+			</Page>
+		</f:midColumnPages>
+	</f:FlexibleColumnLayout>
+</mvc:View>

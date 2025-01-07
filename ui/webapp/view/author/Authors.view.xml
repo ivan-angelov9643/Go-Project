@@ -1,0 +1,90 @@
+<mvc:View
+		controllerName="library-app.controller.author.Authors"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page>
+		<l:BlockLayout
+				id="BlockLayoutAuthors"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							items="{path:'author>/authors', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Authors"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+								<Button
+										text="Create"
+										icon="sap-icon://add"
+										press="onCreateAuthor"
+										type="Ghost"
+										class="sapUiTinyMarginBegin"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="First Name"/>
+							</Column>
+							<Column>
+								<Text text="Last Name"/>
+							</Column>
+							<Column>
+								<Text text="Nationality"/>
+							</Column>
+							<Column>
+								<Text text="Birth Date"/>
+							</Column>
+							<Column>
+								<Text text="Death Date"/>
+							</Column>
+							<Column>
+								<Text text="Bio"/>
+							</Column>
+							<Column>
+								<Text text="Website"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{author>first_name}"/>
+									<Text text="{author>last_name}"/>
+									<Text text="{author>nationality}"/>
+									<Text text="{path: 'author>birth_date', formatter:'.formatter.formatDate'}"/>
+									<Text text="{path: 'author>death_date', formatter:'.formatter.formatOptionalDate'}"/>
+									<Text text="{path: 'author>bio', formatter: '.formatter.formatOptionalField'}" />
+									<Text text="{path: 'author>website', formatter: '.formatter.formatOptionalField'}" />
+									<HBox justifyContent="Center">
+										<Button
+												text="Edit"
+												icon="sap-icon://edit"
+												press="onEditAuthor"
+												class="sapUiTinyMarginEnd"/>
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteAuthor"/>
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

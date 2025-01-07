@@ -1,0 +1,8 @@
+{
+  "realm": "library-app",
+  "auth-server-url": "http://keycloak:8086/",
+  "ssl-required": "external",
+  "resource": "library-app-frontend-client",
+  "public-client": true,
+  "confidential-port": 0
+}

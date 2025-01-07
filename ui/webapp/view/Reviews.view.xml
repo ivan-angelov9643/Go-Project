@@ -1,0 +1,58 @@
+<mvc:View
+		controllerName="library-app.controller.Reviews"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page>
+		<l:BlockLayout
+				id="BlockLayoutReviews"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							items="{path:'review>/reviews', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Reviews"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="User"/>
+							</Column>
+							<Column>
+								<Text text="Book"/>
+							</Column>
+							<Column>
+								<Text text="Content"/>
+							</Column>
+							<Column>
+								<Text text="Rating"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{review>user_name}"/>
+									<Text text="{review>book_title}"/>
+									<Text text="{review>content}"/>
+									<Text text="{review>rating}"/>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

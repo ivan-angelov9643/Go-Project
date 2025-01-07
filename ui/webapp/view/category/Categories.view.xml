@@ -1,0 +1,70 @@
+<mvc:View
+		controllerName="library-app.controller.category.Categories"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page>
+		<l:BlockLayout
+				id="BlockLayoutCategories"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							items="{path:'category>/categories', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Categories"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+								<Button
+										text="Create"
+										icon="sap-icon://add"
+										press="onCreateCategory"
+										type="Ghost"
+										class="sapUiTinyMarginBegin"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="Name"/>
+							</Column>
+							<Column>
+								<Text text="Description"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{category>name}"/>
+									<Text text="{category>description}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Edit"
+												icon="sap-icon://edit"
+												press="onEditCategory"
+												class="sapUiTinyMarginEnd"/>
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteCategory"/>
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

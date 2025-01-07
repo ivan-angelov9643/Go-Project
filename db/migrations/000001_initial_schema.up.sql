@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE users (
     id UUID PRIMARY KEY,
-    preferred_user_name VARCHAR(100) NOT NULL,
+    preferred_username VARCHAR(100) NOT NULL UNIQUE,
     given_name VARCHAR(100) NOT NULL,
     family_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
@@ -36,7 +36,7 @@ CREATE TABLE books (
     title VARCHAR(100) NOT NULL,
     year INT NOT NULL,
     author_id UUID REFERENCES authors(id) ON DELETE CASCADE,
-    category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+    category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
     total_copies INT DEFAULT 1,
     language VARCHAR(100) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),

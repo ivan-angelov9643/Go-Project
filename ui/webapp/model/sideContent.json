@@ -1,0 +1,24 @@
+{
+	"selectedKey": "home",
+
+	"navigation": [
+		{
+			"titleI18nKey": "sideContentHome",
+			"icon": "sap-icon://home",
+			"expanded": true,
+			"key": "home"
+		}
+	],
+	"fixedNavigation": [
+		{
+			"titleI18nKey": "sideContentImportantLinks",
+			"icon": "sap-icon://chain-link",
+			"key": "importantLinks"
+		},
+		{
+			"titleI18nKey": "sideContentLegal",
+			"icon": "sap-icon://compare",
+			"key": "legal"
+		}
+	]
+}

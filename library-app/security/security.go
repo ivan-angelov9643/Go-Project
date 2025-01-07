@@ -64,7 +64,7 @@ func (authClient *AuthClient) GetUserFromToken(ctx context.Context, accessToken 
 		BaseModel: models.BaseModel{
 			ID: uid,
 		},
-		PreferredUserName: jwxClaims.PreferredUsername,
+		PreferredUsername: jwxClaims.PreferredUsername,
 		GivenName:         jwxClaims.GivenName,
 		FamilyName:        jwxClaims.FamilyName,
 		Email:             jwxClaims.Email,

@@ -1,0 +1,213 @@
+{
+  "_version": "1.21.0",
+  "sap.app": {
+    "id": "library-app",
+    "type": "application",
+    "i18n": {
+      "bundleUrl": "i18n/i18n.properties",
+      "fallbackLocale": "en",
+      "supportedLocales": ["en"]
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "supportedThemes": [
+      "sap_hcb",
+      "sap_bluecrystal",
+      "sap_fiori_3",
+      "sap_horizon"
+    ]
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "library-app.view.App",
+      "type": "XML",
+      "id": "app"
+    },
+    "dependencies": {
+      "minUI5Version": "1.120.1",
+      "libs": {
+        "sap.m": {},
+        "sap.suite.ui.microchart": {
+          "lazy": true
+        },
+        "sap.tnt": {},
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.uxap": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "library-app.i18n.i18n",
+          "async": true,
+          "fallbackLocale": "en",
+          "supportedLocales": ["en"]
+        }
+      },
+      "side": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/sideContent.json"
+      },
+      "sideAdministrator": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/sideContentAdministrator.json"
+      },
+      "sideLibrarian": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/sideContentLibrarian.json"
+      },
+      "sideUser": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/sideContentUser.json"
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "homeRoute": "home",
+        "controlId": "mainContents",
+        "viewType": "XML",
+        "controlAggregation": "pages",
+        "viewPath": "library-app.view"
+      },
+      "routes": [
+        {
+          "pattern": "home",
+          "name": "home",
+          "target": "home"
+        },
+        {
+          "pattern": "librarianDashboard",
+          "name": "librarianDashboard",
+          "target": "librarianDashboard"
+        },
+        {
+          "pattern": "userDashboard",
+          "name": "userDashboard",
+          "target": "userDashboard"
+        },
+        {
+          "pattern": "authors",
+          "name": "authors",
+          "target": "authors"
+        },
+        {
+          "pattern": "books",
+          "name": "books",
+          "target": "books"
+        },
+        {
+          "pattern": "categories",
+          "name": "categories",
+          "target": "categories"
+        },
+        {
+          "pattern": "users",
+          "name": "users",
+          "target": "users"
+        },
+        {
+          "pattern": "profile",
+          "name": "profile",
+          "target": "profile"
+        },
+        {
+          "pattern": "loans",
+          "name": "loans",
+          "target": "loans"
+        },
+        {
+          "pattern": "reviews",
+          "name": "reviews",
+          "target": "reviews"
+        },
+        {
+          "pattern": "reservations",
+          "name": "reservations",
+          "target": "reservations"
+        },
+        {
+          "pattern": "importantLinks",
+          "name": "importantLinks",
+          "target": "importantLinks"
+        },
+        {
+          "pattern": "legal",
+          "name": "legal",
+          "target": "legal"
+        }
+      ],
+      "targets": {
+        "home": {
+          "viewId": "home",
+          "viewName": "Home"
+        },
+        "librarianDashboard": {
+          "viewId": "librarianDashboard",
+          "viewName": "LibrarianDashboard"
+        },
+        "userDashboard": {
+          "viewId": "userDashboard",
+          "viewName": "UserDashboard"
+        },
+        "authors": {
+          "viewId": "authors",
+          "viewName": "author.Authors"
+        },
+        "books": {
+          "viewId": "books",
+          "viewName": "book.Books"
+        },
+        "categories": {
+          "viewId": "categories",
+          "viewName": "category.Categories"
+        },
+        "users": {
+          "viewId": "users",
+          "viewName": "user.Users"
+        },
+        "profile": {
+          "viewId": "profile",
+          "viewName": "Profile"
+        },
+        "loans": {
+          "viewId": "loans",
+          "viewName": "loan.Loans"
+        },
+        "reviews": {
+          "viewId": "reviews",
+          "viewName": "Reviews"
+        },
+        "reservations": {
+          "viewId": "reservations",
+          "viewName": "Reservations"
+        },
+        "importantLinks": {
+          "viewId": "importantLinks",
+          "viewName": "ImportantLinks"
+        },
+        "legal": {
+          "viewId": "legal",
+          "viewName": "Legal"
+        }
+      }
+    }
+  }
+}

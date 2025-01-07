@@ -1,0 +1,82 @@
+<mvc:View
+		controllerName="library-app.controller.loan.Loans"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page>
+		<l:BlockLayout
+				id="BlockLayoutLoans"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							items="{path:'loan>/loans', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Loans"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="User"/>
+							</Column>
+							<Column>
+								<Text text="Book"/>
+							</Column>
+							<Column>
+								<Text text="Start Date"/>
+							</Column>
+							<Column>
+								<Text text="Due Date"/>
+							</Column>
+							<Column>
+								<Text text="Return Date"/>
+							</Column>
+							<Column>
+								<Text text="Status"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{loan>user_name}"/>
+									<Text text="{loan>book_title}"/>
+									<Text text="{path: 'loan>start_date', formatter:'.formatter.formatDate'}"/>
+									<Text text="{path: 'loan>due_date', formatter:'.formatter.formatDate'}"/>
+									<Text text="{path: 'loan>return_date', formatter:'.formatter.formatOptionalDate'}"/>
+									<Text text="{loan>status}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Extend loan"
+												icon="sap-icon://action"
+												press="onExtendLoan"
+												class="sapUiTinyMarginEnd"
+												enabled="{= ${loan>status} === 'active' }" />
+										<Button
+												text="Return book"
+												icon="sap-icon://undo"
+												press="onReturnBook"
+												enabled="{= ${loan>status} === 'active' }" />
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

@@ -1,0 +1,84 @@
+<mvc:View
+        controllerName="library-app.controller.book.EditBookDialog"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="editBookDialog"
+            title="Edit Book"
+            initialFocus="titleInput"
+            afterClose=".onDialogClose">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ColumnLayout"
+                    columnsM="1"
+                    columnsL="1"
+                    columnsXL="1">
+                <f:content>
+                    <Label text="Title" />
+                    <Input
+                            id="titleInput"
+                            value="{dialogBook>/title}" />
+
+                    <Label text="Year" />
+                    <Input
+                            id="yearInput"
+                            value="{dialogBook>/year}"
+                            type="Number" />
+                    <Label text="Author" />
+                    <Select
+                            items="{path: 'author>/authors'}"
+                            id="authorSelect"
+                            selectedKey="{dialogBook>/author_id}">
+                        <items>
+                            <core:Item
+                                    key="{author>id}"
+                                    text="{author>first_name} {author>last_name}" />
+                        </items>
+                    </Select>
+
+                    <Label text="Category" />
+                    <Select
+                            items="{path: 'category>/categories'}"
+                            id="categorySelect"
+                            selectedKey="{dialogBook>/category_id}">
+                        <items>
+                            <core:Item
+                                    key="{category>id}"
+                                    text="{category>name}" />
+                        </items>
+                    </Select>
+
+                    <Label text="Total Copies" />
+                    <Input
+                            id="totalCopiesInput"
+                            value="{dialogBook>/total_copies}"
+                            type="Number" />
+
+                    <Label text="Language" />
+                    <Input
+                            id="languageInput"
+                            value="{dialogBook>/language}" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Save"
+                            press=".onSaveBook" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelEdit" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

@@ -8,6 +8,7 @@ import (
 	"awesomeProject/library-app/security"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -35,6 +36,7 @@ func (server *Server) InitializeAuthClient() {
 
 func (server *Server) InitializeRouter() {
 	server.Router = mux.NewRouter()
+
 	server.DefineRoutes()
 }
 
@@ -65,14 +67,45 @@ func (server *Server) InitializeDatabase() {
 
 func (server *Server) StartWebServer() {
 	log.Info("[Server.StartWebServer] Starting web server...")
-	err := http.ListenAndServe(":"+server.Config.Port, server.Router)
+
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:4000"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(server.Router)
+
+	err := http.ListenAndServe(":"+server.Config.Port, handler)
 	if err != nil {
 		log.Fatal("[Server.StartWebServer] ListenAndServe: ", err)
 	}
 }
 
+func setCORSHeaders(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4000")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+}
+
+func HandlePreflight(nextHandler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		setCORSHeaders(w)
+		log.Debug("setCORSHeaders successfully")
+		if r.Method == http.MethodOptions {
+			log.Debug("Setting CORS Headers")
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		nextHandler.ServeHTTP(w, r)
+	})
+}
+
 func (server *Server) DefineRoutes() {
 	log.Info("[Server.DefineRoutes] Defining routes...")
+	server.Router.Use(HandlePreflight)
 	server.Router.Use(middlewares.SetJSONMiddleware)
 
 	userHandler := handlers.NewUserHandler(managers.NewUserManager(server.DB))

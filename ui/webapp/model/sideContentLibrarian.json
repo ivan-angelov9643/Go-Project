@@ -1,0 +1,72 @@
+{
+	"selectedKey": "home",
+
+	"navigation": [
+		{
+			"titleI18nKey": "sideContentHome",
+			"icon": "sap-icon://home",
+			"expanded": true,
+			"key": "home"
+		},
+		{
+			"titleI18nKey": "sideContentLibrarianDashboard",
+			"icon": "sap-icon://bbyd-dashboard",
+			"expanded": false,
+			"key": "librarianDashboard"
+		},
+		{
+			"titleI18nKey": "sideContentAuthors",
+			"icon": "sap-icon://supplier",
+			"expanded": false,
+			"key": "authors"
+		},
+		{
+			"titleI18nKey": "sideContentBooks",
+			"icon": "sap-icon://education",
+			"expanded": false,
+			"key": "books"
+		},
+		{
+			"titleI18nKey": "sideContentCategories",
+			"icon": "sap-icon://shelf",
+			"expanded": false,
+			"key": "categories"
+		},
+		{
+			"titleI18nKey": "sideContentUsers",
+			"icon": "sap-icon://group",
+			"expanded": false,
+			"key": "users"
+		},
+		{
+			"titleI18nKey": "sideContentProfile",
+			"icon": "sap-icon://customer",
+			"expanded": false,
+			"key": "profile"
+		},
+		{
+			"titleI18nKey": "sideContentLoans",
+			"icon": "sap-icon://action",
+			"expanded": false,
+			"key": "loans"
+		},
+		{
+			"titleI18nKey": "sideContentReservations",
+			"icon": "sap-icon://bookmark-2",
+			"expanded": false,
+			"key": "reservations"
+		}
+	],
+	"fixedNavigation": [
+		{
+			"titleI18nKey": "sideContentImportantLinks",
+			"icon": "sap-icon://chain-link",
+			"key": "importantLinks"
+		},
+		{
+			"titleI18nKey": "sideContentLegal",
+			"icon": "sap-icon://compare",
+			"key": "legal"
+		}
+	]
+}

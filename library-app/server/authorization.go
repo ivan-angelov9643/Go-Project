@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strings"
 )
@@ -76,6 +77,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 
 			loadedUser, _ := server.DBLoadUser(userFromInfo.ID.String()) // Ignore error as user might not exist
 			if loadedUser == nil {
+				log.Info(userFromInfo)
 				err := server.DBSaveUser(*userFromInfo)
 				if err != nil {
 					global.HttpError(

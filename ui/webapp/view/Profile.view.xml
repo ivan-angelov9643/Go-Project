@@ -1,0 +1,49 @@
+<mvc:View
+		controllerName="library-app.controller.Profile"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page showHeader="true" title="{i18n>profileDetailsTitle}">
+		<l:BlockLayout id="BlockLayoutProfile" background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell>
+					<VBox>
+						<HBox justifyContent="SpaceBetween" alignItems="Center">
+							<VBox>
+								<Label text="Preferred Username" design="Bold" />
+								<Text text="{user>/preferred_username}" />
+							</VBox>
+						</HBox>
+
+						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
+							<VBox>
+								<Label text="Given Name" design="Bold" />
+								<Text text="{user>/given_name}" />
+							</VBox>
+						</HBox>
+
+						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
+							<VBox>
+								<Label text="Family Name" design="Bold" />
+								<Text text="{user>/family_name}" />
+							</VBox>
+						</HBox>
+
+						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
+							<VBox>
+								<Label text="Email" design="Bold" />
+								<Text text="{user>/email}" />
+							</VBox>
+						</HBox>
+					</VBox>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+
+		<Bar design="Footer">
+			<contentRight>
+				<Button text="Edit" press="onEditProfile" type="Emphasized" />
+			</contentRight>
+		</Bar>
+	</Page>
+</mvc:View>

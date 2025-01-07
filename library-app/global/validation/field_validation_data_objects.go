@@ -20,7 +20,7 @@ var (
 		},
 		&StringFieldValidationData{
 			FieldName:               "Given Name",
-			MinLength:               global.IntPtr(1),
+			MinLength:               global.IntPtr(2),
 			MaxLength:               global.IntPtr(100),
 			CanBeEmpty:              false,
 			Regex:                   regexp.MustCompile(NameRegex),
@@ -28,7 +28,7 @@ var (
 		},
 		&StringFieldValidationData{
 			FieldName:               "Family Name",
-			MinLength:               global.IntPtr(1),
+			MinLength:               global.IntPtr(2),
 			MaxLength:               global.IntPtr(100),
 			CanBeEmpty:              false,
 			Regex:                   regexp.MustCompile(NameRegex),

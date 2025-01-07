@@ -1,0 +1,83 @@
+<mvc:View height="100%"
+	controllerName="library-app.controller.App"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:tnt="sap.tnt">
+	<tnt:ToolPage
+		id="app"
+		class="sapUiDemoToolPage">
+		<tnt:header>
+			<tnt:ToolHeader>
+				<Button
+					id="sideNavigationToggleButton"
+					icon="sap-icon://menu2"
+					type="Transparent"
+					press=".onSideNavButtonPress">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Button>
+				<ToolbarSpacer/>
+				<Title
+					text="{i18n>appTitle}"
+					level="H2"/>
+				<ToolbarSpacer/>
+				<Button
+					id="userButton"
+					text="{authModel>/username}"
+					type="Transparent"
+					press=".onUserNamePress"
+					visible="{= ${authModel>/username} === 'Unknown' ? false : true }">
+					<layoutData>
+						<OverflowToolbarLayoutData closeOverflowOnInteraction="false"/>
+					</layoutData>
+				</Button>
+			</tnt:ToolHeader>
+		</tnt:header>
+		<tnt:sideContent>
+			<tnt:SideNavigation
+			expanded="true"
+				selectedKey="{side>/selectedKey}">
+				<tnt:NavigationList
+					items="{
+						path: 'side>/navigation',
+						templateShareable: false
+					}">
+					<tnt:NavigationListItem
+						text="{path: 'side>titleI18nKey', formatter: '.getBundleText'}"
+						icon="{side>icon}"
+						expanded="{side>expanded}"
+						items="{
+							path: 'side>items',
+							templateShareable: false
+						}"
+						key="{side>key}"
+						href="#/{side>key}">
+						<tnt:NavigationListItem
+							text="{path: 'side>titleI18nKey', formatter: '.getBundleText'}"
+							key="{side>key}"
+							href="#/{side>key}">
+						</tnt:NavigationListItem>
+					</tnt:NavigationListItem>
+				</tnt:NavigationList>
+				<tnt:fixedItem>
+					<tnt:NavigationList
+						items="{
+							path: 'side>/fixedNavigation',
+							templateShareable: false
+						}">
+						<tnt:NavigationListItem
+							text="{path: 'side>titleI18nKey', formatter: '.getBundleText'}"
+							icon="{side>icon}"
+							key="{side>key}"
+							href="#/{side>key}">
+						</tnt:NavigationListItem>
+					</tnt:NavigationList>
+				</tnt:fixedItem>
+			</tnt:SideNavigation>
+		</tnt:sideContent>
+		<tnt:mainContents>
+			<App id="mainContents"/>
+		</tnt:mainContents>
+	</tnt:ToolPage>
+</mvc:View>
