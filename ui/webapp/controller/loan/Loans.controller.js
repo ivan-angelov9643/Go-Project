@@ -58,6 +58,26 @@ sap.ui.define([
 			this._oReturnBookDialog.byId("returnBookDialog").open();
 		},
 
+		onDeleteLoan: async function (oEvent) {
+			if (!this._oDeleteLoanDialog) {
+				const oOwnerComponent = this.getOwnerComponent();
+				oOwnerComponent.runAsOwner(() => {
+					this._oDeleteLoanDialog = new XMLView({
+						id: "deleteLoanDialogView",
+						viewName: "library-app.view.loan.DeleteLoanDialog",
+					});
+					this.getView().addDependent(this._oDeleteLoanDialog);
+				});
+			}
+			const oContext = oEvent.getSource().getBindingContext("loan");
+			const oData = oContext.getObject();
+			const oDialogLoanModel = this._oDeleteLoanDialog.getModel("dialogLoan");
+
+			this.fillLoanModel(oDialogLoanModel, oData);
+			console.log(oData);
+			this._oDeleteLoanDialog.byId("deleteLoanDialog").open();
+		},
+
 		onExit: function () {
 			Core.getEventBus().unsubscribe("library-app", "loansUpdated", this.handleLoansUpdated, this);
 		},

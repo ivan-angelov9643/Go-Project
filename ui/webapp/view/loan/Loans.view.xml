@@ -69,7 +69,12 @@
 												text="Return book"
 												icon="sap-icon://undo"
 												press="onReturnBook"
+												class="sapUiTinyMarginEnd"
 												enabled="{= ${loan>status} === 'active' }" />
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteLoan"/>
 									</HBox>
 								</cells>
 							</ColumnListItem>
