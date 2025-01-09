@@ -17,16 +17,21 @@ import (
 )
 
 type Server struct {
-	DB         *gorm.DB
-	Router     *mux.Router
-	AuthClient *security.AuthClient
-	Config     *Config
+	DB                 *gorm.DB
+	Router             *mux.Router
+	AuthClient         *security.AuthClient
+	Config             *Config
+	UserManager        *managers.UserManager
+	ReservationManager *managers.ReservationManager
 }
 
 func (server *Server) Initialize() {
 	server.InitializeAuthClient()
 	server.InitializeDatabase()
+	server.UserManager = managers.NewUserManager(server.DB)
+	server.ReservationManager = managers.NewReservationManager(server.DB)
 	server.InitializeRouter()
+	server.StartReservationCleanupTicker()
 }
 
 func (server *Server) InitializeAuthClient() {
@@ -108,12 +113,12 @@ func (server *Server) DefineRoutes() {
 	server.Router.Use(HandlePreflight)
 	server.Router.Use(middlewares.SetJSONMiddleware)
 
-	userHandler := handlers.NewUserHandler(managers.NewUserManager(server.DB))
+	userHandler := handlers.NewUserHandler(server.UserManager)
 	authorHandler := handlers.NewAuthorHandler(managers.NewAuthorManager(server.DB))
 	categoryHandler := handlers.NewCategoryHandler(managers.NewCategoryManager(server.DB))
 	bookHandler := handlers.NewBookHandler(managers.NewBookManager(server.DB))
 	loanHandler := handlers.NewLoanHandler(managers.NewLoanManager(server.DB))
-	reservationHandler := handlers.NewReservationHandler(managers.NewReservationManager(server.DB))
+	reservationHandler := handlers.NewReservationHandler(server.ReservationManager)
 	reviewHandler := handlers.NewReviewHandler(managers.NewReviewManager(server.DB))
 
 	server.Router.HandleFunc("/api/users", server.Protected(userHandler.GetAll, global.User, global.READ)).Methods(http.MethodGet)
@@ -158,4 +163,17 @@ func (server *Server) DefineRoutes() {
 	server.Router.HandleFunc("/api/reviews/{id:"+global.UuidRegex+"}", server.Protected(reviewHandler.Delete, global.Review, global.WRITE)).Methods(http.MethodDelete)
 
 	log.Info("[Server.DefineRoutes] Defined routes")
+}
+
+func (server *Server) StartReservationCleanupTicker() {
+	ticker := time.NewTicker(global.ReservationCleanupInterval)
+	//defer ticker.Stop() // Ensures the ticker is stopped when this function ends
+
+	go server.RunReservationCleanupTicker(ticker)
+}
+
+func (server *Server) RunReservationCleanupTicker(ticker *time.Ticker) {
+	for range ticker.C {
+		server.ReservationManager.CleanupExpiredReservations()
+	}
 }

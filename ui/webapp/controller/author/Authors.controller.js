@@ -10,7 +10,6 @@ sap.ui.define([
 		formatter: formatter,
 
 		onInit: function () {
-			// sap.ui.getCore().getEventBus().subscribe("library-app", "RouteChanged", this.handleRouteChanged, this);
 			Core.getEventBus().subscribe("library-app", "authorsUpdated", this.handleAuthorsUpdated, this);
 			this.oAuthorModel = new JSONModel({
 				authors: null,
@@ -74,7 +73,6 @@ sap.ui.define([
 		},
 
 		onExit: function () {
-			// sap.ui.getCore().getEventBus().unsubscribe("library-app", "RouteChanged", this.handleRouteChanged, this);
 			Core.getEventBus().unsubscribe("library-app", "authorsUpdated", this.handleAuthorsUpdated, this);
 		},
 

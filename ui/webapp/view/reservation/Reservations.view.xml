@@ -1,5 +1,5 @@
 <mvc:View
-		controllerName="library-app.controller.Reservations"
+		controllerName="library-app.controller.reservation.Reservations"
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc">
@@ -34,15 +34,33 @@
 								<Text text="Book"/>
 							</Column>
 							<Column>
-								<Text text="Expiry Date"/>
+								<Text text="Creation"/>
+							</Column>
+							<Column>
+								<Text text="Expiry"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"/>
 							</Column>
 						</columns>
 						<items>
 							<ColumnListItem>
 								<cells>
 									<Text text="{reservation>user_name}"/>
-									<Text text="{reservation>book_tittle}"/>
-									<Text text="{path: 'reservation>expiry_date', formatter:'.formatter.formatDate'}"/>
+									<Text text="{reservation>book_title}"/>
+									<Text text="{path: 'reservation>created_at', formatter:'.formatter.formatDateTime'}"/>
+									<Text text="{path: 'reservation>expiry_date', formatter:'.formatter.formatDateTime'}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Extend reservation"
+												icon="sap-icon://action"
+												press="onExtendReservation"
+												class="sapUiTinyMarginEnd"/>
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteReservation"/>
+									</HBox>
 								</cells>
 							</ColumnListItem>
 						</items>

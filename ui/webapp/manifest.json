@@ -197,7 +197,7 @@
         },
         "reservations": {
           "viewId": "reservations",
-          "viewName": "Reservations"
+          "viewName": "reservation.Reservations"
         },
         "importantLinks": {
           "viewId": "importantLinks",

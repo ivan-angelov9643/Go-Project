@@ -8,7 +8,10 @@
             id="extendLoanDialog"
             title="Extend Loan"
             initialFocus="daysToExtendInput"
-            afterClose=".onDialogClose">
+            afterClose=".onDialogClose"
+            horizontalScrolling="false"
+            verticalScrolling="true"
+            contentWidth="610px">
         <content>
             <f:SimpleForm
                     editable="true"
@@ -16,6 +19,7 @@
                     columnsM="1"
                     columnsL="1"
                     columnsXL="1">
+<!--                        width="100%">-->
                 <f:content>
                     <Label text="User" />
                     <Text text="{dialogLoan>/user_name}" />

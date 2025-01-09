@@ -1,12 +1,14 @@
 package managers
 
 import (
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/global/db_error"
 	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"time"
 )
 
 type ReservationManager struct {
@@ -15,8 +17,18 @@ type ReservationManager struct {
 
 func NewReservationManager(db *gorm.DB) *ReservationManager {
 	log.Info("[NewReservationManager] Initializing ReservationManager")
-
+	// TODO change reservation time
 	return &ReservationManager{db}
+}
+
+func (m *ReservationManager) CleanupExpiredReservations() {
+	log.Info("[ReservationManager.CleanupExpiredReservations] Starting cleanup job")
+	err := m.db.Where("expiry_date <= ?", time.Now()).Delete(&models.Reservation{}).Error
+	if err != nil {
+		log.Errorf("[ReservationManager.CleanupExpiredReservations] Error cleaning up expired reservations: %v", err)
+	} else {
+		log.Info("[ReservationManager.CleanupExpiredReservations] Cleanup job completed")
+	}
 }
 
 func (m *ReservationManager) GetAll() ([]models.Reservation, error) {
@@ -56,6 +68,7 @@ func (m *ReservationManager) Create(newReservation models.Reservation) (models.R
 	}
 
 	newReservation.ID = uuid.New()
+	newReservation.ExpiryDate = time.Now().Add(global.ReservationDuration)
 
 	err = m.db.Create(&newReservation).Error
 	if err != nil {

@@ -72,6 +72,42 @@ sap.ui.define([
 			return totalCopies - activeLoans.length - activeReservations.length
 		},
 
+		userHasReservedBook: async function (user_id, book_id) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const reservationsResponse = await this.sendRequest(
+				`http://localhost:8080/api/reservations`,
+				"GET",
+				token
+			);
+
+			const reservation = reservationsResponse.find(
+				(reservation) =>
+					reservation.user_id === user_id && reservation.book_id === book_id
+			);
+
+			return reservation !== undefined;
+		},
+
+		userHasActiveLoanOnBook: async function (user_id, book_id) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const loansResponse = await this.sendRequest(
+				`http://localhost:8080/api/loans`,
+				"GET",
+				token
+			);
+
+			const activeLoan = loansResponse.find(
+				(loan) =>
+					loan.user_id === user_id &&
+					loan.book_id === book_id &&
+					loan.status === "active"
+			);
+
+			return activeLoan !== undefined;
+		},
+
 		getUserID: function (token) {
 			return JSON.parse(atob(token.split(".")[1])).sub;
 		},
@@ -184,7 +220,9 @@ sap.ui.define([
 				title: null,
 				year: null,
 				author_id: null,
+				author_name: null,
 				category_id: null,
+				category_name: null,
 				total_copies: null,
 				available_copies: null,
 				language: null,
@@ -200,6 +238,7 @@ sap.ui.define([
 			bookModel.setProperty("/category_id", data.category_id);
 			bookModel.setProperty("/category_name", data.category_name);
 			bookModel.setProperty("/total_copies", data.total_copies);
+			bookModel.setProperty("/available_copies", data.available_copies);
 			bookModel.setProperty("/language", data.language);
 		},
 
@@ -227,7 +266,34 @@ sap.ui.define([
 			loanModel.setProperty("/return_date", data.return_date);
 			loanModel.setProperty("/status", data.status);
 			loanModel.setProperty("/days_to_extend", data.days_to_extend);
+		},
+
+		initReservationModel: function () {
+			return {
+				id: null,
+				book_id: null,
+				book_title: null,
+				user_id: null,
+				user_name: null,
+				created_at: null,
+				expiry_date: null,
+				days_to_extend: null,
+				hours_to_extend: null,
+				minutes_to_extend: null,
+			};
+		},
+
+		fillReservationModel: function (reservationModel, data) {
+			reservationModel.setProperty("/id", data.id);
+			reservationModel.setProperty("/book_id", data.book_id);
+			reservationModel.setProperty("/book_title", data.book_title);
+			reservationModel.setProperty("/user_id", data.user_id);
+			reservationModel.setProperty("/user_name", data.user_name);
+			reservationModel.setProperty("/created_at", data.created_at);
+			reservationModel.setProperty("/expiry_date", data.expiry_date);
+			reservationModel.setProperty("/days_to_extend", data.days_to_extend);
+			reservationModel.setProperty("/hours_to_extend", data.hours_to_extend);
+			reservationModel.setProperty("/minutes_to_extend", data.minutes_to_extend);
 		}
 	});
-
 });

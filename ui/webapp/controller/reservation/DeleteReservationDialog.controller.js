@@ -6,28 +6,27 @@ sap.ui.define([
 ], function (BaseController, MessageToast, JSONModel, Core) {
     "use strict";
 
-    return BaseController.extend("library-app.controller.book.DeleteBookDialog", {
+    return BaseController.extend("library-app.controller.reservation.DeleteReservationDialog", {
         onInit: function () {
-            this.oDialogBookModel = new JSONModel(this.initBookModel());
-            this.getView().setModel(this.oDialogBookModel, "dialogBook");
+            this.oDialogReservationModel = new JSONModel(this.initReservationModel());
+            this.getView().setModel(this.oDialogReservationModel, "dialogReservation");
         },
 
         onConfirmDelete: async function () {
-            const bookData = this.getView().getModel("dialogBook").getData();
+            const reservationData = this.getView().getModel("dialogReservation").getData();
 
             try {
                 const token = await this.getOwnerComponent().getToken();
                 const deleteResponse = await this.sendRequest(
-                    `http://localhost:8080/api/books/${bookData.id}`,
+                    `http://localhost:8080/api/reservations/${reservationData.id}`,
                     "DELETE",
                     token
                 );
 
-                Core.getEventBus().publish("library-app", "booksUpdated", {delete: true});
-
-                MessageToast.show("Successfully deleted book");
+                Core.getEventBus().publish("library-app", "reservationsUpdated", deleteResponse);
+                MessageToast.show("Successfully deleted reservation");
             } catch (error) {
-                MessageToast.show(error.error || "Error deleting book");
+                MessageToast.show(error.error || "Error deleting reservation");
             }
 
             this.onDialogClose();
@@ -38,10 +37,10 @@ sap.ui.define([
         },
 
         onDialogClose: function () {
-            const dialog = this.byId("deleteBookDialog");
+            const dialog = this.byId("deleteReservationDialog");
             if (dialog) {
                 dialog.close();
             }
-        }
+        },
     });
 });

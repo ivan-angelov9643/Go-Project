@@ -21,6 +21,22 @@ sap.ui.define([
 			return `${day} ${month} ${year}`;
 		},
 
+		formatTime: function (date) {
+			const oDate = new Date(date);
+
+			const hours = oDate.getHours().toString().padStart(2, "0");
+			const minutes = oDate.getMinutes().toString().padStart(2, "0");
+
+			return `${hours}:${minutes}`;
+		},
+
+		formatDateTime: function (dateTime) {
+			const formattedDate = this.formatter.formatDate(dateTime);
+			const formattedTime = this.formatter.formatTime(dateTime);
+
+			return `${formattedDate}, ${formattedTime}`;
+		},
+
 		formatOptionalDate: function (optionalDate) {
 			if (!optionalDate) {
 				return this.getBundleText("nullField")

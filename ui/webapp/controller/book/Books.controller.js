@@ -106,11 +106,27 @@ sap.ui.define([
 			}
 		},
 
-		onReserveBook: async function (bookId, userId) {
+		onReserveBook: async function () {
 			const token = await this.getOwnerComponent().getToken();
+			const book_id = this.oSelectedBookModel.getData().id
+			const user_id = this.getUserID(token);
+
+			if (await this.userHasActiveLoanOnBook(user_id, book_id)) {
+				MessageToast.show("You already have an active loan on this book");
+				return;
+			}
+			if (await this.userHasReservedBook(user_id, book_id)) {
+				MessageToast.show("You already have a reservation for this book");
+				return;
+			}
+			if (await this.getAvailableCopies(book_id) < 1) {
+				MessageToast.show("There aren't any available copies at the moment");
+				return;
+			}
+
 			const body = {
-				book_id: this.oSelectedBookModel.getData().id,
-				user_id: this.getUserID(token),
+				book_id: book_id,
+				user_id: user_id,
 			};
 
 			try {
@@ -120,22 +136,15 @@ sap.ui.define([
 					token,
 					body
 				);
-// TODO: make expiry date be 24h after the reservation is made
-// TODO: delete the reservation after 24h
-// TODO: throw error if there arent any available copies
-// TODO: recalculate the available copies
 
+				Core.getEventBus().publish("library-app", "reservationsUpdated");
 
-				console.log("Reservation Response:", response);
-				Core.getEventBus().publish("library-app", "booksUpdated", createResponse);
-
-				MessageToast.show("Reservation successful!", {
-					duration: 3000
-				});
+				MessageToast.show("Reservation successful!");
 
 			} catch (error) {
 				MessageToast.show(error.error || "Error reserving book");
 			}
+			this.oSelectedBookModel.setProperty("/available_copies", this.getAvailableCopies(book_id));
 		},
 
 		loadData: async function () {
@@ -160,8 +169,14 @@ sap.ui.define([
 		handleBooksUpdated: async function (ns, ev, eventData) {
 			await this.loadData()
 
+			if (eventData.delete) {
+				this.onNavBack();
+				return;
+			}
+
 			const selectedBookId = this.oSelectedBookModel.getData().id;
 			const selectedBookData = this.oBookModel.getData().books.find(book => book.id === selectedBookId);
+			selectedBookData.available_copies = await this.getAvailableCopies(selectedBookId)
 			this.fillBookModel(this.oSelectedBookModel, selectedBookData);
 		},
 	});

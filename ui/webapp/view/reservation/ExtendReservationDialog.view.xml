@@ -1,0 +1,89 @@
+<mvc:View
+        controllerName="library-app.controller.reservation.ExtendReservationDialog"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="extendReservationDialog"
+            title="Extend Reservation"
+            initialFocus="daysToExtendInput"
+            afterClose=".onDialogClose"
+            horizontalScrolling="false"
+            verticalScrolling="true"
+            contentWidth="610px">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    columnsL="1"
+                    columnsM="1">
+                <f:content>
+                    <Label text="User" />
+                    <Text text="{dialogReservation>/user_name}" />
+
+                    <Label text="Book" />
+                    <Text text="{dialogReservation>/book_title}" />
+
+                    <Label text="Creation" />
+                    <Text text="{path: 'dialogReservation>/created_at', formatter: '.formatter.formatDateTime'}" />
+
+                    <Label text="Expiry" />
+                    <Text text="{path: 'dialogReservation>/expiry_date', formatter: '.formatter.formatDateTime'}" />
+
+                    <Label text="Extend Reservation By" />
+                    <VBox>
+                        <HBox width="100%" justifyContent="SpaceBetween">
+                            <VBox>
+                                <Label text="Days" />
+                                <Input
+                                        id="daysToExtendInput"
+                                        value="{dialogReservation>/days_to_extend}"
+                                        type="Number"
+                                        width="120px"
+                                        placeholder="0" />
+                            </VBox>
+                            <VBox>
+                                <Label text="Hours" />
+                                <Input
+                                        id="hoursToExtendInput"
+                                        value="{dialogReservation>/hours_to_extend}"
+                                        type="Number"
+                                        width="120px"
+                                        placeholder="0" />
+                            </VBox>
+                            <VBox>
+                                <Label text="Minutes" />
+                                <Input
+                                        id="minutesToExtendInput"
+                                        value="{dialogReservation>/minutes_to_extend}"
+                                        type="Number"
+                                        width="120px"
+                                        placeholder="0" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Extend"
+                            press=".onExtendReservation" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelExtend" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

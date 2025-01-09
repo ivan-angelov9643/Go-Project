@@ -1,9 +1,13 @@
 package global
 
+import "time"
+
 const (
 	DefaultConfigurationFilePath = "./.env"
 	ConfigFileName               = ".env"
 	UuidRegex                    = "[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}"
+	ReservationDuration          = 10 * time.Minute
+	ReservationCleanupInterval   = 1 * time.Minute
 
 	// Configuration
 	DefaultPort        = "8080"

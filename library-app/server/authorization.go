@@ -2,7 +2,6 @@ package server
 
 import (
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"context"
 	"fmt"
@@ -147,25 +146,21 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 	}
 }
 
-// TODO: move manager out
 func (server *Server) DBLoadUser(userID string) (*models.User, error) {
 	uid, err := uuid.Parse(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	manager := managers.NewUserManager(server.DB)
-	user, err := manager.Get(uid)
+	user, err := server.UserManager.Get(uid)
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
-// TODO: move manager out
 func (server *Server) DBSaveUser(user models.User) error {
-	manager := managers.NewUserManager(server.DB)
-	_, err := manager.Create(user)
+	_, err := server.UserManager.Create(user)
 
 	if err != nil {
 		return err
