@@ -6,7 +6,9 @@ sap.ui.define([
 	"sap/ui/core/mvc/XMLView",
 	"sap/f/LayoutType",
 	"sap/m/MessageToast",
-], function (BaseController, JSONModel, formatter, Core, XMLView, LayoutType, MessageToast) {
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator"
+], function (BaseController, JSONModel, formatter, Core, XMLView, LayoutType, MessageToast, Filter, FilterOperator) {
 	"use strict";
 	return BaseController.extend("library-app.controller.book.Books", {
 		formatter: formatter,
@@ -30,6 +32,10 @@ sap.ui.define([
 			this.getView().setModel(this.oRatingModel, "rating");
 
 			await this.loadData();
+
+			this.getView().byId("titleSearch").setFilterFunction(function(sTerm, oItem) {
+				return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"));
+			});
 		},
 
 		onCreateBook: async function () {
@@ -242,6 +248,59 @@ sap.ui.define([
 				await this.userHasLoanOnBook(user_id, book_id) &&
 				!await this.userHasRatedBook(user_id, book_id)
 			);
+		},
+
+		onTitleSearchChange: function(oEvent) {
+			this.sTitleSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		onAuthorNameSearchChange: function(oEvent) {
+			this.sAuthorNameSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		onCategoryNameSearchChange: function(oEvent) {
+			this.sCategoryNameSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		onLanguageSearchChange: function(oEvent) {
+			this.sLanguageNameSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		_applyCombinedFilters: function() {
+			let aFilters = [];
+
+			if (this.sTitleSearch && this.sTitleSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("title", FilterOperator.Contains, this.sTitleSearch)
+				);
+			}
+
+			if (this.sAuthorNameSearch && this.sAuthorNameSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("author_name", FilterOperator.Contains, this.sAuthorNameSearch)
+				);
+			}
+
+			if (this.sCategoryNameSearch && this.sCategoryNameSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("category_name", FilterOperator.Contains, this.sCategoryNameSearch)
+				);
+			}
+
+			if (this.sLanguageNameSearch && this.sLanguageNameSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("language", FilterOperator.Contains, this.sLanguageNameSearch)
+				);
+			}
+
+			let oTable = this.getView().byId("booksTable");
+			let oBinding = oTable.getBinding("items");
+
+			oBinding.filter(aFilters);
 		}
 	});
 });

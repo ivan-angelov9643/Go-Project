@@ -23,6 +23,27 @@
 										<Title text="Books" level="H3"/>
 										<Button tooltip="Refresh" icon="sap-icon://refresh" press="loadData"/>
 										<Button text="Create" icon="sap-icon://add" press="onCreateBook" type="Ghost" class="sapUiTinyMarginBegin"/>
+										<Text text="Search by title:" />
+										<Input
+												id="titleSearch"
+												placeholder="Enter title"
+												liveChange="onTitleSearchChange"
+												width="160px"/>
+										<Text text="Search by author name:" class="sapUiSmallMarginStart"/>
+										<Input id="authorSearch"
+											   placeholder="Enter author name"
+											   liveChange="onAuthorNameSearchChange"
+											   width="160px" />
+										<Text text="Search by category name:" class="sapUiSmallMarginStart"/>
+										<Input id="categorySearch"
+											   placeholder="Enter category name"
+											   liveChange="onCategoryNameSearchChange"
+											   width="160px"/>
+										<Text text="Search by language:" class="sapUiSmallMarginStart"/>
+										<Input id="languageSearch"
+											   placeholder="Enter language"
+											   liveChange="onLanguageSearchChange"
+											   width="160px"/>
 									</Toolbar>
 								</headerToolbar>
 								<columns>
@@ -169,7 +190,8 @@
 				<List
 						id="ratingsList"
 						items="{rating>/ratings}"
-						class="sapUiSmallMargin">
+						class="sapUiSmallMargin"
+						noData="There are not ratings for this book">
 					<items>
 						<StandardListItem
 								title="{rating>user_name} rated {rating>value}/5"
@@ -178,7 +200,6 @@
 						</StandardListItem>
 					</items>
 				</List>
-
 			</Page>
 		</f:midColumnPages>
 	</f:FlexibleColumnLayout>
