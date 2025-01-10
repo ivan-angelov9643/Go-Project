@@ -20,6 +20,15 @@ sap.ui.define([
 			this.oBookModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oBookModel, "book");
 
+			this.oSelectedBookModel = new JSONModel(this.initBookModel());
+			this.getView().setModel(this.oSelectedBookModel, "selectedBook");
+
+			this.oRatingModel = new JSONModel({
+				ratings: null,
+			});
+			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
+			this.getView().setModel(this.oRatingModel, "rating");
+
 			await this.loadData();
 		},
 
@@ -74,23 +83,19 @@ sap.ui.define([
 			this._oDeleteBookDialog.byId("deleteBookDialog").open();
 		},
 
-		onExit: function () {
-			Core.getEventBus().unsubscribe("library-app", "booksUpdated", this.handleBooksUpdated, this);
-		},
-
 		onSelectBook: async function(oEvent) {
-			const oSelectedBook = oEvent.getParameter("listItem").getBindingContext("book").getObject();
-			oSelectedBook.available_copies = await this.getAvailableCopies(oSelectedBook.id)
+			const oSelectedBookData = oEvent.getParameter("listItem").getBindingContext("book").getObject();
+			oSelectedBookData.available_copies = await this.getAvailableCopies(oSelectedBookData.id);
 
-			this.oSelectedBookModel = new JSONModel(oSelectedBook);
-			this.getView().setModel(this.oSelectedBookModel, "selectedBook");
+			this.fillBookModel(this.oSelectedBookModel, oSelectedBookData)
 
-			this.oReviewModel = new JSONModel({
-				reviews: null,
-			});
-			this.oReviewModel.setSizeLimit(Number.MAX_VALUE);
-			this.getView().setModel(this.oReviewModel, "review");
-			this.loadReviews(this.oReviewModel, oSelectedBook.id);
+			const token = await this.getOwnerComponent().getToken();
+			const user_id = this.getUserID(token);
+
+			await this.reserveButtonUpdateVisible(user_id, oSelectedBookData.id);
+			await this.rateButtonUpdateVisible(user_id, oSelectedBookData.id);
+
+			await this.loadRatings(this.oRatingModel, oSelectedBookData.id);
 
 			const oFlexibleColumnLayout = this.getView().byId("flexibleColumnLayout");
 			oFlexibleColumnLayout.setLayout(LayoutType.TwoColumnsBeginExpanded);
@@ -137,7 +142,7 @@ sap.ui.define([
 					body
 				);
 
-				Core.getEventBus().publish("library-app", "reservationsUpdated");
+				Core.getEventBus().publish("library-app", "reservationsUpdated", {make_reservation: true});
 
 				MessageToast.show("Reservation successful!");
 
@@ -145,6 +150,29 @@ sap.ui.define([
 				MessageToast.show(error.error || "Error reserving book");
 			}
 			this.oSelectedBookModel.setProperty("/available_copies", this.getAvailableCopies(book_id));
+			// await this.reserveButtonUpdateVisible(user_id, book_id);
+		},
+
+		onRateBook: async function () {
+			if (!this._oCreateRatingDialog) {
+				const oOwnerComponent = this.getOwnerComponent();
+				oOwnerComponent.runAsOwner(() => {
+					this._oCreateRatingDialog = new XMLView({
+						id: "createRatingDialogView",
+						viewName: "library-app.view.book.CreateRatingDialog",
+					});
+					this.getView().addDependent(this._oCreateRatingDialog);
+				});
+			}
+			const oBookData = this.oSelectedBookModel.getData();
+			const oDialogRatingModel = this._oCreateRatingDialog.getModel("dialogRating");
+
+			this.fillRatingModel(oDialogRatingModel, {book_id: oBookData.id, book_title: oBookData.title} );
+			this._oCreateRatingDialog.byId("createRatingDialog").open();
+		},
+
+		onExit: function () {
+			Core.getEventBus().unsubscribe("library-app", "booksUpdated", this.handleBooksUpdated, this);
 		},
 
 		loadData: async function () {
@@ -169,15 +197,51 @@ sap.ui.define([
 		handleBooksUpdated: async function (ns, ev, eventData) {
 			await this.loadData()
 
+			const selectedBookID = this.oSelectedBookModel.getData().id;
+
+			if (eventData.from_reservations || eventData.from_loans || eventData.from_ratings) {
+				const token = await this.getOwnerComponent().getToken();
+				const user_id = this.getUserID(token);
+				await this.reserveButtonUpdateVisible(user_id, selectedBookID);
+				await this.rateButtonUpdateVisible(user_id, selectedBookID);
+			}
+
+			if (eventData.from_ratings && eventData.book_id === selectedBookID) {
+				await this.loadRatings(this.oRatingModel, selectedBookID);
+			}
+
+			if (!eventData.from_reservations) {
+				Core.getEventBus().publish("library-app", "reservationsUpdated", {from_books: true});
+			}
+
+			if (!eventData.from_loans) {
+				Core.getEventBus().publish("library-app", "loansUpdated", {from_books: true});
+			}
+
 			if (eventData.delete) {
 				this.onNavBack();
 				return;
 			}
 
-			const selectedBookId = this.oSelectedBookModel.getData().id;
-			const selectedBookData = this.oBookModel.getData().books.find(book => book.id === selectedBookId);
-			selectedBookData.available_copies = await this.getAvailableCopies(selectedBookId)
+			const selectedBookData = this.oBookModel.getData().books.find(book => book.id === selectedBookID);
+			selectedBookData.available_copies = await this.getAvailableCopies(selectedBookID)
 			this.fillBookModel(this.oSelectedBookModel, selectedBookData);
 		},
+
+		reserveButtonUpdateVisible: async function (user_id, book_id) {
+			var oButton = this.byId("reserveBookButton");
+			oButton.setVisible(
+				!await this.userHasReservedBook(user_id, book_id) &&
+				!await this.userHasActiveLoanOnBook(user_id, book_id)
+			);
+		},
+
+		rateButtonUpdateVisible: async function (user_id, book_id) {
+			var oButton = this.byId("rateBookButton");
+			oButton.setVisible(
+				await this.userHasLoanOnBook(user_id, book_id) &&
+				!await this.userHasRatedBook(user_id, book_id)
+			);
+		}
 	});
 });

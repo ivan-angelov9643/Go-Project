@@ -25,7 +25,7 @@ const (
 	Category    = "category"
 	Book        = "book"
 	Loan        = "loan"
-	Review      = "review"
+	Rating      = "rating"
 	User        = "user"
 	Reservation = "reservation"
 

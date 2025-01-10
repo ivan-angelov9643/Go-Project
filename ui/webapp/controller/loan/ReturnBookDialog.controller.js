@@ -29,7 +29,7 @@ sap.ui.define([
                     loanData
                 );
 
-                Core.getEventBus().publish("library-app", "loansUpdated", returnResponse);
+                Core.getEventBus().publish("library-app", "loansUpdated", {return_book: true});
 
                 MessageToast.show("Successfully returned the book");
             } catch (error) {

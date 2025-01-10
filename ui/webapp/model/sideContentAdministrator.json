@@ -45,10 +45,10 @@
 			"key": "loans"
 		},
 		{
-			"titleI18nKey": "sideContentReviews",
+			"titleI18nKey": "sideContentRatings",
 			"icon": "sap-icon://badge",
 			"expanded": false,
-			"key": "reviews"
+			"key": "ratings"
 		},
 		{
 			"titleI18nKey": "sideContentReservations",

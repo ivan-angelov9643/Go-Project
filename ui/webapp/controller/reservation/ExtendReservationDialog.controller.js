@@ -45,7 +45,7 @@ sap.ui.define([
                     reservationData
                 );
 
-                Core.getEventBus().publish("library-app", "reservationsUpdated", updateResponse);
+                Core.getEventBus().publish("library-app", "reservationsUpdated");
 
                 MessageToast.show("Successfully extended the reservation.");
             } catch (error) {

@@ -39,6 +39,33 @@ sap.ui.define([
 			this._oExtendReservationDialog.byId("extendReservationDialog").open();
 		},
 
+		onMakeLoan: async function (oEvent) {
+			if (!this._oMakeLoanDialog) {
+				const oOwnerComponent = this.getOwnerComponent();
+				oOwnerComponent.runAsOwner(() => {
+					this._oMakeLoanDialog = new sap.ui.core.mvc.XMLView({
+						id: "makeLoanDialogView",
+						viewName: "library-app.view.reservation.MakeLoanDialog",
+					});
+					this.getView().addDependent(this._oMakeLoanDialog);
+				});
+			}
+
+			const oContext = oEvent.getSource().getBindingContext("reservation");
+			const oData = oContext.getObject();
+
+			const oDialogLoanModel = this._oMakeLoanDialog.getModel("dialogLoan");
+			const oDialogReservationModel = this._oMakeLoanDialog.getModel("dialogReservation");
+
+			this.fillReservationModel(oDialogReservationModel, oData);
+			this.fillLoanModel(oDialogLoanModel, {
+				user_id: oData.user_id,
+				book_id: oData.book_id,
+			});
+
+			this._oMakeLoanDialog.byId("makeLoanDialog").open();
+		},
+
 		onDeleteReservation: async function (oEvent) {
 			if (!this._oDeleteReservationDialog) {
 				const oOwnerComponent = this.getOwnerComponent();
@@ -55,7 +82,6 @@ sap.ui.define([
 			const oDialogReservationModel = this._oDeleteReservationDialog.getModel("dialogReservation");
 
 			this.fillReservationModel(oDialogReservationModel, oData);
-			console.log(oData)
 			this._oDeleteReservationDialog.byId("deleteReservationDialog").open();
 		},
 
@@ -85,7 +111,20 @@ sap.ui.define([
 
 		handleReservationsUpdated: async function (ns, ev, eventData) {
 			await this.loadData()
-			Core.getEventBus().publish("library-app", "booksUpdated");
+
+			if (eventData.make_loan) {
+				Core.getEventBus().publish("library-app", "loansUpdated");
+			}
+
+			if (!eventData.from_books &&
+				(
+					eventData.make_loan ||
+					eventData.delete_reservation ||
+					eventData.make_reservation
+				)
+			) {
+				Core.getEventBus().publish("library-app", "booksUpdated", {from_reservations: true});
+			}
 		},
 	});
 });

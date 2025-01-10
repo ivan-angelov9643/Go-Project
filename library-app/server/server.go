@@ -119,7 +119,7 @@ func (server *Server) DefineRoutes() {
 	bookHandler := handlers.NewBookHandler(managers.NewBookManager(server.DB))
 	loanHandler := handlers.NewLoanHandler(managers.NewLoanManager(server.DB))
 	reservationHandler := handlers.NewReservationHandler(server.ReservationManager)
-	reviewHandler := handlers.NewReviewHandler(managers.NewReviewManager(server.DB))
+	ratingHandler := handlers.NewRatingHandler(managers.NewRatingManager(server.DB))
 
 	server.Router.HandleFunc("/api/users", server.Protected(userHandler.GetAll, global.User, global.READ)).Methods(http.MethodGet)
 	server.Router.HandleFunc("/api/users/{id:"+global.UuidRegex+"}", server.Protected(userHandler.Get, global.User, global.READ)).Methods(http.MethodGet)
@@ -156,11 +156,11 @@ func (server *Server) DefineRoutes() {
 	server.Router.HandleFunc("/api/reservations/{id:"+global.UuidRegex+"}", server.Protected(reservationHandler.Update, global.Reservation, global.WRITE)).Methods(http.MethodPut)
 	server.Router.HandleFunc("/api/reservations/{id:"+global.UuidRegex+"}", server.Protected(reservationHandler.Delete, global.Reservation, global.WRITE)).Methods(http.MethodDelete)
 
-	server.Router.HandleFunc("/api/reviews", server.Protected(reviewHandler.GetAll, global.Review, global.READ)).Methods(http.MethodGet)
-	server.Router.HandleFunc("/api/reviews", server.Protected(reviewHandler.Create, global.Review, global.WRITE)).Methods(http.MethodPost)
-	server.Router.HandleFunc("/api/reviews/{id:"+global.UuidRegex+"}", server.Protected(reviewHandler.Get, global.Review, global.READ)).Methods(http.MethodGet)
-	server.Router.HandleFunc("/api/reviews/{id:"+global.UuidRegex+"}", server.Protected(reviewHandler.Update, global.Review, global.WRITE)).Methods(http.MethodPut)
-	server.Router.HandleFunc("/api/reviews/{id:"+global.UuidRegex+"}", server.Protected(reviewHandler.Delete, global.Review, global.WRITE)).Methods(http.MethodDelete)
+	server.Router.HandleFunc("/api/ratings", server.Protected(ratingHandler.GetAll, global.Rating, global.READ)).Methods(http.MethodGet)
+	server.Router.HandleFunc("/api/ratings", server.Protected(ratingHandler.Create, global.Rating, global.WRITE)).Methods(http.MethodPost)
+	server.Router.HandleFunc("/api/ratings/{id:"+global.UuidRegex+"}", server.Protected(ratingHandler.Get, global.Rating, global.READ)).Methods(http.MethodGet)
+	server.Router.HandleFunc("/api/ratings/{id:"+global.UuidRegex+"}", server.Protected(ratingHandler.Update, global.Rating, global.WRITE)).Methods(http.MethodPut)
+	server.Router.HandleFunc("/api/ratings/{id:"+global.UuidRegex+"}", server.Protected(ratingHandler.Delete, global.Rating, global.WRITE)).Methods(http.MethodDelete)
 
 	log.Info("[Server.DefineRoutes] Defined routes")
 }

@@ -1,11 +1,11 @@
 <mvc:View
-		controllerName="library-app.controller.Reviews"
+		controllerName="library-app.controller.rating.Ratings"
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc">
 	<Page>
 		<l:BlockLayout
-				id="BlockLayoutReviews"
+				id="BlockLayoutRatings"
 				background="Default">
 			<l:BlockLayoutRow>
 				<l:BlockLayoutCell
@@ -13,12 +13,12 @@
 						backgroundColorShade="ShadeA"
 						width="3">
 					<Table
-							items="{path:'review>/reviews', templateShareable: false}"
+							items="{path:'rating>/ratings', templateShareable: false}"
 							fixedLayout="false">
 						<headerToolbar>
 							<Toolbar design="Transparent">
 								<Title
-										text="Reviews"
+										text="Ratings"
 										level="H3"/>
 								<Button
 										tooltip="Refresh"
@@ -37,16 +37,25 @@
 								<Text text="Content"/>
 							</Column>
 							<Column>
-								<Text text="Rating"/>
+								<Text text="Value"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"/>
 							</Column>
 						</columns>
 						<items>
 							<ColumnListItem>
 								<cells>
-									<Text text="{review>user_name}"/>
-									<Text text="{review>book_title}"/>
-									<Text text="{review>content}"/>
-									<Text text="{review>rating}"/>
+									<Text text="{rating>user_name}"/>
+									<Text text="{rating>book_title}"/>
+									<Text text="{rating>content}"/>
+									<Text text="{rating>value}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteRating"/>
+									</HBox>
 								</cells>
 							</ColumnListItem>
 						</items>

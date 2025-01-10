@@ -50,5 +50,10 @@ sap.ui.define([
 			}
 			return field;
 		},
+
+		isReservationVisible: function (userHasReserved) {
+
+			return !userHasReserved;
+		}
 	};
 });

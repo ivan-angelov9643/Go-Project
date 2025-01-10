@@ -6,27 +6,27 @@ sap.ui.define([
 ], function (BaseController, MessageToast, JSONModel, Core) {
     "use strict";
 
-    return BaseController.extend("library-app.controller.loan.DeleteLoanDialog", {
+    return BaseController.extend("library-app.controller.rating.DeleteRatingDialog", {
         onInit: function () {
-            this.oDialogLoanModel = new JSONModel(this.initLoanModel());
-            this.getView().setModel(this.oDialogLoanModel, "dialogLoan");
+            this.oDialogRatingModel = new JSONModel(this.initRatingModel());
+            this.getView().setModel(this.oDialogRatingModel, "dialogRating");
         },
 
         onConfirmDelete: async function () {
-            const loanData = this.getView().getModel("dialogLoan").getData();
+            const ratingData = this.getView().getModel("dialogRating").getData();
 
             try {
                 const token = await this.getOwnerComponent().getToken();
                 const deleteResponse = await this.sendRequest(
-                    `http://localhost:8080/api/loans/${loanData.id}`,
+                    `http://localhost:8080/api/ratings/${ratingData.id}`,
                     "DELETE",
                     token
                 );
 
-                Core.getEventBus().publish("library-app", "loansUpdated", {delete_loan: true});
-                MessageToast.show("Successfully deleted loan");
+                Core.getEventBus().publish("library-app", "ratingsUpdated", {book_id: ratingData.book_id});
+                MessageToast.show("Successfully deleted rating");
             } catch (error) {
-                MessageToast.show(error.error || "Error deleting loan");
+                MessageToast.show(error.error || "Error deleting rating");
             }
 
             this.onDialogClose();
@@ -37,7 +37,7 @@ sap.ui.define([
         },
 
         onDialogClose: function () {
-            const dialog = this.byId("deleteLoanDialog");
+            const dialog = this.byId("deleteRatingDialog");
             if (dialog) {
                 dialog.close();
             }

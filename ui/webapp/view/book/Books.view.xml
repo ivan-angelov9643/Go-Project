@@ -100,10 +100,25 @@
 					</form:Form>
 				</VBox>
 				<HBox justifyContent="Center">
-					<Button text="Edit" icon="sap-icon://edit" press="onEditBook" class="sapUiTinyMarginEnd"/>
-					<Button text="Delete" icon="sap-icon://delete" press="onDeleteBook" class="sapUiTinyMarginEnd"/>
-					<Button text="Reserve" icon="sap-icon://appointment" press="onReserveBook" type="Accept" class="sapUiTinyMarginEnd"/>
-					<Button text="Rate" icon="sap-icon://favorite" press="onRateBook" type="Emphasized"/>
+					<Button text="Edit"
+							icon="sap-icon://edit"
+							press="onEditBook"
+							class="sapUiTinyMarginEnd"/>
+					<Button text="Delete"
+							icon="sap-icon://delete"
+							press="onDeleteBook"
+							class="sapUiTinyMarginEnd"/>
+					<Button id="reserveBookButton"
+							text="Reserve"
+							icon="sap-icon://appointment"
+							press="onReserveBook"
+							type="Accept"
+							class="sapUiTinyMarginEnd"/>
+					<Button id="rateBookButton"
+							text="Rate"
+							icon="sap-icon://favorite"
+							press="onRateBook"
+							type="Emphasized"/>
 				</HBox>
 <!--				<VBox class="sapUiSmallMargin">-->
 <!--					<form:Form>-->
@@ -122,26 +137,26 @@
 <!--						</form:title>-->
 <!--						<form:formContainers>-->
 <!--							<form:FormContainer-->
-<!--									binding="{review>/reviews}"-->
-<!--									title="{review>user_name}">-->
+<!--									binding="{rating>/ratings}"-->
+<!--									title="{rating>user_name}">-->
 <!--								<form:formElements>-->
-<!--									<form:FormElement label="Rating">-->
+<!--									<form:FormElement label="Value">-->
 <!--										<form:fields>-->
 <!--											<RatingIndicator-->
 <!--													maxValue="5"-->
-<!--													value="{review>rating}"-->
+<!--													value="{rating>value}"-->
 <!--													enabled="false" />-->
 <!--										</form:fields>-->
 <!--									</form:FormElement>-->
 <!--									<form:FormElement label="Content">-->
 <!--										<form:fields>-->
-<!--											<Text text="{review>content}" />-->
+<!--											<Text text="{rating>content}" />-->
 <!--										</form:fields>-->
 <!--									</form:FormElement>-->
 <!--									<form:FormElement label="Date">-->
 <!--										<form:fields>-->
 <!--											<Text-->
-<!--													text="{path: 'review>created_at', type: 'sap.ui.model.type.DateTime', formatOptions: {style: 'medium'}}" />-->
+<!--													text="{path: 'rating>created_at', type: 'sap.ui.model.type.DateTime', formatOptions: {style: 'medium'}}" />-->
 <!--										</form:fields>-->
 <!--									</form:FormElement>-->
 <!--								</form:formElements>-->
@@ -150,15 +165,15 @@
 <!--					</form:Form>-->
 <!--				</VBox>-->
 
-				<Title text="Reviews" level="H2" class="sapUiSmallMargin" />
+				<Title text="Ratings" level="H2" class="sapUiSmallMargin" />
 				<List
-						id="reviewsList"
-						items="{review>/reviews}"
+						id="ratingsList"
+						items="{rating>/ratings}"
 						class="sapUiSmallMargin">
 					<items>
 						<StandardListItem
-								title="{review>user_name} rated {review>rating}/5"
-								description="{review>content}"
+								title="{rating>user_name} rated {rating>value}/5"
+								description="{rating>content}"
 								icon="sap-icon://comment">
 						</StandardListItem>
 					</items>

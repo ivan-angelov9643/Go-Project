@@ -40,7 +40,7 @@ sap.ui.define([
                     loanData
                 );
 
-                Core.getEventBus().publish("library-app", "loansUpdated", updateResponse);
+                Core.getEventBus().publish("library-app", "loansUpdated");
 
                 MessageToast.show("Successfully extended the loan.");
             } catch (error) {

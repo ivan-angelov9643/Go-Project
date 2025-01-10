@@ -57,6 +57,11 @@
 												press="onExtendReservation"
 												class="sapUiTinyMarginEnd"/>
 										<Button
+											text="Make loan"
+											icon="sap-icon://add-document"
+											press="onMakeLoan"
+											class="sapUiTinyMarginEnd"/>
+										<Button
 												text="Delete"
 												icon="sap-icon://delete"
 												press="onDeleteReservation"/>

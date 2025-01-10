@@ -23,7 +23,7 @@ sap.ui.define([
                     token
                 );
 
-                Core.getEventBus().publish("library-app", "reservationsUpdated", deleteResponse);
+                Core.getEventBus().publish("library-app", "reservationsUpdated", {delete_reservation: true});
                 MessageToast.show("Successfully deleted reservation");
             } catch (error) {
                 MessageToast.show(error.error || "Error deleting reservation");

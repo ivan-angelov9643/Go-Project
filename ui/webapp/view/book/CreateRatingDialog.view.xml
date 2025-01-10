@@ -1,0 +1,55 @@
+<mvc:View
+        controllerName="library-app.controller.book.CreateRatingDialog"
+        xmlns="sap.m"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="createRatingDialog"
+            title="Create Rating"
+            initialFocus="ratingValueInput"
+            afterClose=".onDialogClose">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ColumnLayout"
+                    columnsM="1"
+                    columnsL="1"
+                    columnsXL="1">
+                <f:content>
+                    <Label text="Book Title" />
+                    <Text text="{dialogRating>/book_title}" />
+
+                    <Label text="Review Content" />
+                    <TextArea
+                            id="ratingContentInput"
+                            value="{dialogRating>/content}"
+                            rows="3"
+                            placeholder="Write your review here (optional)" />
+
+                    <Label text="Rating Value (1-5)" />
+                    <Input
+                            id="ratingValueInput"
+                            value="{dialogRating>/value}"
+                            type="Number"
+                            placeholder="Enter a value between 1 and 5" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Submit"
+                            press=".onCreateRating" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelCreate" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

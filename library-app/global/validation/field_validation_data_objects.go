@@ -115,17 +115,17 @@ var (
 			MinValue:  global.IntPtr(0),
 		},
 	}
-	ReviewValidation = []FieldValidationData{
+	RatingValidation = []FieldValidationData{
 		&StringFieldValidationData{
 			FieldName:  "Content",
 			MinLength:  global.IntPtr(1),
 			MaxLength:  global.IntPtr(5000),
 			CanBeEmpty: false,
 		},
-		&FloatFieldValidationData{
-			FieldName: "Rating",
-			MinValue:  global.FloatPtr(1),
-			MaxValue:  global.FloatPtr(5),
+		&IntFieldValidationData{
+			FieldName: "Value",
+			MinValue:  global.IntPtr(1),
+			MaxValue:  global.IntPtr(5),
 		},
 	}
 )

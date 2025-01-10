@@ -134,9 +134,9 @@
           "target": "loans"
         },
         {
-          "pattern": "reviews",
-          "name": "reviews",
-          "target": "reviews"
+          "pattern": "ratings",
+          "name": "ratings",
+          "target": "ratings"
         },
         {
           "pattern": "reservations",
@@ -191,9 +191,9 @@
           "viewId": "loans",
           "viewName": "loan.Loans"
         },
-        "reviews": {
-          "viewId": "reviews",
-          "viewName": "Reviews"
+        "ratings": {
+          "viewId": "ratings",
+          "viewName": "rating.Ratings"
         },
         "reservations": {
           "viewId": "reservations",

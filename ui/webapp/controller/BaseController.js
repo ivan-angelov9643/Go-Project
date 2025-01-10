@@ -108,6 +108,42 @@ sap.ui.define([
 			return activeLoan !== undefined;
 		},
 
+		userHasRatedBook: async function (user_id, book_id) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const ratingsResponse = await this.sendRequest(
+				`http://localhost:8080/api/ratings`,
+				"GET",
+				token
+			);
+
+			const rating = ratingsResponse.find(
+				(rating) =>
+					rating.user_id === user_id &&
+					rating.book_id === book_id
+			);
+
+			return rating !== undefined;
+		},
+
+		userHasLoanOnBook: async function (user_id, book_id) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const loansResponse = await this.sendRequest(
+				`http://localhost:8080/api/loans`,
+				"GET",
+				token
+			);
+
+			const activeLoan = loansResponse.find(
+				(loan) =>
+					loan.user_id === user_id &&
+					loan.book_id === book_id
+			);
+
+			return activeLoan !== undefined;
+		},
+
 		getUserID: function (token) {
 			return JSON.parse(atob(token.split(".")[1])).sub;
 		},
@@ -126,28 +162,28 @@ sap.ui.define([
 			model.setProperty("/categories", categoriesData);
 		},
 
-		loadReviews: async function (model, book_id = null) {
+		loadRatings: async function (model, book_id = null) {
 			const token = await this.getOwnerComponent().getToken();
 
-			let [reviewData, usersData, booksData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/reviews', "GET", token),
+			let [ratingData, usersData, booksData] = await Promise.all([
+				this.sendRequest('http://localhost:8080/api/ratings', "GET", token),
 				this.sendRequest('http://localhost:8080/api/users', "GET", token),
 				this.sendRequest('http://localhost:8080/api/books', "GET", token)
 			]);
 
 			if (book_id) {
-				reviewData = reviewData.filter(review => review.book_id === book_id);
+				ratingData = ratingData.filter(rating => rating.book_id === book_id);
 			}
 
-			reviewData.forEach(review => {
-				const user = usersData.find(u => u.id === review.user_id);
-				const book = booksData.find(b => b.id === review.book_id);
+			ratingData.forEach(rating => {
+				const user = usersData.find(u => u.id === rating.user_id);
+				const book = booksData.find(b => b.id === rating.book_id);
 
-				review.user_name = user ? user.preferred_username : 'Unknown User';
-				review.book_title = book ? book.title : 'Unknown Book';
+				rating.user_name = user ? user.preferred_username : 'Unknown User';
+				rating.book_title = book ? book.title : 'Unknown Book';
 			});
 
-			model.setProperty("/reviews", reviewData);
+			model.setProperty("/ratings", ratingData);
 		},
 
 		toISO8601: function (dateString) {
@@ -251,6 +287,7 @@ sap.ui.define([
 				due_date: null,
 				return_date: null,
 				status: null,
+				loan_duration: null,
 				days_to_extend: null
 			};
 		},
@@ -265,6 +302,7 @@ sap.ui.define([
 			loanModel.setProperty("/due_date", data.due_date);
 			loanModel.setProperty("/return_date", data.return_date);
 			loanModel.setProperty("/status", data.status);
+			loanModel.setProperty("/loan_duration", data.loan_duration);
 			loanModel.setProperty("/days_to_extend", data.days_to_extend);
 		},
 
@@ -294,6 +332,27 @@ sap.ui.define([
 			reservationModel.setProperty("/days_to_extend", data.days_to_extend);
 			reservationModel.setProperty("/hours_to_extend", data.hours_to_extend);
 			reservationModel.setProperty("/minutes_to_extend", data.minutes_to_extend);
-		}
+		},
+
+		initRatingModel: function () {
+			return {
+				id: null,
+				user_id: null,
+				book_id: null,
+				book_title: null,
+				content: null,
+				value: null
+			};
+		},
+
+		fillRatingModel: function (ratingModel, data) {
+			ratingModel.setProperty("/id", data.id);
+			ratingModel.setProperty("/user_id", data.user_id);
+			ratingModel.setProperty("/book_id", data.book_id);
+			ratingModel.setProperty("/book_title", data.book_title);
+			ratingModel.setProperty("/content", data.content);
+			ratingModel.setProperty("/value", data.value);
+		},
+
 	});
 });

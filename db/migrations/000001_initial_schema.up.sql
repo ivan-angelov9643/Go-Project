@@ -66,12 +66,12 @@ CREATE TABLE reservations (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE reviews (
+CREATE TABLE ratings (
     id UUID PRIMARY KEY,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     book_id UUID REFERENCES books(id) ON DELETE CASCADE,
     content VARCHAR(5000) NOT NULL,
-    rating INT CHECK (rating >= 1 AND rating <= 5),
+    value INT CHECK (value >= 1 AND value <= 5),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

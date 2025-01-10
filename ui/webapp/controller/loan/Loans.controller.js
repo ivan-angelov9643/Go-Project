@@ -74,7 +74,6 @@ sap.ui.define([
 			const oDialogLoanModel = this._oDeleteLoanDialog.getModel("dialogLoan");
 
 			this.fillLoanModel(oDialogLoanModel, oData);
-			console.log(oData);
 			this._oDeleteLoanDialog.byId("deleteLoanDialog").open();
 		},
 
@@ -103,6 +102,10 @@ sap.ui.define([
 
 		handleLoansUpdated: async function (ns, ev, eventData) {
 			this.loadLoans();
+
+			if (!eventData.from_books && (eventData.delete_loan || eventData.return_book)) {
+				Core.getEventBus().publish("library-app", "booksUpdated", {from_loans: true});
+			}
 		},
 
 	});
