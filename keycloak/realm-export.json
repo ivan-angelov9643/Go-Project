@@ -660,7 +660,6 @@
         "rating.global",
         "rating.read",
         "rating.create",
-        "rating.edit",
         "rating.delete",
 
         "reservation.global",
@@ -760,8 +759,8 @@
         "loan.delete",
 
         "rating.global",
-        "rating.create",
         "rating.read",
+        "rating.create",
 
         "reservation.read",
         "reservation.create",

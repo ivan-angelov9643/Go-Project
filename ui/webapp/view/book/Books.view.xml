@@ -8,7 +8,7 @@
 		xmlns:form="sap.ui.layout.form">
 	<f:FlexibleColumnLayout id="flexibleColumnLayout">
 		<f:beginColumnPages>
-			<Page>
+			<Page showHeader="false">
 				<l:BlockLayout id="BlockLayoutBooks" background="Default">
 					<l:BlockLayoutRow>
 						<l:BlockLayoutCell backgroundColorSet="ColorSet9" backgroundColorShade="ShadeA" width="3">

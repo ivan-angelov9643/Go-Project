@@ -3,7 +3,7 @@
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page showHeader="false">
 		<l:BlockLayout
 				id="BlockLayoutCategories"
 				background="Default">
@@ -42,7 +42,8 @@
 							</Column>
 							<Column hAlign="Center">
 								<Text text="Actions"
-									  visible="{= ${userRoles>/category.edit} ? true: false }" />
+									  visible="{= ${userRoles>/category.edit} ||
+												 ${userRoles>/category.delete}? true: false }"/>
 							</Column>
 						</columns>
 						<items>

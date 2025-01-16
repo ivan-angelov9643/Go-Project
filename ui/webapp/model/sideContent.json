@@ -14,11 +14,6 @@
 			"titleI18nKey": "sideContentImportantLinks",
 			"icon": "sap-icon://chain-link",
 			"key": "importantLinks"
-		},
-		{
-			"titleI18nKey": "sideContentLegal",
-			"icon": "sap-icon://compare",
-			"key": "legal"
 		}
 	]
 }

@@ -3,7 +3,7 @@
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page showHeader="false">
 		<l:BlockLayout
 				id="BlockLayoutRatings"
 				background="Default">
@@ -40,7 +40,8 @@
 								<Text text="Value"/>
 							</Column>
 							<Column hAlign="Center">
-								<Text text="Actions"/>
+								<Text text="Actions"
+									  visible="{= ${userRoles>/rating.delete} ? true: false }"/>
 							</Column>
 						</columns>
 						<items>
@@ -54,7 +55,8 @@
 										<Button
 												text="Delete"
 												icon="sap-icon://delete"
-												press="onDeleteRating"/>
+												press="onDeleteRating"
+												visible="{= ${userRoles>/rating.delete} ? true: false }"/>
 									</HBox>
 								</cells>
 							</ColumnListItem>

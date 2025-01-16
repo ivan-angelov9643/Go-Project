@@ -2,48 +2,60 @@
 		controllerName="library-app.controller.Profile"
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
-		xmlns:mvc="sap.ui.core.mvc">
-	<Page showHeader="true" title="{i18n>profileDetailsTitle}">
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns:form="sap.ui.layout.form"
+		xmlns:core="sap.ui.core">
+	<Page showHeader="false">
 		<l:BlockLayout id="BlockLayoutProfile" background="Default">
 			<l:BlockLayoutRow>
 				<l:BlockLayoutCell>
-					<VBox>
-						<HBox justifyContent="SpaceBetween" alignItems="Center">
-							<VBox>
-								<Label text="Preferred Username" design="Bold" />
-								<Text text="{user>/preferred_username}" />
-							</VBox>
-						</HBox>
-
-						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
-							<VBox>
-								<Label text="Given Name" design="Bold" />
-								<Text text="{user>/given_name}" />
-							</VBox>
-						</HBox>
-
-						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
-							<VBox>
-								<Label text="Family Name" design="Bold" />
-								<Text text="{user>/family_name}" />
-							</VBox>
-						</HBox>
-
-						<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTop">
-							<VBox>
-								<Label text="Email" design="Bold" />
-								<Text text="{user>/email}" />
-							</VBox>
-						</HBox>
+					<VBox class="sapUiMediumMargin">
+						<form:Form>
+							<form:layout>
+								<form:ResponsiveGridLayout
+										labelSpanXL="3"
+										labelSpanL="4"
+										labelSpanM="6"
+										labelSpanS="12"
+										adjustLabelSpan="false"
+										singleContainerFullSize="true" />
+							</form:layout>
+							<form:title>
+								<core:Title text="Profile Details" />
+							</form:title>
+							<form:formContainers>
+								<form:FormContainer>
+									<form:formElements>
+										<form:FormElement label="Username">
+											<form:fields>
+												<Text text="{user>/preferred_username}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+											</form:fields>
+										</form:FormElement>
+										<form:FormElement label="Given Name">
+											<form:fields>
+												<Text text="{user>/given_name}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+											</form:fields>
+										</form:FormElement>
+										<form:FormElement label="Family Name">
+											<form:fields>
+												<Text text="{user>/family_name}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+											</form:fields>
+										</form:FormElement>
+										<form:FormElement label="Email">
+											<form:fields>
+												<Text text="{user>/email}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+											</form:fields>
+										</form:FormElement>
+									</form:formElements>
+								</form:FormContainer>
+							</form:formContainers>
+						</form:Form>
 					</VBox>
+					<HBox justifyContent="End" class="sapUiSmallMarginTop">
+						<Button text="Edit" press="onEditProfile" type="Emphasized" />
+					</HBox>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>
-
-		<Bar design="Footer">
-			<contentRight>
-				<Button text="Edit" press="onEditProfile" type="Emphasized" />
-			</contentRight>
-		</Bar>
 	</Page>
 </mvc:View>

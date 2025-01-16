@@ -4,7 +4,7 @@
 		xmlns:l="sap.ui.layout"
 		xmlns:core="sap.ui.core"
 		xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page showHeader="false">
 		<l:BlockLayout
 				id="BlockLayoutLoans"
 				background="Default">
@@ -96,7 +96,9 @@
 								<Text text="Status"/>
 							</Column>
 							<Column hAlign="Center">
-								<Text text="Actions"/>
+								<Text text="Actions"
+									  visible="{= ${userRoles>/loan.edit} ||
+												 ${userRoles>/loan.delete}? true: false }"/>
 							</Column>
 						</columns>
 						<items>

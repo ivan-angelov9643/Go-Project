@@ -3,7 +3,7 @@
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page showHeader="false">
 		<l:BlockLayout
 				id="BlockLayoutAuthors"
 				background="Default">
@@ -57,7 +57,8 @@
 							</Column>
 							<Column hAlign="Center">
 								<Text text="Actions"
-									  visible="{= ${userRoles>/author.edit} ? true: false }" />
+									  visible="{= ${userRoles>/author.edit} ||
+												 ${userRoles>/author.delete}? true: false }"/>
 							</Column>
 						</columns>
 						<items>

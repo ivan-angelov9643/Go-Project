@@ -3,7 +3,7 @@
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page showHeader="false">
 		<l:BlockLayout
 				id="BlockLayoutUsers"
 				background="Default">
@@ -28,7 +28,7 @@
 						</headerToolbar>
 						<columns>
 							<Column>
-								<Text text="Preferred Username"/>
+								<Text text="Username"/>
 							</Column>
 							<Column>
 								<Text text="Given Name"/>
@@ -40,7 +40,8 @@
 								<Text text="Email"/>
 							</Column>
 							<Column hAlign="Center">
-								<Text text="Actions"/>
+								<Text text="Actions"
+									  visible="{= ${userRoles>/user.edit} ? true : false }"/>
 							</Column>
 						</columns>
 						<items>
@@ -55,11 +56,8 @@
 												text="Edit"
 												icon="sap-icon://edit"
 												press="onEditUser"
-												class="sapUiTinyMarginEnd"/>
-										<Button
-												text="Delete"
-												icon="sap-icon://delete"
-												press="onDeleteUser"/>
+												class="sapUiTinyMarginEnd"
+												visible="{= ${userRoles>/user.edit} ? true : false }" />
 									</HBox>
 								</cells>
 							</ColumnListItem>

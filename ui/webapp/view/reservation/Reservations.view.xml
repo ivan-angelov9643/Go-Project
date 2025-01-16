@@ -5,7 +5,7 @@
 		xmlns:l="sap.ui.layout"
 		xmlns:core="sap.ui.core"
 		xmlns:mvc="sap.ui.core.mvc">
-	<Page>
+	<Page showHeader="false">
 		<l:BlockLayout
 				id="BlockLayoutReservations"
 				background="Default">
@@ -78,7 +78,11 @@
 								<Text text="Expiry Date"/>
 							</Column>
 							<Column hAlign="Center">
-								<Text text="Actions"/>
+								<Text text="Actions"
+									  visible="{= ${userRoles>/reservation.edit} ||
+												 ${userRoles>/reservation.delete} ||
+												 (${userRoles>/loan.create} &amp;&amp;
+												 ${userRoles>/reservation.delete}) ? true: false }"/>
 							</Column>
 						</columns>
 						<items>
@@ -100,7 +104,7 @@
 											icon="sap-icon://add-document"
 											press="onMakeLoan"
 											class="sapUiTinyMarginEnd"
-											visible="{= ${userRoles>/reservation.edit} ? true : false }" />
+											visible="{= ${userRoles>/reservation.edit} &amp;&amp; ${userRoles>/loan.create}? true : false }" />
 										<Button
 												text="Delete"
 												icon="sap-icon://delete"
