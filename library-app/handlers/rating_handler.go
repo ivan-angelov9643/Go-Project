@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
+	"awesomeProject/library-app/global/db"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -22,7 +23,8 @@ func NewRatingHandler(ratingManager managers.RatingManagerInterface) *RatingHand
 func (h *RatingHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[RatingHandler.GetAll] Fetching all ratings")
 
-	ratings, dbErr := h.ratingManager.GetAll()
+	dbScope := db.NewDBScope(global.IsGlobal(r), global.GetOwnerID(r))
+	ratings, dbErr := h.ratingManager.GetAll(dbScope)
 	if dbErr != nil {
 		global.HttpDBError(
 			w,

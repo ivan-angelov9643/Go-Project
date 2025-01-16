@@ -5,19 +5,33 @@ sap.ui.define([
 	'library-app/model/formatter',
 	"sap/ui/core/Core",
 	"sap/ui/core/mvc/XMLView",
-], function (BaseController, JSONModel, Device, formatter, Core, XMLView) {
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator",
+	"sap/ui/model/Sorter"
+], function (BaseController, JSONModel, Device, formatter, Core, XMLView, Filter, FilterOperator, Sorter) {
 	"use strict";
 	return BaseController.extend("library-app.controller.Reservations", {formatter: formatter,
 
-		onInit: function () {
+		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "reservationsUpdated", this.handleReservationsUpdated, this);
-			this.reservationModel = new JSONModel({
+
+			this.oReservationModel = new JSONModel({
 				reservations: null,
 			});
-			this.reservationModel.setSizeLimit(Number.MAX_VALUE);
-			this.getView().setModel(this.reservationModel, "reservation");
-			this.loadData();
-			this.getView().setModel(this.reservationModel, "reservation");
+			this.oReservationModel.setSizeLimit(Number.MAX_VALUE);
+			this.getView().setModel(this.oReservationModel, "reservation");
+			await this.loadReservations(this.oReservationModel);
+
+			this.sSortBy = this.getView().byId("sortBySelect").getSelectedKey();
+			this.sSortOrder = this.getView().byId("sortOrderSelect").getSelectedKey();
+			this._applySorting()
+		},
+
+		loadData: async function() {
+			await this.loadReservations(this.oReservationModel);
 		},
 
 		onExtendReservation: async function (oEvent) {
@@ -89,28 +103,8 @@ sap.ui.define([
 			Core.getEventBus().unsubscribe("library-app", "reservationsUpdated", this.handleReservationsUpdated, this);
 		},
 
-		loadData: async function () {
-			const reservationModel = this.getView().getModel("reservation");
-			const token = await this.getOwnerComponent().getToken();
-
-			const [reservationsData, usersData, booksData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/reservations', "GET", token),
-				this.sendRequest('http://localhost:8080/api/users', "GET", token),
-				this.sendRequest('http://localhost:8080/api/books', "GET", token)
-			]);
-
-			reservationsData.forEach(reservation => {
-				const user = usersData.find(u => u.id === reservation.user_id);
-				const book = booksData.find(b => b.id === reservation.book_id);
-
-				reservation.user_name = user ? user.preferred_username : 'Unknown User';
-				reservation.book_title = book ? book.title : 'Unknown Book';
-			});
-			reservationModel.setProperty("/reservations", reservationsData);
-		},
-
 		handleReservationsUpdated: async function (ns, ev, eventData) {
-			await this.loadData()
+			await this.loadReservations(this.oReservationModel)
 
 			if (eventData.make_loan) {
 				Core.getEventBus().publish("library-app", "loansUpdated");
@@ -124,6 +118,59 @@ sap.ui.define([
 				)
 			) {
 				Core.getEventBus().publish("library-app", "booksUpdated", {from_reservations: true});
+			}
+		},
+
+		onTitleSearchChange: function(oEvent) {
+			this.sTitleSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		onUsernameSearchChange: function(oEvent) {
+			this.sUsernameSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		_applyCombinedFilters: function() {
+			let aFilters = [];
+
+			if (this.sTitleSearch && this.sTitleSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("book_title", FilterOperator.Contains, this.sTitleSearch)
+				);
+			}
+
+			if (this.sUsernameSearch && this.sUsernameSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("user_name", FilterOperator.Contains, this.sUsernameSearch)
+				);
+			}
+
+			let oTable = this.getView().byId("reservationsTable");
+			let oBinding = oTable.getBinding("items");
+
+			oBinding.filter(aFilters);
+		},
+
+		onSortByChange: function (oEvent) {
+			this.sSortBy = oEvent.getParameter("selectedItem").getKey();
+			this._applySorting();
+		},
+
+		onSortOrderChange: function (oEvent) {
+			this.sSortOrder = oEvent.getParameter("selectedItem").getKey();
+			this._applySorting();
+		},
+
+		_applySorting: function () {
+			let oTable = this.getView().byId("reservationsTable");
+			let oBinding = oTable.getBinding("items");
+
+			if (this.sSortBy && this.sSortOrder) {
+				let bDescending = this.sSortOrder === "desc";
+				let oSorter = new Sorter(this.sSortBy, bDescending);
+
+				oBinding.sort(oSorter);
 			}
 		},
 	});

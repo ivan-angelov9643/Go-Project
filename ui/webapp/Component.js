@@ -44,6 +44,11 @@ sap.ui.define([
         this.setModel(sideModel, "side");
       }
 
+      this.userRoles = new JSONModel(this._populateUserRoles(keycloak));
+      this.setModel(this.userRoles, "userRoles");
+
+      console.log(this.getModel("userRoles").getData())
+
       this.getRouter().initialize();
     },
 
@@ -63,6 +68,17 @@ sap.ui.define([
         }
       }
       return keycloak.token;
+    },
+
+    _populateUserRoles: function (keycloak) {
+      const userRoles = {};
+      const roles = keycloak.tokenParsed?.realm_access?.roles || [];
+
+      roles.forEach(role => {
+        userRoles[role] = true;
+      });
+
+      return userRoles;
     },
 
     hasRole: function (role) {

@@ -9,7 +9,10 @@ sap.ui.define([
 	return BaseController.extend("library-app.controller.category.Categories", {
 		formatter: formatter,
 
-		onInit: function () {
+		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "categoriesUpdated", this.handleCategoriesUpdated, this);
 
 			this.oCategoryModel = new JSONModel({
@@ -17,8 +20,13 @@ sap.ui.define([
 			});
 			this.oCategoryModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oCategoryModel, "category");
-			this.loadCategories(this.oCategoryModel);
+			await this.loadCategories(this.oCategoryModel);
 		},
+
+		loadData: async function() {
+			await this.loadCategories(this.oCategoryModel);
+		},
+
 
 		onCreateCategory: async function () {
 			if (!this._oCreateCategoryDialog) {
@@ -78,7 +86,7 @@ sap.ui.define([
 		},
 
 		handleCategoriesUpdated: async function (ns, ev, eventData) {
-			this.loadCategories(this.oCategoryModel);
+			await this.loadCategories(this.oCategoryModel);
 			Core.getEventBus().publish("library-app", "booksUpdated", eventData);
 		},
 	});

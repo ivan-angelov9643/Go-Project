@@ -631,28 +631,47 @@
       "subGroups": [],
       "attributes": {},
       "realmRoles": [
-        "book.read",
-        "author.read",
-        "loan.global",
-        "user.read",
-        "book.global",
-        "rating.read",
-        "author.write",
-        "user.global",
-        "category.global",
-        "rating.write",
-        "reservation.global",
-        "loan.read",
-        "rating.global",
-        "user.write",
-        "category.read",
-        "loan.write",
-        "reservation.read",
-        "reservation.write",
-        "book.write",
-        "category.write",
+        "mainrole.administrator",
+
         "author.global",
-        "mainrole.administrator"
+        "author.read",
+        "author.create",
+        "author.edit",
+        "author.delete",
+
+        "book.global",
+        "book.read",
+        "book.create",
+        "book.edit",
+        "book.delete",
+
+        "category.global",
+        "category.read",
+        "category.create",
+        "category.edit",
+        "category.delete",
+
+        "loan.global",
+        "loan.read",
+        "loan.create",
+        "loan.edit",
+        "loan.delete",
+
+        "rating.global",
+        "rating.read",
+        "rating.create",
+        "rating.edit",
+        "rating.delete",
+
+        "reservation.global",
+        "reservation.read",
+        "reservation.create",
+        "reservation.edit",
+        "reservation.delete",
+
+        "user.global",
+        "user.read",
+        "user.edit"
       ],
       "clientRoles": {}
     },
@@ -663,24 +682,45 @@
       "subGroups": [],
       "attributes": {},
       "realmRoles": [
-        "book.read",
-        "author.read",
-        "loan.global",
-        "book.global",
-        "user.read",
-        "author.write",
-        "user.global",
         "mainrole.librarian",
+
+        "author.global",
+        "author.read",
+        "author.create",
+        "author.edit",
+        "author.delete",
+
+        "book.global",
+        "book.read",
+        "book.create",
+        "book.edit",
+        "book.delete",
+
         "category.global",
-        "reservation.global",
-        "loan.read",
         "category.read",
-        "loan.write",
+        "category.create",
+        "category.edit",
+        "category.delete",
+
+        "loan.global",
+        "loan.read",
+        "loan.create",
+        "loan.edit",
+        "loan.delete",
+
+        "rating.global",
+        "rating.read",
+        "rating.create",
+        "rating.delete",
+
+        "reservation.global",
         "reservation.read",
-        "reservation.write",
-        "book.write",
-        "category.write",
-        "author.global"
+        "reservation.create",
+        "reservation.edit",
+        "reservation.delete",
+
+        "user.read",
+        "user.edit"
       ],
       "clientRoles": {}
     },
@@ -705,18 +745,30 @@
       "subGroups": [],
       "attributes": {},
       "realmRoles": [
-        "category.global",
-        "rating.write",
-        "loan.read",
-        "category.read",
-        "book.read",
-        "author.read",
-        "reservation.read",
-        "book.global",
-        "reservation.write",
         "mainrole.user",
+
+        "author.global",
+        "author.read",
+
+        "book.global",
+        "book.read",
+
+        "category.global",
+        "category.read",
+
+        "loan.read",
+        "loan.delete",
+
+        "rating.global",
+        "rating.create",
         "rating.read",
-        "author.global"
+
+        "reservation.read",
+        "reservation.create",
+        "reservation.delete",
+
+        "user.read",
+        "user.edit"
       ],
       "clientRoles": {}
     }

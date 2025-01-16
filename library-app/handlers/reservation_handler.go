@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"awesomeProject/library-app/global"
+	"awesomeProject/library-app/global/db"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -22,7 +23,8 @@ func NewReservationHandler(reservationManager managers.ReservationManagerInterfa
 func (h *ReservationHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[ReservationHandler.GetAll] Fetching all reservations")
 
-	reservations, dbErr := h.reservationManager.GetAll()
+	dbScope := db.NewDBScope(global.IsGlobal(r), global.GetOwnerID(r))
+	reservations, dbErr := h.reservationManager.GetAll(dbScope)
 	if dbErr != nil {
 		global.HttpDBError(
 			w,

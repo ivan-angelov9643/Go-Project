@@ -7,7 +7,7 @@ sap.ui.define([
     "use strict";
 
     return BaseController.extend("library-app.controller.book.CreateBookDialog", {
-        onInit: function () {
+        onInit: async function () {
             Core.getEventBus().subscribe("library-app", "authorsUpdated", this.handleAuthorsUpdated, this);
             Core.getEventBus().subscribe("library-app", "categoriesUpdated", this.handleCategoriesUpdated, this);
 
@@ -19,14 +19,14 @@ sap.ui.define([
             });
             this.oAuthorModel.setSizeLimit(Number.MAX_VALUE);
             this.getView().setModel(this.oAuthorModel, "author");
-            this.loadAuthors(this.oAuthorModel);
+            await this.loadAuthors(this.oAuthorModel);
 
             this.oCategoryModel = new JSONModel({
                 categories: null,
             });
             this.oCategoryModel.setSizeLimit(Number.MAX_VALUE);
             this.getView().setModel(this.oCategoryModel, "category");
-            this.loadCategories(this.oCategoryModel);
+            await this.loadCategories(this.oCategoryModel);
         },
 
         onExit: function () {
@@ -35,11 +35,11 @@ sap.ui.define([
         },
 
         handleAuthorsUpdated: async function (ns, ev, eventData) {
-            this.loadAuthors(this.oAuthorModel)
+            await this.loadAuthors(this.oAuthorModel)
         },
 
         handleCategoriesUpdated: async function (ns, ev, eventData) {
-            this.loadCategories(this.oCategoryModel)
+            await this.loadCategories(this.oCategoryModel)
         },
 
         onCreateBook: async function () {

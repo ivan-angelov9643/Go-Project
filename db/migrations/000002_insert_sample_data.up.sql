@@ -30,13 +30,13 @@ VALUES
 INSERT INTO loans (id, user_id, book_id, start_date, due_date, return_date, status, created_at, updated_at)
 VALUES
     ('dd69a43a-f51f-4f03-9302-c96f13b6b90b', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '27dc7f06-6a2f-41f5-a69f-ec2303bcae3b', '2024-01-01', '2024-01-15', NULL, 'active', NOW(), NOW()),
-    ('b63c0269-df60-49cb-b815-685d8a587d6a', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', '2024-02-01', '2024-02-15', '2024-02-10', 'active', NOW(), NOW());
+    ('b63c0269-df60-49cb-b815-685d8a587d6a', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', '2024-02-01', '2024-02-15', '2024-02-10', 'completed', NOW(), NOW());
 
 -- Insert sample data into `reservations`
 INSERT INTO reservations (id, user_id, book_id, created_at, expiry_date, updated_at)
 VALUES
-    ('ecdc1e64-8be3-4857-bf2f-c5a54d79f76a', 'a4dfe207-f3bc-4710-8ba4-d9f69a45c093', 'a1c61255-3547-4c6e-b3ba-f0ddf2763791', NOW(), '2024-03-01', NOW()),
-    ('dd97be09-9467-4b22-91a8-f3c4bb743cc7', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', NOW(), '2024-02-20', NOW());
+    ('ecdc1e64-8be3-4857-bf2f-c5a54d79f76a', 'a4dfe207-f3bc-4710-8ba4-d9f69a45c093', 'a1c61255-3547-4c6e-b3ba-f0ddf2763791', NOW(), '2025-03-01', NOW()),
+    ('dd97be09-9467-4b22-91a8-f3c4bb743cc7', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', NOW(), '2025-02-20', NOW());
 
 -- Insert sample data into `ratings`
 INSERT INTO ratings (id, user_id, book_id, content, value, created_at, updated_at)

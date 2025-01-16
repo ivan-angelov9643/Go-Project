@@ -15,10 +15,10 @@
 			"key": "userDashboard"
 		},
 		{
-			"titleI18nKey": "sideContentAuthors",
-			"icon": "sap-icon://supplier",
+			"titleI18nKey": "sideContentProfile",
+			"icon": "sap-icon://customer",
 			"expanded": false,
-			"key": "authors"
+			"key": "profile"
 		},
 		{
 			"titleI18nKey": "sideContentBooks",
@@ -27,34 +27,28 @@
 			"key": "books"
 		},
 		{
+			"titleI18nKey": "sideContentAuthors",
+			"icon": "sap-icon://supplier",
+			"expanded": false,
+			"key": "authors"
+		},
+		{
 			"titleI18nKey": "sideContentCategories",
 			"icon": "sap-icon://shelf",
 			"expanded": false,
 			"key": "categories"
 		},
 		{
-			"titleI18nKey": "sideContentProfile",
-			"icon": "sap-icon://customer",
+			"titleI18nKey": "sideContentReservations",
+			"icon": "sap-icon://bookmark-2",
 			"expanded": false,
-			"key": "profile"
+			"key": "reservations"
 		},
 		{
 			"titleI18nKey": "sideContentLoans",
 			"icon": "sap-icon://action",
 			"expanded": false,
 			"key": "loans"
-		},
-		{
-			"titleI18nKey": "sideContentRatings",
-			"icon": "sap-icon://badge",
-			"expanded": false,
-			"key": "ratings"
-		},
-		{
-			"titleI18nKey": "sideContentReservations",
-			"icon": "sap-icon://bookmark-2",
-			"expanded": false,
-			"key": "reservations"
 		}
 	],
 	"fixedNavigation": [

@@ -29,7 +29,8 @@
 										icon="sap-icon://add"
 										press="onCreateAuthor"
 										type="Ghost"
-										class="sapUiTinyMarginBegin"/>
+										class="sapUiTinyMarginBegin"
+										visible="{= ${userRoles>/author.create} ? true: false }" />
 							</Toolbar>
 						</headerToolbar>
 						<columns>
@@ -55,7 +56,8 @@
 								<Text text="Website"/>
 							</Column>
 							<Column hAlign="Center">
-								<Text text="Actions"/>
+								<Text text="Actions"
+									  visible="{= ${userRoles>/author.edit} ? true: false }" />
 							</Column>
 						</columns>
 						<items>
@@ -73,11 +75,13 @@
 												text="Edit"
 												icon="sap-icon://edit"
 												press="onEditAuthor"
-												class="sapUiTinyMarginEnd"/>
+												class="sapUiTinyMarginEnd"
+												visible="{= ${userRoles>/author.edit} ? true: false }" />
 										<Button
 												text="Delete"
 												icon="sap-icon://delete"
-												press="onDeleteAuthor"/>
+												press="onDeleteAuthor"
+												visible="{= ${userRoles>/author.delete} ? true: false }" />
 									</HBox>
 								</cells>
 							</ColumnListItem>

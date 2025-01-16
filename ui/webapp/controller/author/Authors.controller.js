@@ -9,14 +9,22 @@ sap.ui.define([
 	return BaseController.extend("library-app.controller.author.Authors", {
 		formatter: formatter,
 
-		onInit: function () {
+		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "authorsUpdated", this.handleAuthorsUpdated, this);
+
 			this.oAuthorModel = new JSONModel({
 				authors: null,
 			});
 			this.oAuthorModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oAuthorModel, "author");
-			this.loadAuthors(this.oAuthorModel);
+			await this.loadAuthors(this.oAuthorModel);
+		},
+
+		loadData: async function() {
+			await this.loadAuthors(this.oAuthorModel);
 		},
 
 		onCreateAuthor: async function () {
@@ -77,7 +85,7 @@ sap.ui.define([
 		},
 
 		handleAuthorsUpdated: async function (ns, ev, eventData) {
-			this.loadAuthors(this.oAuthorModel);
+			await this.loadAuthors(this.oAuthorModel);
 			Core.getEventBus().publish("library-app", "booksUpdated", eventData);
 		},
 	});

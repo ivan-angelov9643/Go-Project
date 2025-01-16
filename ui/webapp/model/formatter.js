@@ -1,6 +1,7 @@
 sap.ui.define([
-	"sap/base/strings/formatMessage"
-], function (formatMessage) {
+	"sap/base/strings/formatMessage",
+	"sap/ui/core/Component"
+], function (formatMessage, Component) {
 	"use strict";
 
 	return {
@@ -54,6 +55,13 @@ sap.ui.define([
 		isReservationVisible: function (userHasReserved) {
 
 			return !userHasReserved;
-		}
+		},
+
+		hasRole: function (sValue) {
+			var oComponent = Component.getOwnerComponentFor(this.getView());
+			console.log(oComponent)
+			console.log(oComponent.hasRole(sValue))
+			return oComponent.hasRole(sValue);
+		},
 	};
 });

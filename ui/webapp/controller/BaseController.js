@@ -53,23 +53,12 @@ sap.ui.define([
 			});
 		},
 
-		getAvailableCopies: async function (book_id) {
-			const token = await this.getOwnerComponent().getToken();
-
-			const bookResponse = await this.sendRequest(`http://localhost:8080/api/books/${book_id}`, "GET", token);
-			const totalCopies = bookResponse.total_copies;
-
-			const loansResponse = await this.sendRequest(`http://localhost:8080/api/loans`, "GET", token);
-			const activeLoans = loansResponse.filter(
-				(loan) => loan.book_id === book_id && loan.status === "active"
-			);
-
-			const reservationsResponse = await this.sendRequest(`http://localhost:8080/api/reservations`, "GET", token);
-			const activeReservations = reservationsResponse.filter(
-				(reservation) => reservation.book_id === book_id
-			);
-
-			return totalCopies - activeLoans.length - activeReservations.length
+		getBookData: async function (token, book_id) {
+			return await this.sendRequest(
+				`http://localhost:8080/api/books/${book_id}`,
+				"GET",
+				token
+			)
 		},
 
 		userHasReservedBook: async function (user_id, book_id) {
@@ -148,6 +137,25 @@ sap.ui.define([
 			return JSON.parse(atob(token.split(".")[1])).sub;
 		},
 
+		loadBooks: async function (model) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const [booksData, authorsData, categoriesData] = await Promise.all([
+				this.sendRequest('http://localhost:8080/api/books', "GET", token),
+				this.sendRequest('http://localhost:8080/api/authors', "GET", token),
+				this.sendRequest('http://localhost:8080/api/categories', "GET", token)
+			]);
+
+			booksData.forEach(book => {
+				const author = authorsData.find(a => a.id === book.author_id);
+				const category = categoriesData.find(c => c.id === book.category_id);
+
+				book.author_name = author ? `${author.first_name} ${author.last_name}` : 'Unknown Author';
+				book.category_name = category ? category.name : 'Unknown Category';
+			});
+			model.setProperty("/books", booksData);
+		},
+
 		loadAuthors: async function (model) {
 			const token = await this.getOwnerComponent().getToken();
 			const authorsData = await this.sendRequest("http://localhost:8080/api/authors", "GET", token);
@@ -160,6 +168,44 @@ sap.ui.define([
 			const categoriesData = await this.sendRequest("http://localhost:8080/api/categories", "GET", token);
 
 			model.setProperty("/categories", categoriesData);
+		},
+
+		loadReservations: async function (model) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const [reservationsData, usersData, booksData] = await Promise.all([
+				this.sendRequest('http://localhost:8080/api/reservations', "GET", token),
+				this.sendRequest('http://localhost:8080/api/users', "GET", token),
+				this.sendRequest('http://localhost:8080/api/books', "GET", token)
+			]);
+
+			reservationsData.forEach(reservation => {
+				const user = usersData.find(u => u.id === reservation.user_id);
+				const book = booksData.find(b => b.id === reservation.book_id);
+
+				reservation.user_name = user ? user.preferred_username : 'Unknown User';
+				reservation.book_title = book ? book.title : 'Unknown Book';
+			});
+			model.setProperty("/reservations", reservationsData);
+		},
+
+		loadLoans: async function (model) {
+			const token = await this.getOwnerComponent().getToken();
+
+			const [loansData, usersData, booksData] = await Promise.all([
+				this.sendRequest('http://localhost:8080/api/loans', "GET", token),
+				this.sendRequest('http://localhost:8080/api/users', "GET", token),
+				this.sendRequest('http://localhost:8080/api/books', "GET", token)
+			]);
+
+			loansData.forEach(loan => {
+				const user = usersData.find(u => u.id === loan.user_id);
+				const book = booksData.find(b => b.id === loan.book_id);
+
+				loan.user_name = user ? user.preferred_username : 'Unknown User';
+				loan.book_title = book ? book.title : 'Unknown Book';
+			});
+			model.setProperty("/loans", loansData);
 		},
 
 		loadRatings: async function (model, book_id = null) {
@@ -184,6 +230,13 @@ sap.ui.define([
 			});
 
 			model.setProperty("/ratings", ratingData);
+		},
+
+		loadUsers: async function (model) {
+			const token = await this.getOwnerComponent().getToken();
+			const userData = await this.sendRequest('http://localhost:8080/api/users', "GET", token);
+
+			model.setProperty("/users", userData);
 		},
 
 		toISO8601: function (dateString) {

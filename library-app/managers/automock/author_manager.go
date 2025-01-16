@@ -3,7 +3,7 @@
 package automock
 
 import (
-	db_error "awesomeProject/library-app/global/db_error"
+	db_error "awesomeProject/library-app/global/db"
 
 	mock "github.com/stretchr/testify/mock"
 

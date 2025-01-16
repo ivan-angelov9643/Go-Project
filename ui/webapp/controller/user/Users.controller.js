@@ -9,8 +9,10 @@ sap.ui.define([
 	return BaseController.extend("library-app.controller.user.Users", {
 		formatter: formatter,
 
-		onInit: function () {
-			// sap.ui.getCore().getEventBus().subscribe("library-app", "RouteChanged", this.handleRouteChanged, this);
+		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "usersUpdated", this.handleUsersUpdated, this);
 
 			this.oUserModel = new JSONModel({
@@ -18,7 +20,11 @@ sap.ui.define([
 			});
 			this.oUserModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oUserModel, "user");
-			this.loadUsers();
+			await this.loadUsers(this.oUserModel);
+		},
+
+		loadData: async function() {
+			await this.loadUsers(this.oUserModel);
 		},
 
 		onEditUser: async function (oEvent) {
@@ -60,19 +66,11 @@ sap.ui.define([
 		},
 
 		onExit: function () {
-			// sap.ui.getCore().getEventBus().unsubscribe("library-app", "RouteChanged", this.handleRouteChanged, this);
 			Core.getEventBus().subscribe("library-app", "usersUpdated", this.handleUsersUpdated, this);
 		},
 
-		loadUsers: async function () {
-			const token = await this.getOwnerComponent().getToken();
-			const userData = await this.sendRequest('http://localhost:8080/api/users', "GET", token);
-
-			this.oUserModel.setProperty("/users", userData);
-		},
-
 		handleUsersUpdated: async function (ns, ev, eventData) {
-			this.loadUsers();
+			await this.loadUsers();
 		},
 	});
 });

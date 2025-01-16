@@ -14,6 +14,9 @@ sap.ui.define([
 		formatter: formatter,
 
 		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "booksUpdated", this.handleBooksUpdated, this);
 
 			this.oBookModel = new JSONModel({
@@ -31,11 +34,15 @@ sap.ui.define([
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
 
-			await this.loadData();
+			await this.loadBooks(this.oBookModel);
 
 			this.getView().byId("titleSearch").setFilterFunction(function(sTerm, oItem) {
 				return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"));
 			});
+		},
+
+		loadData: async function() {
+			await this.loadBooks(this.oBookModel);
 		},
 
 		onCreateBook: async function () {
@@ -91,11 +98,14 @@ sap.ui.define([
 
 		onSelectBook: async function(oEvent) {
 			const oSelectedBookData = oEvent.getParameter("listItem").getBindingContext("book").getObject();
-			oSelectedBookData.available_copies = await this.getAvailableCopies(oSelectedBookData.id);
-
-			this.fillBookModel(this.oSelectedBookModel, oSelectedBookData)
 
 			const token = await this.getOwnerComponent().getToken();
+
+			const oBookData = await this.getBookData(token ,oSelectedBookData.id)
+			oBookData.author_name = oSelectedBookData.author_name;
+			oBookData.category_name = oSelectedBookData.category_name
+			this.fillBookModel(this.oSelectedBookModel, oBookData)
+
 			const user_id = this.getUserID(token);
 
 			await this.reserveButtonUpdateVisible(user_id, oSelectedBookData.id);
@@ -105,6 +115,11 @@ sap.ui.define([
 
 			const oFlexibleColumnLayout = this.getView().byId("flexibleColumnLayout");
 			oFlexibleColumnLayout.setLayout(LayoutType.TwoColumnsBeginExpanded);
+
+			const oTable = this.getView().byId("booksTable");
+			if (oTable) {
+				oTable.removeSelections(true);
+			}
 		},
 
 		onNavBack: function() {
@@ -119,24 +134,24 @@ sap.ui.define([
 
 		onReserveBook: async function () {
 			const token = await this.getOwnerComponent().getToken();
-			const book_id = this.oSelectedBookModel.getData().id
+			const oBook = this.oSelectedBookModel.getData();
 			const user_id = this.getUserID(token);
 
-			if (await this.userHasActiveLoanOnBook(user_id, book_id)) {
+			if (await this.userHasActiveLoanOnBook(user_id, oBook.id)) {
 				MessageToast.show("You already have an active loan on this book");
 				return;
 			}
-			if (await this.userHasReservedBook(user_id, book_id)) {
+			if (await this.userHasReservedBook(user_id, oBook.id)) {
 				MessageToast.show("You already have a reservation for this book");
 				return;
 			}
-			if (await this.getAvailableCopies(book_id) < 1) {
+			if (oBook.available_copies < 1) {
 				MessageToast.show("There aren't any available copies at the moment");
 				return;
 			}
 
 			const body = {
-				book_id: book_id,
+				book_id: oBook.id,
 				user_id: user_id,
 			};
 
@@ -155,8 +170,7 @@ sap.ui.define([
 			} catch (error) {
 				MessageToast.show(error.error || "Error reserving book");
 			}
-			this.oSelectedBookModel.setProperty("/available_copies", this.getAvailableCopies(book_id));
-			// await this.reserveButtonUpdateVisible(user_id, book_id);
+			this.oSelectedBookModel.setProperty("/available_copies", oBook.available_copies - 1);
 		},
 
 		onRateBook: async function () {
@@ -181,27 +195,8 @@ sap.ui.define([
 			Core.getEventBus().unsubscribe("library-app", "booksUpdated", this.handleBooksUpdated, this);
 		},
 
-		loadData: async function () {
-			const token = await this.getOwnerComponent().getToken();
-
-			const [booksData, authorsData, categoriesData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/books', "GET", token),
-				this.sendRequest('http://localhost:8080/api/authors', "GET", token),
-				this.sendRequest('http://localhost:8080/api/categories', "GET", token)
-			]);
-
-			booksData.forEach(book => {
-				const author = authorsData.find(a => a.id === book.author_id);
-				const category = categoriesData.find(c => c.id === book.category_id);
-
-				book.author_name = author ? `${author.first_name} ${author.last_name}` : 'Unknown Author';
-				book.category_name = category ? category.name : 'Unknown Category';
-			});
-			this.oBookModel.setProperty("/books", booksData);
-		},
-
 		handleBooksUpdated: async function (ns, ev, eventData) {
-			await this.loadData()
+			await this.loadBooks(this.oBookModel)
 
 			const selectedBookID = this.oSelectedBookModel.getData().id;
 
@@ -230,7 +225,6 @@ sap.ui.define([
 			}
 
 			const selectedBookData = this.oBookModel.getData().books.find(book => book.id === selectedBookID);
-			selectedBookData.available_copies = await this.getAvailableCopies(selectedBookID)
 			this.fillBookModel(this.oSelectedBookModel, selectedBookData);
 		},
 

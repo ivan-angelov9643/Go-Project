@@ -29,7 +29,8 @@
 										icon="sap-icon://add"
 										press="onCreateCategory"
 										type="Ghost"
-										class="sapUiTinyMarginBegin"/>
+										class="sapUiTinyMarginBegin"
+										visible="{= ${userRoles>/category.create} ? true: false }" />
 							</Toolbar>
 						</headerToolbar>
 						<columns>
@@ -40,7 +41,8 @@
 								<Text text="Description"/>
 							</Column>
 							<Column hAlign="Center">
-								<Text text="Actions"/>
+								<Text text="Actions"
+									  visible="{= ${userRoles>/category.edit} ? true: false }" />
 							</Column>
 						</columns>
 						<items>
@@ -53,11 +55,13 @@
 												text="Edit"
 												icon="sap-icon://edit"
 												press="onEditCategory"
-												class="sapUiTinyMarginEnd"/>
+												class="sapUiTinyMarginEnd"
+												visible="{= ${userRoles>/category.edit} ? true: false }" />
 										<Button
 												text="Delete"
 												icon="sap-icon://delete"
-												press="onDeleteCategory"/>
+												press="onDeleteCategory"
+												visible="{= ${userRoles>/category.delete} ? true: false }" />
 									</HBox>
 								</cells>
 							</ColumnListItem>

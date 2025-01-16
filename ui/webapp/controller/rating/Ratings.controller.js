@@ -11,6 +11,9 @@ sap.ui.define([
 		formatter: formatter,
 
 		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "ratingsUpdated", this.handleRatingsUpdated, this);
 
 			this.oRatingModel = new JSONModel({
@@ -18,6 +21,10 @@ sap.ui.define([
 			});
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
+			await this.loadRatings(this.oRatingModel);
+		},
+
+		loadData: async function() {
 			await this.loadRatings(this.oRatingModel);
 		},
 

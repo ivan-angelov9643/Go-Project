@@ -1,4 +1,4 @@
-package db_error
+package db
 
 import "fmt"
 

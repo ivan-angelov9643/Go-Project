@@ -15,10 +15,12 @@ const (
 	DefaultLogSeverity = "debug"
 
 	// Scopes
-	PUBLIC = "public"
-	READ   = "read"
-	WRITE  = "write"
+	//PUBLIC = "public"
 	GLOBAL = "global"
+	READ   = "read"
+	CREATE = "create"
+	EDIT   = "edit"
+	DELETE = "delete"
 
 	// Resources
 	Author      = "author"
@@ -29,6 +31,6 @@ const (
 	User        = "user"
 	Reservation = "reservation"
 
-	GLOBAL_SCOPE    = "global-scope"
-	CURRENT_USER_ID = "current-user-id"
+	GLOBAL_SCOPE    = "global_scope"
+	CURRENT_USER_ID = "current_user_id"
 )

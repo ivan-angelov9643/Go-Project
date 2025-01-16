@@ -1,7 +1,7 @@
 package managers
 
 import (
-	"awesomeProject/library-app/global/db_error"
+	"awesomeProject/library-app/global/db"
 	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"
@@ -26,7 +26,7 @@ func (m *CategoryManager) GetAll() ([]models.Category, error) {
 	err := m.db.Find(&allCategories).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.GetAll] Error fetching all categories: %v", err)
-		return nil, db_error.NewDBError(db_error.InternalError, "[CategoryManager.GetAll] Error fetching all categories: %v", err)
+		return nil, db.NewDBError(db.InternalError, "[CategoryManager.GetAll] Error fetching all categories: %v", err)
 	}
 
 	log.Infof("[CategoryManager.GetAll] Successfully fetched all categories")
@@ -40,7 +40,7 @@ func (m *CategoryManager) Get(idToGet uuid.UUID) (models.Category, error) {
 	err := m.db.First(&category, "id = ?", idToGet).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.Get] Error fetching category with ID %s: %v", idToGet, err)
-		return models.Category{}, db_error.NewDBError(db_error.InternalError, "[CategoryManager.Get] Error fetching category with ID %s: %v", idToGet, err)
+		return models.Category{}, db.NewDBError(db.InternalError, "[CategoryManager.Get] Error fetching category with ID %s: %v", idToGet, err)
 	}
 
 	log.Infof("[CategoryManager.Get] Successfully fetched category with ID: %s", idToGet)
@@ -52,7 +52,7 @@ func (m *CategoryManager) Create(newCategory models.Category) (models.Category, 
 
 	err := newCategory.Validate()
 	if err != nil {
-		return models.Category{}, db_error.NewDBError(db_error.ValidationError, err.Error())
+		return models.Category{}, db.NewDBError(db.ValidationError, err.Error())
 	}
 
 	newCategory.ID = uuid.New()
@@ -60,7 +60,7 @@ func (m *CategoryManager) Create(newCategory models.Category) (models.Category, 
 	err = m.db.Create(&newCategory).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.Create] Error creating new category with ID %s: %v", newCategory.ID, err)
-		return models.Category{}, db_error.NewDBError(db_error.InternalError, "[CategoryManager.Create] Error creating new category with ID %s: %v", newCategory.ID, err)
+		return models.Category{}, db.NewDBError(db.InternalError, "[CategoryManager.Create] Error creating new category with ID %s: %v", newCategory.ID, err)
 	}
 
 	log.Infof("[CategoryManager.Create] Successfully created category with ID: %s", newCategory.ID)
@@ -72,7 +72,7 @@ func (m *CategoryManager) Update(updatedCategory models.Category) (models.Catego
 
 	err := updatedCategory.Validate()
 	if err != nil {
-		return models.Category{}, db_error.NewDBError(db_error.ValidationError, err.Error())
+		return models.Category{}, db.NewDBError(db.ValidationError, err.Error())
 	}
 
 	var category models.Category
@@ -80,16 +80,16 @@ func (m *CategoryManager) Update(updatedCategory models.Category) (models.Catego
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Errorf("[CategoryManager.Update] Category with ID %s does not exist", updatedCategory.ID)
-			return models.Category{}, db_error.NewDBError(db_error.NotFoundError, "[CategoryManager.Update] Category with ID %s does not exist", updatedCategory.ID)
+			return models.Category{}, db.NewDBError(db.NotFoundError, "[CategoryManager.Update] Category with ID %s does not exist", updatedCategory.ID)
 		}
 		log.Errorf("[CategoryManager.Update] Error fetching category with ID %s: %v", updatedCategory.ID, err)
-		return models.Category{}, db_error.NewDBError(db_error.InternalError, "[CategoryManager.Update] Error fetching category with ID %s: %v", updatedCategory.ID, err)
+		return models.Category{}, db.NewDBError(db.InternalError, "[CategoryManager.Update] Error fetching category with ID %s: %v", updatedCategory.ID, err)
 	}
 
 	err = m.db.Model(&category).Updates(updatedCategory).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.Update] Error updating category with ID %s: %v", updatedCategory.ID, err)
-		return models.Category{}, db_error.NewDBError(db_error.InternalError, "[CategoryManager.Update] Error updating category with ID %s: %v", updatedCategory.ID, err)
+		return models.Category{}, db.NewDBError(db.InternalError, "[CategoryManager.Update] Error updating category with ID %s: %v", updatedCategory.ID, err)
 	}
 
 	log.Infof("[CategoryManager.Update] Successfully updated category with ID: %s", updatedCategory.ID)
@@ -104,16 +104,16 @@ func (m *CategoryManager) Delete(idToDelete uuid.UUID) (models.Category, error) 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Errorf("[CategoryManager.Delete] Category with ID %s does not exist", idToDelete)
-			return models.Category{}, db_error.NewDBError(db_error.NotFoundError, "[CategoryManager.Delete] Category with ID %s does not exist", idToDelete)
+			return models.Category{}, db.NewDBError(db.NotFoundError, "[CategoryManager.Delete] Category with ID %s does not exist", idToDelete)
 		}
 		log.Errorf("[CategoryManager.Delete] Error fetching category with ID %s: %v", idToDelete, err)
-		return models.Category{}, db_error.NewDBError(db_error.InternalError, "[CategoryManager.Delete] Error fetching category with ID %s: %v", idToDelete, err)
+		return models.Category{}, db.NewDBError(db.InternalError, "[CategoryManager.Delete] Error fetching category with ID %s: %v", idToDelete, err)
 	}
 
 	err = m.db.Delete(&category).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.Delete] Error deleting category with ID %s: %v", idToDelete, err)
-		return models.Category{}, db_error.NewDBError(db_error.InternalError, "[CategoryManager.Delete] Error deleting category with ID %s: %v", idToDelete, err)
+		return models.Category{}, db.NewDBError(db.InternalError, "[CategoryManager.Delete] Error deleting category with ID %s: %v", idToDelete, err)
 	}
 
 	log.Infof("[CategoryManager.Delete] Successfully deleted category with ID: %s", idToDelete)

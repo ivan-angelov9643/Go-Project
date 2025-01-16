@@ -4,12 +4,18 @@ sap.ui.define([
 	'library-app/model/formatter',
 	"sap/ui/core/Core",
 	"sap/ui/core/mvc/XMLView",
-], function (BaseController, JSONModel, formatter, Core, XMLView) {
+	"sap/ui/model/Filter",
+	"sap/ui/model/FilterOperator",
+	"sap/ui/model/Sorter"
+], function (BaseController, JSONModel, formatter, Core, XMLView, Filter, FilterOperator, Sorter) {
 	"use strict";
 	return BaseController.extend("library-app.controller.loan.Loans", {
 		formatter: formatter,
 
-		onInit: function () {
+		onInit: async function () {
+			const oRouter = this.getOwnerComponent().getRouter();
+			oRouter.attachRoutePatternMatched(this.loadData, this);
+
 			Core.getEventBus().subscribe("library-app", "loansUpdated", this.handleLoansUpdated, this);
 
 			this.oLoanModel = new JSONModel({
@@ -17,7 +23,15 @@ sap.ui.define([
 			});
 			this.oLoanModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oLoanModel, "loan");
-			this.loadLoans();
+			await this.loadLoans(this.oLoanModel);
+
+			this.sSortBy = this.getView().byId("sortBySelect").getSelectedKey();
+			this.sSortOrder = this.getView().byId("sortOrderSelect").getSelectedKey();
+			this._applySorting()
+		},
+
+		loadData: async function() {
+			await this.loadLoans(this.oLoanModel);
 		},
 
 		onExtendLoan: async function (oEvent) {
@@ -81,32 +95,76 @@ sap.ui.define([
 			Core.getEventBus().unsubscribe("library-app", "loansUpdated", this.handleLoansUpdated, this);
 		},
 
-		loadLoans: async function () {
-			const token = await this.getOwnerComponent().getToken();
-
-			const [loansData, usersData, booksData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/loans', "GET", token),
-				this.sendRequest('http://localhost:8080/api/users', "GET", token),
-				this.sendRequest('http://localhost:8080/api/books', "GET", token)
-			]);
-
-			loansData.forEach(loan => {
-				const user = usersData.find(u => u.id === loan.user_id);
-				const book = booksData.find(b => b.id === loan.book_id);
-
-				loan.user_name = user ? user.preferred_username : 'Unknown User';
-				loan.book_title = book ? book.title : 'Unknown Book';
-			});
-			this.oLoanModel.setProperty("/loans", loansData);
-		},
-
 		handleLoansUpdated: async function (ns, ev, eventData) {
-			this.loadLoans();
+			await this.loadLoans(this.oLoanModel);
 
 			if (!eventData.from_books && (eventData.delete_loan || eventData.return_book)) {
 				Core.getEventBus().publish("library-app", "booksUpdated", {from_loans: true});
 			}
 		},
 
+		onTitleSearchChange: function(oEvent) {
+			this.sTitleSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		onUsernameSearchChange: function(oEvent) {
+			this.sUsernameSearch = oEvent.getParameter("value");
+			this._applyCombinedFilters();
+		},
+
+		onFilterStatusChange: function(oEvent) {
+			this._sSelectedStatus = oEvent.getParameter("selectedItem").getKey();
+			this._applyCombinedFilters();
+		},
+
+		_applyCombinedFilters: function() {
+			let aFilters = [];
+
+			if (this.sTitleSearch && this.sTitleSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("book_title", FilterOperator.Contains, this.sTitleSearch)
+				);
+			}
+
+			if (this.sUsernameSearch && this.sUsernameSearch.trim() !== "") {
+				aFilters.push(
+					new Filter("user_name", FilterOperator.Contains, this.sUsernameSearch)
+				);
+			}
+
+			if (this._sSelectedStatus && this._sSelectedStatus !== "all") {
+				aFilters.push(
+					new Filter("status", FilterOperator.EQ, this._sSelectedStatus)
+				);
+			}
+
+			let oTable = this.getView().byId("loansTable");
+			let oBinding = oTable.getBinding("items");
+
+			oBinding.filter(aFilters);
+		},
+
+		onSortByChange: function (oEvent) {
+			this.sSortBy = oEvent.getParameter("selectedItem").getKey();
+			this._applySorting();
+		},
+
+		onSortOrderChange: function (oEvent) {
+			this.sSortOrder = oEvent.getParameter("selectedItem").getKey();
+			this._applySorting();
+		},
+
+		_applySorting: function () {
+			let oTable = this.getView().byId("loansTable");
+			let oBinding = oTable.getBinding("items");
+
+			if (this.sSortBy && this.sSortOrder) {
+				let bDescending = this.sSortOrder === "desc";
+				let oSorter = new Sorter(this.sSortBy, bDescending);
+
+				oBinding.sort(oSorter);
+			}
+		},
 	});
 });

@@ -1,8 +1,8 @@
 <mvc:View
+		id="booksView"
 		controllerName="library-app.controller.book.Books"
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
-		xmlns:core="sap.ui.core"
 		xmlns:mvc="sap.ui.core.mvc"
 		xmlns:f="sap.f"
 		xmlns:form="sap.ui.layout.form">
@@ -12,40 +12,60 @@
 				<l:BlockLayout id="BlockLayoutBooks" background="Default">
 					<l:BlockLayoutRow>
 						<l:BlockLayoutCell backgroundColorSet="ColorSet9" backgroundColorShade="ShadeA" width="3">
+							<Toolbar design="Transparent">
+								<Title
+										text="Books"
+									   width="50px"
+									   level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"
+										visible="{= ${userRoles>/book.create} ? true: false }"/>
+								<Text text="Search by title:" width="160px"/>
+								<Text text="Search by author name:" width="180px"/>
+								<Text text="Search by category name:" width="190px"/>
+								<Text text="Search by language:" width="160px"/>
+							</Toolbar>
+							<Toolbar design="Transparent">
+								<Button
+										text="Create"
+										icon="sap-icon://add"
+										press="onCreateBook"
+										type="Ghost"
+										class="sapUiTinyMarginEnd"
+										visible="{= ${userRoles>/book.create} ? true: false }" />
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"
+										visible="{= ${userRoles>/book.create} ? false: true }"/>
+								<ToolbarSpacer width="13px"
+											   visible="{= ${userRoles>/book.create} ? false: true }" />
+								<Input
+										id="titleSearch"
+										placeholder="Enter title"
+										liveChange="onTitleSearchChange"
+										width="160px"/>
+								<Input id="authorSearch"
+									   placeholder="Enter author name"
+									   liveChange="onAuthorNameSearchChange"
+									   width="180px" />
+								<Input id="categorySearch"
+									   placeholder="Enter category name"
+									   liveChange="onCategoryNameSearchChange"
+									   width="190px"/>
+								<Input id="languageSearch"
+									   placeholder="Enter language"
+									   liveChange="onLanguageSearchChange"
+									   width="160px"/>
+							</Toolbar>
 							<Table
 									id="booksTable"
 									items="{path: 'book>/books', templateShareable: false}"
 									fixedLayout="false"
 									mode="SingleSelectMaster"
 									selectionChange="onSelectBook">
-								<headerToolbar>
-									<Toolbar design="Transparent">
-										<Title text="Books" level="H3"/>
-										<Button tooltip="Refresh" icon="sap-icon://refresh" press="loadData"/>
-										<Button text="Create" icon="sap-icon://add" press="onCreateBook" type="Ghost" class="sapUiTinyMarginBegin"/>
-										<Text text="Search by title:" />
-										<Input
-												id="titleSearch"
-												placeholder="Enter title"
-												liveChange="onTitleSearchChange"
-												width="160px"/>
-										<Text text="Search by author name:" class="sapUiSmallMarginStart"/>
-										<Input id="authorSearch"
-											   placeholder="Enter author name"
-											   liveChange="onAuthorNameSearchChange"
-											   width="160px" />
-										<Text text="Search by category name:" class="sapUiSmallMarginStart"/>
-										<Input id="categorySearch"
-											   placeholder="Enter category name"
-											   liveChange="onCategoryNameSearchChange"
-											   width="160px"/>
-										<Text text="Search by language:" class="sapUiSmallMarginStart"/>
-										<Input id="languageSearch"
-											   placeholder="Enter language"
-											   liveChange="onLanguageSearchChange"
-											   width="160px"/>
-									</Toolbar>
-								</headerToolbar>
 								<columns>
 									<Column><Text text="Title"/></Column>
 									<Column><Text text="Author"/></Column>
@@ -124,11 +144,13 @@
 					<Button text="Edit"
 							icon="sap-icon://edit"
 							press="onEditBook"
-							class="sapUiTinyMarginEnd"/>
+							class="sapUiTinyMarginEnd"
+							visible="{= ${userRoles>/book.edit} ? true: false }" />
 					<Button text="Delete"
 							icon="sap-icon://delete"
 							press="onDeleteBook"
-							class="sapUiTinyMarginEnd"/>
+							class="sapUiTinyMarginEnd"
+							visible="{= ${userRoles>/book.delete} ? true: false }" />
 					<Button id="reserveBookButton"
 							text="Reserve"
 							icon="sap-icon://appointment"

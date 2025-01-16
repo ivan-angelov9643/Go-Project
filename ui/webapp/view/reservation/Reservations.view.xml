@@ -1,7 +1,9 @@
 <mvc:View
+		id="reservationsView"
 		controllerName="library-app.controller.reservation.Reservations"
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
+		xmlns:core="sap.ui.core"
 		xmlns:mvc="sap.ui.core.mvc">
 	<Page>
 		<l:BlockLayout
@@ -12,20 +14,56 @@
 						backgroundColorSet="ColorSet9"
 						backgroundColorShade="ShadeA"
 						width="3">
+					<Toolbar design="Transparent">
+						<Title
+								text="Reservations"
+								level="H3"
+								width="102px"/>
+						<Text text="Search by username:" width="160px"/>
+						<Text text="Search by book title:" width="160px"/>
+						<Text text="Sort by:" width="160px"/>
+						<Text text="Order:" width="160px"/>
+					</Toolbar>
+					<Toolbar design="Transparent">
+						<Button
+								tooltip="Refresh"
+								icon="sap-icon://refresh"
+								press="loadData"/>
+						<ToolbarSpacer width="40px"/>
+						<Input
+								id="usernameSearch"
+								placeholder="Enter username"
+								liveChange="onUsernameSearchChange"
+								width="160px"
+								class="sapUiMediumMarginBegin"/>
+						<Input
+								id="titleSearch"
+								placeholder="Enter title"
+								liveChange="onTitleSearchChange"
+								width="160px"/>
+						<Select
+								id="sortBySelect"
+								change="onSortByChange"
+								width="160px">
+							<items>
+								<core:Item key="created_at" text="Creation Date" />
+								<core:Item key="expiry_date" text="Expiry Date" />
+							</items>
+						</Select>
+						<Select
+								id="sortOrderSelect"
+								change="onSortOrderChange"
+								width="160px">
+							<items>
+								<core:Item key="asc" text="Ascending" />
+								<core:Item key="desc" text="Descending" />
+							</items>
+						</Select>
+					</Toolbar>
 					<Table
+							id="reservationsTable"
 							items="{path:'reservation>/reservations', templateShareable: false}"
 							fixedLayout="false">
-						<headerToolbar>
-							<Toolbar design="Transparent">
-								<Title
-										text="Reservations"
-										level="H3"/>
-								<Button
-										tooltip="Refresh"
-										icon="sap-icon://refresh"
-										press="loadData"/>
-							</Toolbar>
-						</headerToolbar>
 						<columns>
 							<Column>
 								<Text text="User"/>
@@ -34,10 +72,10 @@
 								<Text text="Book"/>
 							</Column>
 							<Column>
-								<Text text="Creation"/>
+								<Text text="Creation Date"/>
 							</Column>
 							<Column>
-								<Text text="Expiry"/>
+								<Text text="Expiry Date"/>
 							</Column>
 							<Column hAlign="Center">
 								<Text text="Actions"/>
@@ -55,16 +93,19 @@
 												text="Extend reservation"
 												icon="sap-icon://action"
 												press="onExtendReservation"
-												class="sapUiTinyMarginEnd"/>
+												class="sapUiTinyMarginEnd"
+												visible="{= ${userRoles>/reservation.edit} ? true: false }" />
 										<Button
 											text="Make loan"
 											icon="sap-icon://add-document"
 											press="onMakeLoan"
-											class="sapUiTinyMarginEnd"/>
+											class="sapUiTinyMarginEnd"
+											visible="{= ${userRoles>/reservation.edit} ? true : false }" />
 										<Button
 												text="Delete"
 												icon="sap-icon://delete"
-												press="onDeleteReservation"/>
+												press="onDeleteReservation"
+												visible="{= ${userRoles>/reservation.delete} ? true : false }" />
 									</HBox>
 								</cells>
 							</ColumnListItem>

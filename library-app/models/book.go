@@ -8,12 +8,13 @@ import (
 
 type Book struct {
 	BaseModel
-	Title       string    `json:"title"`
-	Year        int       `json:"year"`
-	AuthorID    uuid.UUID `json:"author_id"`
-	CategoryID  uuid.UUID `json:"category_id"`
-	TotalCopies int       `json:"total_copies"`
-	Language    string    `json:"language"`
+	Title           string    `json:"title"`
+	Year            int       `json:"year"`
+	AuthorID        uuid.UUID `json:"author_id"`
+	CategoryID      uuid.UUID `json:"category_id"`
+	TotalCopies     int       `json:"total_copies"`
+	AvailableCopies int       `json:"available_copies" gorm:"-"`
+	Language        string    `json:"language"`
 }
 
 func (book *Book) Validate() error {
