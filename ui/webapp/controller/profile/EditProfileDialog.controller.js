@@ -1,12 +1,12 @@
 sap.ui.define([
-    "./BaseController",
+    "../BaseController",
     "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/Core",
 ], function (BaseController, MessageToast, JSONModel, Core) {
     "use strict";
 
-    return BaseController.extend("myApp.controller.EditProfileDialog", {
+    return BaseController.extend("myApp.controller.profile.EditProfileDialog", {
         onInit: function () {
             this.oDialogUserModel = new JSONModel(this.initUserModel());
             this.getView().setModel(this.oDialogUserModel, "dialogUser");

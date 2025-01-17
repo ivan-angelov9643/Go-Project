@@ -1,11 +1,12 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/core/UIComponent"
-], function(Controller, UIComponent) {
+	"sap/ui/core/UIComponent",
+	"sap/ui/model/json/JSONModel",
+	"library-app/controller/BaseController"
+], function(Controller, UIComponent, JSONModel, BaseController) {
 	"use strict";
 
 	return Controller.extend("library-app.controller.BaseController", {
-
 		getRouter : function () {
 			return UIComponent.getRouterFor(this);
 		},
@@ -237,6 +238,14 @@ sap.ui.define([
 			const userData = await this.sendRequest('http://localhost:8080/api/users', "GET", token);
 
 			model.setProperty("/users", userData);
+		},
+
+		loadCurrentUser: async function (model) {
+			const token = await this.getOwnerComponent().getToken();
+			const userID = this.getUserID(token);
+			const userData = await this.sendRequest(`http://localhost:8080/api/users/${userID}`, "GET", token);
+
+			this.fillUserModel(model, userData);
 		},
 
 		toISO8601: function (dateString) {

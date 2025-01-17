@@ -1,14 +1,13 @@
 sap.ui.define([
-	"./BaseController",
+	"../BaseController",
 	"sap/ui/model/json/JSONModel",
 	"library-app/model/formatter",
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/core/Core",
-	"sap/m/MessageToast",
-], function (BaseController, JSONModel, formatter, XMLView, Core, MessageToast) {
+], function (BaseController, JSONModel, formatter, XMLView, Core) {
 	"use strict";
 
-	return BaseController.extend("library-app.controller.Profile", {
+	return BaseController.extend("library-app.controller.profile.Profile", {
 		formatter: formatter,
 
 		onInit: async function () {
@@ -17,7 +16,7 @@ sap.ui.define([
 			this.oUserModel = new JSONModel(this.initUserModel());
 			this.getView().setModel(this.oUserModel, "user");
 
-			await this.setupUserModel();
+			await this.loadCurrentUser(this.oUserModel);
 		},
 
 		onEditProfile: async function () {
@@ -26,7 +25,7 @@ sap.ui.define([
 				oOwnerComponent.runAsOwner(() => {
 					this._oEditProfileDialog = new XMLView({
 						id: "editProfileDialogView",
-						viewName: "library-app.view.EditProfileDialog",
+						viewName: "library-app.view.profile.EditProfileDialog",
 					});
 					this.getView().addDependent(this._oEditProfileDialog);
 				});
@@ -49,20 +48,5 @@ sap.ui.define([
 		handleUserUpdated: async function (ns, ev, eventData) {
 			this.fillUserModel(this.oUserModel, eventData);
 		},
-
-		setupUserModel: async function () {
-			const token = await this.getOwnerComponent().getToken();
-			const userID = this.getUserID(token);
-			const userData = await this.sendRequest(`http://localhost:8080/api/users/${userID}`, "GET", token);
-
-			this.fillUserModel(this.oUserModel, userData);
-		},
-
-		fillUserModel: function (userModel, data) {
-			userModel.setProperty("/preferred_username", data.preferred_username);
-			userModel.setProperty("/given_name", data.given_name);
-			userModel.setProperty("/family_name", data.family_name);
-			userModel.setProperty("/email", data.email);
-		}
 	});
 });

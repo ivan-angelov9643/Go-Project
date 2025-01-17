@@ -89,38 +89,6 @@ sap.ui.define([
 			oToolPage.setSideExpanded(!oToolPage.getSideExpanded());
 		},
 
-		// onNavigationSelect: async function (oEvent) {
-		// 	const oSelectedItem = oEvent.getParameter("item");
-		// 	const sKey = oSelectedItem.getKey();
-		//
-		// 	switch (sKey) {
-		// 		case "books":
-		// 			const oBookModel = Core.byId("booksView").getModel("book");
-		// 			console.log("before load: ", oBookModel.getData())
-		// 			await this.loadBooks(oBookModel);
-		// 			console.log("after load: ", oBookModel.getData())
-		// 			break;
-		// 		case "authors":
-		// 			this.loadAuthors();
-		// 			break;
-		// 		case "categories":
-		// 			this.loadCategories();
-		// 			break;
-		// 		case "reservations":
-		// 			this.loadReservations();
-		// 			break;
-		// 		case "loans":
-		// 			this.loadLoans();
-		// 			break;
-		// 		case "ratings":
-		// 			this.loadRatings();
-		// 			break;
-		// 		case "users":
-		// 			this.loadUsers();
-		// 			break;
-		// 	}
-		// },
-
 		_handleWindowResize: function (oDevice) {
 			var oToolPage = this.byId("app");
 			if (Device.resize.width < 1024) {

@@ -31,10 +31,10 @@
 								<Text text="Username"/>
 							</Column>
 							<Column>
-								<Text text="Given Name"/>
+								<Text text="First Name"/>
 							</Column>
 							<Column>
-								<Text text="Family Name"/>
+								<Text text="Last Name"/>
 							</Column>
 							<Column>
 								<Text text="Email"/>

@@ -185,7 +185,7 @@
         },
         "profile": {
           "viewId": "profile",
-          "viewName": "Profile"
+          "viewName": "profile.Profile"
         },
         "loans": {
           "viewId": "loans",

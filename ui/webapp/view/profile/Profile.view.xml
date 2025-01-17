@@ -1,5 +1,5 @@
 <mvc:View
-		controllerName="library-app.controller.Profile"
+		controllerName="library-app.controller.profile.Profile"
 		xmlns="sap.m"
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc"
@@ -9,14 +9,14 @@
 		<l:BlockLayout id="BlockLayoutProfile" background="Default">
 			<l:BlockLayoutRow>
 				<l:BlockLayoutCell>
-					<VBox class="sapUiMediumMargin">
+					<VBox class="sapUiMediumMargin" width="400px">
 						<form:Form>
 							<form:layout>
 								<form:ResponsiveGridLayout
-										labelSpanXL="3"
-										labelSpanL="4"
-										labelSpanM="6"
-										labelSpanS="12"
+										labelSpanXL="9"
+										labelSpanL="8"
+										labelSpanM="7"
+										labelSpanS="6"
 										adjustLabelSpan="false"
 										singleContainerFullSize="true" />
 							</form:layout>
@@ -28,32 +28,40 @@
 									<form:formElements>
 										<form:FormElement label="Username">
 											<form:fields>
-												<Text text="{user>/preferred_username}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+												<Text text="{user>/preferred_username}"/>
 											</form:fields>
 										</form:FormElement>
-										<form:FormElement label="Given Name">
+										<form:FormElement label="First Name">
 											<form:fields>
-												<Text text="{user>/given_name}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+												<Text text="{user>/given_name}"/>
 											</form:fields>
 										</form:FormElement>
-										<form:FormElement label="Family Name">
+										<form:FormElement label="Last Name">
 											<form:fields>
-												<Text text="{user>/family_name}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+												<Text text="{user>/family_name}"/>
 											</form:fields>
 										</form:FormElement>
 										<form:FormElement label="Email">
 											<form:fields>
-												<Text text="{user>/email}" class="sapUiResponsiveMargin sapUiMediumFontSize" />
+												<Text text="{user>/email}"/>
 											</form:fields>
+										</form:FormElement>
+									</form:formElements>
+								</form:FormContainer>
+								<form:FormContainer>
+									<form:formElements>
+										<form:FormElement>
+											<HBox justifyContent="End">
+												<Button text="Edit"
+														press="onEditProfile"
+														icon="sap-icon://edit"/>
+											</HBox>
 										</form:FormElement>
 									</form:formElements>
 								</form:FormContainer>
 							</form:formContainers>
 						</form:Form>
 					</VBox>
-					<HBox justifyContent="End" class="sapUiSmallMarginTop">
-						<Button text="Edit" press="onEditProfile" type="Emphasized" />
-					</HBox>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>

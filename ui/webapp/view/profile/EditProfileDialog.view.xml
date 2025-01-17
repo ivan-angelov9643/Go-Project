@@ -1,5 +1,5 @@
 <mvc:View
-        controllerName="library-app.controller.EditProfileDialog"
+        controllerName="library-app.controller.profile.EditProfileDialog"
         xmlns="sap.m"
         xmlns:mvc="sap.ui.core.mvc"
         xmlns:f="sap.ui.layout.form">

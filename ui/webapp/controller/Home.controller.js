@@ -2,24 +2,28 @@ sap.ui.define([
 	'./BaseController',
 	'sap/ui/model/json/JSONModel',
 	'sap/ui/Device',
-	'library-app/model/formatter'
-], function (BaseController, JSONModel, Device, formatter) {
+	'library-app/model/formatter',
+	"sap/ui/core/Core",
+], function (BaseController, JSONModel, Device, formatter, Core) {
 	"use strict";
 	return BaseController.extend("library-app.controller.Home", {
 		formatter: formatter,
 
-		onInit: function () {
-			// sap.ui.getCore().getEventBus().subscribe("library-app", "RouteChanged", this.handleRouteChanged, this);
+		onInit: async function () {
+			Core.getEventBus().subscribe("library-app", "userUpdated", this.handleUserUpdated, this);
+
+			this.oUserModel = new JSONModel(this.initUserModel());
+			this.getView().setModel(this.oUserModel, "user");
+
+			await this.loadCurrentUser(this.oUserModel);
 		},
 
 		onExit: function() {
-			// sap.ui.getCore().getEventBus().unsubscribe("library-app", "RouteChanged", this.handleRouteChanged, this);
+			Core.getEventBus().unsubscribe("library-app", "userUpdated", this.handleUserUpdated, this);
 		},
 
-		handleRouteChanged: function(channel, eventId, pageData) {
-			if (pageData.selectedPageKey === "home"){
-				// Ignore for now
-			}
+		handleUserUpdated: async function (ns, ev, eventData) {
+			this.fillUserModel(this.oUserModel, eventData);
 		},
 	});
 });
