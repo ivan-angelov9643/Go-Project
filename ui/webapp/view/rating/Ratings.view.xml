@@ -12,20 +12,34 @@
 						backgroundColorSet="ColorSet9"
 						backgroundColorShade="ShadeA"
 						width="3">
+					<Toolbar design="Transparent">
+						<Title
+								text="Ratings"
+								width="63px"/>
+						<Text text="Search by username:" width="160px"/>
+						<Text text="Search by book title:" width="160px"/>
+					</Toolbar>
+					<Toolbar design="Transparent">
+						<Button
+								tooltip="Refresh"
+								icon="sap-icon://refresh"
+								press="loadData"/>
+						<ToolbarSpacer width="25px"/>
+						<Input
+								id="usernameSearch"
+								placeholder="Enter username"
+								liveChange="onUsernameSearchChange"
+								width="160px"/>
+						<Input
+								id="titleSearch"
+								placeholder="Enter title"
+								liveChange="onTitleSearchChange"
+								width="160px"/>
+					</Toolbar>
 					<Table
-							items="{path:'rating>/ratings', templateShareable: false}"
+							id="ratingsTable"
+							items="{path:'rating>/data', templateShareable: false}"
 							fixedLayout="false">
-						<headerToolbar>
-							<Toolbar design="Transparent">
-								<Title
-										text="Ratings"
-										level="H3"/>
-								<Button
-										tooltip="Refresh"
-										icon="sap-icon://refresh"
-										press="loadData"/>
-							</Toolbar>
-						</headerToolbar>
 						<columns>
 							<Column>
 								<Text text="User"/>
@@ -62,6 +76,21 @@
 							</ColumnListItem>
 						</items>
 					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${rating>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${rating>/page} + ' of ' + ${rating>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${rating>/page} &lt; ${rating>/total_pages} }"/>
+					</Toolbar>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>

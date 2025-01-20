@@ -111,7 +111,7 @@ sap.ui.define([
 			await this.reserveButtonUpdateVisible(user_id, oSelectedBookData.id);
 			await this.rateButtonUpdateVisible(user_id, oSelectedBookData.id);
 
-			await this.loadRatings(this.oRatingModel, oSelectedBookData.id);
+			await this.loadRatings(this.oRatingModel, 1, oSelectedBookData.id);
 
 			const oFlexibleColumnLayout = this.getView().byId("flexibleColumnLayout");
 			oFlexibleColumnLayout.setLayout(LayoutType.TwoColumnsBeginExpanded);
@@ -208,7 +208,7 @@ sap.ui.define([
 			}
 
 			if (eventData.from_ratings && eventData.book_id === selectedBookID) {
-				await this.loadRatings(this.oRatingModel, selectedBookID);
+				await this.loadRatings(this.oRatingModel, 1, selectedBookID);
 			}
 
 			if (!eventData.from_reservations) {

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"awesomeProject/library-app/errors"
 	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/models"
 	"context"
@@ -25,7 +26,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 		//	// Parse token
 		authHeader := r.Header.Get("Authorization")
 		if len(authHeader) < 7 {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				"[Protected] Missing or incomplete Authorization header",
 				"Unauthorized request: Authorization header is missing or incomplete",
@@ -37,7 +38,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 
 		authType := strings.ToLower(authHeader[:6])
 		if authType != "bearer" {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				"[Protected] Invalid Authorization type",
 				"Unauthorized request: Authorization header must use Bearer token",
@@ -51,7 +52,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 		tokenString := strings.TrimSpace(authHeader[7:])
 		err := server.AuthClient.RetrospectToken(r.Context(), tokenString)
 		if err != nil {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				"[Protected] Invalid or expired token",
 				"Unauthorized request: Token is invalid or expired",
@@ -64,7 +65,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 		// Create user if not exists
 		userFromInfo, err := server.AuthClient.GetUserFromToken(r.Context(), tokenString)
 		if err != nil {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				"[Protected] Failed to extract user from token",
 				"Unauthorized request: Could not extract user information from token",
@@ -79,7 +80,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 			log.Info(userFromInfo)
 			err := server.DBSaveUser(*userFromInfo)
 			if err != nil {
-				global.HttpError(
+				errors.HttpError(
 					w,
 					"[Protected] Failed to save new user",
 					"Unauthorized request: Could not save user to the database",
@@ -92,7 +93,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 
 		loadedUser, err = server.DBLoadUser(userFromInfo.ID.String())
 		if err != nil {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				"[Protected] Failed to load user from database",
 				"Unauthorized request: Could not retrieve user details from the database",
@@ -108,7 +109,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 		// Get roles from token
 		roles, err := server.AuthClient.GetRolesFromToken(r.Context(), tokenString)
 		if err != nil {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				"[Protected] Failed to retrieve roles from token",
 				"Unauthorized request: Could not retrieve roles from the token",
@@ -130,7 +131,7 @@ func (server *Server) Protected(next http.HandlerFunc, resource string, role str
 		if havePermission(resource, role, roles) {
 			next(w, rWithUpdatedContext)
 		} else {
-			global.HttpError(
+			errors.HttpError(
 				w,
 				fmt.Sprintf("[Protected] Insufficient permissions for resource '%s' and role '%s'", resource, role),
 				fmt.Sprintf("Unauthorized request: You lack the required permissions for resource '%s' with role '%s'", resource, role),

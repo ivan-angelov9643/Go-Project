@@ -7,6 +7,8 @@ sap.ui.define([
 	"use strict";
 
 	return Controller.extend("library-app.controller.BaseController", {
+		page_size: 5,
+
 		getRouter : function () {
 			return UIComponent.getRouterFor(this);
 		},
@@ -209,20 +211,22 @@ sap.ui.define([
 			model.setProperty("/loans", loansData);
 		},
 
-		loadRatings: async function (model, book_id = null) {
+		loadRatings: async function (model, page, book_id = null) {
 			const token = await this.getOwnerComponent().getToken();
 
+			// TODO: implement getting ratings for specific book in the backend
+
 			let [ratingData, usersData, booksData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/ratings', "GET", token),
+				this.sendRequest(`http://localhost:8080/api/ratings?page_size=${this.page_size}&page=${page}`, "GET", token),
 				this.sendRequest('http://localhost:8080/api/users', "GET", token),
 				this.sendRequest('http://localhost:8080/api/books', "GET", token)
 			]);
 
 			if (book_id) {
-				ratingData = ratingData.filter(rating => rating.book_id === book_id);
+				ratingData.data = ratingData.data.filter(rating => rating.book_id === book_id);
 			}
 
-			ratingData.forEach(rating => {
+			ratingData.data.forEach(rating => {
 				const user = usersData.find(u => u.id === rating.user_id);
 				const book = booksData.find(b => b.id === rating.book_id);
 
@@ -230,7 +234,11 @@ sap.ui.define([
 				rating.book_title = book ? book.title : 'Unknown Book';
 			});
 
-			model.setProperty("/ratings", ratingData);
+			model.setProperty("/count", ratingData.count);
+			model.setProperty("/page_size", ratingData.page_size);
+			model.setProperty("/page", ratingData.page);
+			model.setProperty("/data", ratingData.data);
+			model.setProperty("/total_pages", Math.ceil(ratingData.count / ratingData.page_size));
 		},
 
 		loadUsers: async function (model) {

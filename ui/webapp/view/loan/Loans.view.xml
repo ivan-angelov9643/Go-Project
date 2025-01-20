@@ -26,7 +26,6 @@
 
 					</Toolbar>
 					<Toolbar design="Transparent">
-
 						<Button
 								tooltip="Refresh"
 								icon="sap-icon://refresh"

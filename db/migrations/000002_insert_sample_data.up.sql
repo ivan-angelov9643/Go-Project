@@ -42,6 +42,15 @@ VALUES
 INSERT INTO ratings (id, user_id, book_id, content, value, created_at, updated_at)
 VALUES
     ('6bded01c-0207-42ed-8b09-5455b8167e25', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '27dc7f06-6a2f-41f5-a69f-ec2303bcae3b', 'Great book!', 5, NOW(), NOW()),
-    ('8a90d7fc-dc2d-4e96-b6d4-9a3d7139641d', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', 'Informative but hard to read.', 3, NOW(), NOW());
+    ('8a90d7fc-dc2d-4e96-b6d4-9a3d7139641d', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', 'Informative but hard to read.', 3, NOW(), NOW()),
+
+    ('6bded01c-0207-42ed-8b09-5455b8167e21', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '27dc7f06-6a2f-41f5-a69f-ec2303bcae3b', '3', 5, NOW(), NOW()),
+    ('8a90d7fc-dc2d-4e96-b6d4-9a3d71396412', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', '4', 3, NOW(), NOW()),
+
+    ('6bded01c-0207-42ed-8b09-5455b8167e23', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '27dc7f06-6a2f-41f5-a69f-ec2303bcae3b', '5', 5, NOW(), NOW()),
+    ('8a90d7fc-dc2d-4e96-b6d4-9a3d71396414', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', '6', 3, NOW(), NOW()),
+
+    ('6bded01c-0207-42ed-8b09-5455b8167e26', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '27dc7f06-6a2f-41f5-a69f-ec2303bcae3b', '7', 5, NOW(), NOW()),
+    ('8a90d7fc-dc2d-4e96-b6d4-9a3d71396417', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'bc582d8b-cbeb-45e6-8b0b-c89e871b5833', '8', 3, NOW(), NOW());
 
 COMMIT;

@@ -1,7 +1,7 @@
 package managers
 
 import (
-	"awesomeProject/library-app/global/db"
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"
@@ -19,11 +19,11 @@ func NewRatingManager(db *gorm.DB) *RatingManager {
 	return &RatingManager{db}
 }
 
-func (m *RatingManager) GetAll(dbScope *db.DBScope) ([]models.Rating, error) {
+func (m *RatingManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Rating, error) {
 	log.Info("[RatingManager.GetAll] Fetching all ratings")
 
 	var allRatings []models.Rating
-	err := dbScope.Exec(m.db).Find(&allRatings).Error
+	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allRatings).Error
 	if err != nil {
 		log.Errorf("[RatingManager.GetAll] Error fetching all ratings: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[RatingManager.GetAll] Error fetching all ratings: %v", err)
@@ -118,4 +118,18 @@ func (m *RatingManager) Delete(idToDelete uuid.UUID) (models.Rating, error) {
 
 	log.Infof("[RatingManager.Delete] Successfully deleted rating with ID: %s", idToDelete)
 	return rating, nil
+}
+
+func (m *RatingManager) Count(accessScope *db.AccessScope) (int64, error) {
+	log.Infof("[RatingManager.Count] Counting ratings in the database")
+
+	var count int64
+	err := m.db.Scopes(accessScope.Get()).Model(&models.Rating{}).Count(&count).Error
+	if err != nil {
+		log.Errorf("[RatingManager.Count] Error counting ratings: %v", err)
+		return 0, db.NewDBError(db.InternalError, "[RatingManager.Count] Error counting ratings: %v", err)
+	}
+
+	log.Infof("[RatingManager.Count] Successfully counted ratings: %d", count)
+	return count, nil
 }

@@ -1,7 +1,7 @@
 package managers
 
 import (
-	"awesomeProject/library-app/global/db"
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"
@@ -19,11 +19,11 @@ func NewLoanManager(db *gorm.DB) *LoanManager {
 	return &LoanManager{db}
 }
 
-func (m *LoanManager) GetAll(dbScope *db.DBScope) ([]models.Loan, error) {
+func (m *LoanManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Loan, error) {
 	log.Info("[LoanManager.GetAll] Fetching all loans")
 
 	var allLoans []models.Loan
-	err := dbScope.Exec(m.db).Find(&allLoans).Error
+	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allLoans).Error
 	if err != nil {
 		log.Errorf("[LoanManager.GetAll] Error fetching all loans: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[LoanManager.GetAll] Error fetching all loans: %v", err)

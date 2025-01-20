@@ -1,8 +1,8 @@
 package managers
 
 import (
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/global/db"
 	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"
@@ -31,11 +31,11 @@ func (m *ReservationManager) CleanupExpiredReservations() {
 	}
 }
 
-func (m *ReservationManager) GetAll(dbScope *db.DBScope) ([]models.Reservation, error) {
+func (m *ReservationManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Reservation, error) {
 	log.Info("[ReservationManager.GetAll] Fetching all reservations")
 
 	var allReservations []models.Reservation
-	err := dbScope.Exec(m.db).Find(&allReservations).Error
+	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allReservations).Error
 	if err != nil {
 		log.Errorf("[ReservationManager.GetAll] Error fetching all reservations: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[ReservationManager.GetAll] Error fetching all reservations: %v", err)

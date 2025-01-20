@@ -1,8 +1,9 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
+	"awesomeProject/library-app/errors"
 	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/global/db"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -23,19 +24,35 @@ func NewRatingHandler(ratingManager managers.RatingManagerInterface) *RatingHand
 func (h *RatingHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[RatingHandler.GetAll] Fetching all ratings")
 
-	dbScope := db.NewDBScope(global.IsGlobal(r), global.GetOwnerID(r))
-	ratings, dbErr := h.ratingManager.GetAll(dbScope)
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	ratings, dbErr := h.ratingManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(ratings)
+	count, dbErr := h.ratingManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(
+			w,
+			dbErr,
+		)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Rating]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     ratings,
+	}
+	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[RatingHandler.GetAll] Failed to encode ratings to JSON",
 			"Failed to return ratings",
@@ -53,7 +70,7 @@ func (h *RatingHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[RatingHandler.Get] Invalid UUID format",
 			"Invalid rating ID format",
@@ -65,7 +82,7 @@ func (h *RatingHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	rating, dbErr := h.ratingManager.Get(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -74,7 +91,7 @@ func (h *RatingHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(rating)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[RatingHandler.Get] Failed to encode rating to JSON",
 			"Failed to return rating",
@@ -90,7 +107,7 @@ func (h *RatingHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var newRating models.Rating
 	err := json.NewDecoder(r.Body).Decode(&newRating)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[RatingHandler.Create] Failed to decode JSON body into Rating struct",
 			"Invalid JSON format in request body",
@@ -103,7 +120,7 @@ func (h *RatingHandler) Create(w http.ResponseWriter, r *http.Request) {
 	newRating.ID = uuid.Nil
 	createdRating, dbErr := h.ratingManager.Create(newRating)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -112,7 +129,7 @@ func (h *RatingHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(createdRating)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[RatingHandler.Create] Failed to encode created rating to JSON",
 			"Failed to return created rating",
 			http.StatusInternalServerError,
@@ -128,7 +145,7 @@ func (h *RatingHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[RatingHandler.Update] Invalid UUID format",
 			"Invalid rating ID format",
 			http.StatusBadRequest,
@@ -140,7 +157,7 @@ func (h *RatingHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var updatedRatingBody models.Rating
 	err = json.NewDecoder(r.Body).Decode(&updatedRatingBody)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[RatingHandler.Update] Failed to decode JSON body into Rating struct",
 			"Invalid JSON format in request body",
@@ -153,7 +170,7 @@ func (h *RatingHandler) Update(w http.ResponseWriter, r *http.Request) {
 	updatedRatingBody.ID = id
 	updatedRating, dbErr := h.ratingManager.Update(updatedRatingBody)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -162,7 +179,7 @@ func (h *RatingHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(updatedRating)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[RatingHandler.Update] Failed to encode updated rating to JSON",
 			"Failed to return updated rating",
 			http.StatusInternalServerError,
@@ -178,7 +195,7 @@ func (h *RatingHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[RatingHandler.Delete] Invalid UUID format",
 			"Invalid rating ID format",
 			http.StatusBadRequest,
@@ -189,7 +206,7 @@ func (h *RatingHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	deletedRating, dbErr := h.ratingManager.Delete(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -198,7 +215,7 @@ func (h *RatingHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(deletedRating)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[RatingHandler.Delete] Failed to encode rating to JSON",
 			"Failed to return deleted rating",
 			http.StatusInternalServerError,

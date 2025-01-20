@@ -1,7 +1,7 @@
 package managers
 
 import (
-	"awesomeProject/library-app/global/db"
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"awesomeProject/library-app/global/validation"
+	"awesomeProject/library-app/validation"
 	log "github.com/sirupsen/logrus"
 )
 
