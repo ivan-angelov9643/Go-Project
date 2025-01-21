@@ -26,7 +26,8 @@ func (h *RatingHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	accessScope := db.NewAccessScope(r)
 	pagingScope := db.NewPagingScope(r)
-	ratings, dbErr := h.ratingManager.GetAll(accessScope, pagingScope)
+	filterScope := db.NewRatingFilterScope(r)
+	ratings, dbErr := h.ratingManager.GetAll(accessScope, pagingScope, filterScope)
 	if dbErr != nil {
 		errors.HttpDBError(
 			w,
@@ -35,7 +36,7 @@ func (h *RatingHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	count, dbErr := h.ratingManager.Count(accessScope)
+	count, dbErr := h.ratingManager.Count(accessScope, filterScope)
 	if dbErr != nil {
 		errors.HttpDBError(
 			w,

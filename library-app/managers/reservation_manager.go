@@ -31,11 +31,15 @@ func (m *ReservationManager) CleanupExpiredReservations() {
 	}
 }
 
-func (m *ReservationManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Reservation, error) {
+func (m *ReservationManager) GetAll(scopes ...db.DBScope) ([]models.Reservation, error) {
 	log.Info("[ReservationManager.GetAll] Fetching all reservations")
 
 	var allReservations []models.Reservation
-	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allReservations).Error
+	err := db.ApplyScopes(m.db, scopes).Table("reservations").
+		Select("reservations.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = reservations.user_id").
+		Joins("JOIN books ON books.id = reservations.book_id").
+		Find(&allReservations).Error
 	if err != nil {
 		log.Errorf("[ReservationManager.GetAll] Error fetching all reservations: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[ReservationManager.GetAll] Error fetching all reservations: %v", err)
@@ -133,11 +137,11 @@ func (m *ReservationManager) Delete(idToDelete uuid.UUID) (models.Reservation, e
 	return reservation, nil
 }
 
-func (m *ReservationManager) Count(accessScope *db.AccessScope) (int64, error) {
+func (m *ReservationManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[ReservationManager.Count] Counting reservations in the database")
 
 	var count int64
-	err := m.db.Scopes(accessScope.Get()).Model(&models.Reservation{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Model(&models.Reservation{}).Count(&count).Error
 	if err != nil {
 		log.Errorf("[ReservationManager.Count] Error counting reservations: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[ReservationManager.Count] Error counting reservations: %v", err)

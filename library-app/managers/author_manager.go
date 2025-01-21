@@ -19,11 +19,11 @@ func NewAuthorManager(db *gorm.DB) *AuthorManager {
 	return &AuthorManager{db}
 }
 
-func (m *AuthorManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Author, error) {
+func (m *AuthorManager) GetAll(scopes ...db.DBScope) ([]models.Author, error) {
 	log.Info("[AuthorManager.GetAll] Fetching all authors")
 
 	var allAuthors []models.Author
-	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allAuthors).Error
+	err := db.ApplyScopes(m.db, scopes).Find(&allAuthors).Error
 	if err != nil {
 		log.Errorf("[AuthorManager.GetAll] Error fetching all authors: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[AuthorManager.GetAll] Error fetching all authors: %v", err)
@@ -120,11 +120,11 @@ func (m *AuthorManager) Delete(idToDelete uuid.UUID) (models.Author, error) {
 	return author, nil
 }
 
-func (m *AuthorManager) Count(accessScope *db.AccessScope) (int64, error) {
+func (m *AuthorManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[AuthorManager.Count] Counting authors in the database")
 
 	var count int64
-	err := m.db.Scopes(accessScope.Get()).Model(&models.Author{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Model(&models.Author{}).Count(&count).Error
 	if err != nil {
 		log.Errorf("[AuthorManager.Count] Error counting authors: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[AuthorManager.Count] Error counting authors: %v", err)

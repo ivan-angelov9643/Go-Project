@@ -47,8 +47,8 @@ CREATE TYPE loan_status AS ENUM ('active', 'completed');
 
 CREATE TABLE loans (
     id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    book_id UUID REFERENCES books(id) ON DELETE CASCADE NOT NULL,
     start_date TIMESTAMP NOT NULL,
     due_date TIMESTAMP NOT NULL,
     return_date TIMESTAMP,
@@ -59,8 +59,8 @@ CREATE TABLE loans (
 
 CREATE TABLE reservations (
     id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    book_id UUID REFERENCES books(id) ON DELETE CASCADE NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     expiry_date TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT NOW()
@@ -68,8 +68,8 @@ CREATE TABLE reservations (
 
 CREATE TABLE ratings (
     id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    book_id UUID REFERENCES books(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    book_id UUID REFERENCES books(id) ON DELETE CASCADE NOT NULL,
     content VARCHAR(5000) NOT NULL,
     value INT CHECK (value >= 1 AND value <= 5),
     created_at TIMESTAMP DEFAULT NOW(),

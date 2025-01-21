@@ -19,11 +19,11 @@ func NewCategoryManager(db *gorm.DB) *CategoryManager {
 	return &CategoryManager{db}
 }
 
-func (m *CategoryManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Category, error) {
+func (m *CategoryManager) GetAll(scopes ...db.DBScope) ([]models.Category, error) {
 	log.Info("[CategoryManager.GetAll] Fetching all categories")
 
 	var allCategories []models.Category
-	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allCategories).Error
+	err := db.ApplyScopes(m.db, scopes).Find(&allCategories).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.GetAll] Error fetching all categories: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[CategoryManager.GetAll] Error fetching all categories: %v", err)
@@ -120,11 +120,11 @@ func (m *CategoryManager) Delete(idToDelete uuid.UUID) (models.Category, error) 
 	return category, nil
 }
 
-func (m *CategoryManager) Count(accessScope *db.AccessScope) (int64, error) {
+func (m *CategoryManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[CategoryManager.Count] Counting categories in the database")
 
 	var count int64
-	err := m.db.Scopes(accessScope.Get()).Model(&models.Category{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Model(&models.Category{}).Count(&count).Error
 	if err != nil {
 		log.Errorf("[CategoryManager.Count] Error counting categories: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[CategoryManager.Count] Error counting categories: %v", err)

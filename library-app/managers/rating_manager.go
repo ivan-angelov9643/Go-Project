@@ -19,11 +19,15 @@ func NewRatingManager(db *gorm.DB) *RatingManager {
 	return &RatingManager{db}
 }
 
-func (m *RatingManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Rating, error) {
+func (m *RatingManager) GetAll(scopes ...db.DBScope) ([]models.Rating, error) {
 	log.Info("[RatingManager.GetAll] Fetching all ratings")
 
 	var allRatings []models.Rating
-	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allRatings).Error
+	err := db.ApplyScopes(m.db, scopes).Table("ratings").
+		Select("ratings.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = ratings.user_id").
+		Joins("JOIN books ON books.id = ratings.book_id").
+		Find(&allRatings).Error
 	if err != nil {
 		log.Errorf("[RatingManager.GetAll] Error fetching all ratings: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[RatingManager.GetAll] Error fetching all ratings: %v", err)
@@ -32,7 +36,6 @@ func (m *RatingManager) GetAll(accessScope *db.AccessScope, pagingScope *db.Pagi
 	log.Infof("[RatingManager.GetAll] Successfully fetched all ratings")
 	return allRatings, nil
 }
-
 func (m *RatingManager) Get(idToGet uuid.UUID) (models.Rating, error) {
 	log.Infof("[RatingManager.Get] Fetching rating with ID: %s", idToGet)
 
@@ -120,11 +123,11 @@ func (m *RatingManager) Delete(idToDelete uuid.UUID) (models.Rating, error) {
 	return rating, nil
 }
 
-func (m *RatingManager) Count(accessScope *db.AccessScope) (int64, error) {
+func (m *RatingManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[RatingManager.Count] Counting ratings in the database")
 
 	var count int64
-	err := m.db.Scopes(accessScope.Get()).Model(&models.Rating{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Model(&models.Rating{}).Count(&count).Error
 	if err != nil {
 		log.Errorf("[RatingManager.Count] Error counting ratings: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[RatingManager.Count] Error counting ratings: %v", err)

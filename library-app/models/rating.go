@@ -8,10 +8,12 @@ import (
 
 type Rating struct {
 	BaseModel
-	UserID  uuid.UUID `json:"user_id"`
-	BookID  uuid.UUID `json:"book_id"`
-	Content string    `json:"content"`
-	Value   int       `json:"value"` // 1 to 5
+	UserID    uuid.UUID `json:"user_id"`
+	UserName  string    `json:"user_name" gorm:"<-:false"`
+	BookID    uuid.UUID `json:"book_id"`
+	BookTitle string    `json:"book_title" gorm:"<-:false"`
+	Content   string    `json:"content"`
+	Value     int       `json:"value"` // 1 to 5
 }
 
 func (rating *Rating) Validate() error {

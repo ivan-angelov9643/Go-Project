@@ -20,8 +20,8 @@ func NewPagingScope(r *http.Request) *PagingScope {
 	}
 }
 
-func (as *PagingScope) Get() func(db *gorm.DB) *gorm.DB {
+func (s *PagingScope) Get() func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		return db.Offset(as.Offset).Limit(as.PageSize)
+		return db.Offset(s.Offset).Limit(s.PageSize)
 	}
 }

@@ -226,7 +226,7 @@
 				<Title text="Ratings" level="H2" class="sapUiSmallMargin" />
 				<List
 						id="ratingsList"
-						items="{rating>/ratings}"
+						items="{rating>/data}"
 						class="sapUiSmallMargin"
 						noData="There are not ratings for this book">
 					<items>
@@ -237,6 +237,21 @@
 						</StandardListItem>
 					</items>
 				</List>
+				<Toolbar design="Transparent">
+					<Button
+							text="Previous"
+							icon="sap-icon://slim-arrow-left"
+							press="onPreviousPageRatings"
+							enabled="{= ${rating>/page} > 1 }"/>
+					<Text
+							text="{= 'Page ' + ${rating>/page} + ' of ' + ${rating>/total_pages} }"
+							class="sapUiSmallMargin"/>
+					<Button
+							text="Next"
+							icon="sap-icon://slim-arrow-right"
+							press="onNextPageRatings"
+							enabled="{= ${rating>/page} &lt; ${rating>/total_pages} }"/>
+				</Toolbar>
 			</Page>
 		</f:midColumnPages>
 	</f:FlexibleColumnLayout>

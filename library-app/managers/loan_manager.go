@@ -19,11 +19,15 @@ func NewLoanManager(db *gorm.DB) *LoanManager {
 	return &LoanManager{db}
 }
 
-func (m *LoanManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Loan, error) {
+func (m *LoanManager) GetAll(scopes ...db.DBScope) ([]models.Loan, error) {
 	log.Info("[LoanManager.GetAll] Fetching all loans")
 
 	var allLoans []models.Loan
-	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allLoans).Error
+	err := db.ApplyScopes(m.db, scopes).Table("loans").
+		Select("loans.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = loans.user_id").
+		Joins("JOIN books ON books.id = loans.book_id").
+		Find(&allLoans).Error
 	if err != nil {
 		log.Errorf("[LoanManager.GetAll] Error fetching all loans: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[LoanManager.GetAll] Error fetching all loans: %v", err)
@@ -120,11 +124,11 @@ func (m *LoanManager) Delete(idToDelete uuid.UUID) (models.Loan, error) {
 	return loan, nil
 }
 
-func (m *LoanManager) Count(accessScope *db.AccessScope) (int64, error) {
+func (m *LoanManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[LoanManager.Count] Counting loans in the database")
 
 	var count int64
-	err := m.db.Scopes(accessScope.Get()).Model(&models.Loan{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Model(&models.Loan{}).Count(&count).Error
 	if err != nil {
 		log.Errorf("[LoanManager.Count] Error counting loans: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[LoanManager.Count] Error counting loans: %v", err)

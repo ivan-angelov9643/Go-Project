@@ -11,9 +11,11 @@ type Book struct {
 	Title           string    `json:"title"`
 	Year            int       `json:"year"`
 	AuthorID        uuid.UUID `json:"author_id"`
+	AuthorName      string    `json:"author_name" gorm:"<-:false"`
 	CategoryID      uuid.UUID `json:"category_id"`
+	CategoryName    string    `json:"category_name" gorm:"<-:false"`
 	TotalCopies     int       `json:"total_copies"`
-	AvailableCopies int       `json:"available_copies" gorm:"-"`
+	AvailableCopies int       `json:"available_copies" gorm:"<-:false"`
 	Language        string    `json:"language"`
 }
 

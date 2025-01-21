@@ -21,8 +21,8 @@ func GetOwnerID(request *http.Request) string {
 	return request.Context().Value(CURRENT_USER_ID).(string)
 }
 
-func GetPageSize(request *http.Request) int {
-	query := request.URL.Query()
+func GetPageSize(r *http.Request) int {
+	query := r.URL.Query()
 	pageSize, _ := strconv.Atoi(query.Get("page_size")) // Error is ignored because wrong or missing parameters are handled as 0
 	switch {
 	case pageSize > 500:
@@ -33,8 +33,8 @@ func GetPageSize(request *http.Request) int {
 	return pageSize
 }
 
-func GetPage(request *http.Request) int {
-	query := request.URL.Query()
+func GetPage(r *http.Request) int {
+	query := r.URL.Query()
 	page, _ := strconv.Atoi(query.Get("page")) // Error is ignored because wrong or missing parameters are handled as 0
 	if page <= 0 {
 		page = 1
@@ -42,6 +42,6 @@ func GetPage(request *http.Request) int {
 	return page
 }
 
-func GetOffset(request *http.Request) int {
-	return (GetPage(request) - 1) * GetPageSize(request)
+func GetOffset(r *http.Request) int {
+	return (GetPage(r) - 1) * GetPageSize(r)
 }

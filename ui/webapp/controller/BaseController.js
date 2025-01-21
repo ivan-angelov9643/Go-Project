@@ -147,19 +147,15 @@ sap.ui.define([
 
 		loadBooks: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const [booksData, authorsData, categoriesData] = await Promise.all([
-				this.sendRequest(`http://localhost:8080/api/books?page_size=${this.page_size}&page=${page}`, "GET", token),
-				this.sendRequest('http://localhost:8080/api/authors', "GET", token),
-				this.sendRequest('http://localhost:8080/api/categories', "GET", token)
-			]);
+			const booksData = await this.sendRequest(
+				`http://localhost:8080/api/books?page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
-			// TODO
 			booksData.data.forEach(book => {
-				const author = authorsData.data.find(a => a.id === book.author_id);
-				const category = categoriesData.data.find(c => c.id === book.category_id);
-
-				book.author_name = author ? `${author.first_name} ${author.last_name}` : 'Unknown Author';
-				book.category_name = category ? category.name : 'Unknown Category';
+				book.author_name = book.author_name ? book.author_name : 'Unknown Author';
+				book.category_name = book.category_name ? book.category_name : 'Unknown Category';
 			});
 
 			model.setProperty("/count", booksData.count);
@@ -171,7 +167,11 @@ sap.ui.define([
 
 		loadAuthors: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const authorsData = await this.sendRequest(`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}`, "GET", token);
+			const authorsData = await this.sendRequest(
+				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
 			model.setProperty("/count", authorsData.count);
 			model.setProperty("/page_size", authorsData.page_size);
@@ -182,7 +182,11 @@ sap.ui.define([
 
 		loadCategories: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const categoriesData = await this.sendRequest(`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}`, "GET", token);
+			const categoriesData = await this.sendRequest(
+				`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
 			model.setProperty("/count", categoriesData.count);
 			model.setProperty("/page_size", categoriesData.page_size);
@@ -193,20 +197,11 @@ sap.ui.define([
 
 		loadReservations: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const [reservationsData, usersData, booksData] = await Promise.all([
-				this.sendRequest(`http://localhost:8080/api/reservations?page_size=${this.page_size}&page=${page}`, "GET", token),
-				this.sendRequest('http://localhost:8080/api/users', "GET", token),
-				this.sendRequest('http://localhost:8080/api/books', "GET", token)
-			]);
-
-			// TODO
-			reservationsData.data.forEach(reservation => {
-				const user = usersData.data.find(u => u.id === reservation.user_id);
-				const book = booksData.data.find(b => b.id === reservation.book_id);
-
-				reservation.user_name = user ? user.preferred_username : 'Unknown User';
-				reservation.book_title = book ? book.title : 'Unknown Book';
-			});
+			const reservationsData = await this.sendRequest(
+				`http://localhost:8080/api/reservations?page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
 			model.setProperty("/count", reservationsData.count);
 			model.setProperty("/page_size", reservationsData.page_size);
@@ -217,20 +212,11 @@ sap.ui.define([
 
 		loadLoans: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const [loansData, usersData, booksData] = await Promise.all([
-				this.sendRequest(`http://localhost:8080/api/loans?page_size=${this.page_size}&page=${page}`, "GET", token),
-				this.sendRequest('http://localhost:8080/api/users', "GET", token),
-				this.sendRequest('http://localhost:8080/api/books', "GET", token)
-			]);
-
-			// TODO
-			loansData.data.forEach(loan => {
-				const user = usersData.data.find(u => u.id === loan.user_id);
-				const book = booksData.data.find(b => b.id === loan.book_id);
-
-				loan.user_name = user ? user.preferred_username : 'Unknown User';
-				loan.book_title = book ? book.title : 'Unknown Book';
-			});
+			const loansData = await this.sendRequest(
+				`http://localhost:8080/api/loans?page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
 			model.setProperty("/count", loansData.count);
 			model.setProperty("/page_size", loansData.page_size);
@@ -241,25 +227,12 @@ sap.ui.define([
 
 		loadRatings: async function (model, page, book_id = null) {
 			const token = await this.getOwnerComponent().getToken();
-			// TODO: implement getting ratings for specific book in the backend
-			let [ratingData, usersData, booksData] = await Promise.all([
-				this.sendRequest(`http://localhost:8080/api/ratings?page_size=${this.page_size}&page=${page}`, "GET", token),
-				this.sendRequest('http://localhost:8080/api/users', "GET", token),
-				this.sendRequest('http://localhost:8080/api/books', "GET", token)
-			]);
 
-			if (book_id) {
-				ratingData.data = ratingData.data.filter(rating => rating.book_id === book_id);
-			}
-
-			// TODO
-			ratingData.data.forEach(rating => {
-				const user = usersData.data.find(u => u.id === rating.user_id);
-				const book = booksData.data.find(b => b.id === rating.book_id);
-
-				rating.user_name = user ? user.preferred_username : 'Unknown User';
-				rating.book_title = book ? book.title : 'Unknown Book';
-			});
+			let ratingData = await this.sendRequest(
+				`http://localhost:8080/api/ratings?book_id=${book_id}&page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
 			model.setProperty("/count", ratingData.count);
 			model.setProperty("/page_size", ratingData.page_size);
@@ -270,7 +243,11 @@ sap.ui.define([
 
 		loadUsers: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const userData = await this.sendRequest(`http://localhost:8080/api/users?page_size=${this.page_size}&page=${page}`, "GET", token);
+			const userData = await this.sendRequest(
+				`http://localhost:8080/api/users?page_size=${this.page_size}&page=${page}`,
+				"GET",
+				token
+			);
 
 			model.setProperty("/count", userData.count);
 			model.setProperty("/page_size", userData.page_size);

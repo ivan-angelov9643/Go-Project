@@ -34,6 +34,10 @@ sap.ui.define([
 
 			this.oRatingModel = new JSONModel({
 				ratings: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
@@ -308,6 +312,14 @@ sap.ui.define([
 
 		onNextPage: async function () {
 			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page + 1);
+		},
+
+		onPreviousPageRatings: async function () {
+			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page - 1, this.oSelectedBookModel.getData().id);
+		},
+
+		onNextPageRatings: async function () {
+			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page + 1, this.oSelectedBookModel.getData().id);
 		},
 	});
 });

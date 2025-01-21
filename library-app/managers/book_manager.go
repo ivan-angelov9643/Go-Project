@@ -19,77 +19,24 @@ func NewBookManager(db *gorm.DB) *BookManager {
 	return &BookManager{db}
 }
 
-func (m *BookManager) CalculateAvailableCopies(booksMap map[uuid.UUID]*models.Book) (map[uuid.UUID]int, error) {
-	var loanCounts []struct {
-		BookID uuid.UUID
-		Count  int
-	}
-	err := m.db.Table("loans").
-		Select("book_id, COUNT(*) as count").
-		Where("status = ?", "active").
-		Group("book_id").
-		Scan(&loanCounts).Error
-	if err != nil {
-		log.Errorf("[BookManager.CalculateAvailableCopies] Error fetching active loan counts: %v", err)
-		return nil, db.NewDBError(db.InternalError, "[BookManager.CalculateAvailableCopies] Error fetching active loan counts: %v", err)
-	}
-
-	var reservationCounts []struct {
-		BookID uuid.UUID
-		Count  int
-	}
-	err = m.db.Table("reservations").
-		Select("book_id, COUNT(*) as count").
-		Group("book_id").
-		Scan(&reservationCounts).Error
-	if err != nil {
-		log.Errorf("[BookManager.CalculateAvailableCopies] Error fetching reservation counts: %v", err)
-		return nil, db.NewDBError(db.InternalError, "[BookManager.CalculateAvailableCopies] Error fetching reservation counts: %v", err)
-	}
-
-	loanCountMap := make(map[uuid.UUID]int)
-	for _, loan := range loanCounts {
-		loanCountMap[loan.BookID] = loan.Count
-	}
-
-	reservationCountMap := make(map[uuid.UUID]int)
-	for _, reservation := range reservationCounts {
-		reservationCountMap[reservation.BookID] = reservation.Count
-	}
-
-	availableCopiesMap := make(map[uuid.UUID]int)
-
-	for bookID := range booksMap {
-		activeLoans := loanCountMap[bookID]
-		reservations := reservationCountMap[bookID]
-		availableCopiesMap[bookID] = booksMap[bookID].TotalCopies - (activeLoans + reservations)
-	}
-	return availableCopiesMap, nil
-}
-
-func (m *BookManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Book, error) {
+func (m *BookManager) GetAll(scopes ...db.DBScope) ([]models.Book, error) {
 	log.Info("[BookManager.GetAll] Fetching all books")
 
 	var allBooks []models.Book
-	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allBooks).Error
+	err := db.ApplyScopes(m.db, scopes).Table("books").
+		Select(`books.*, 
+            CONCAT(authors.first_name, ' ', authors.last_name) AS author_name, 
+            categories.name AS category_name,
+            (books.total_copies - 
+                (SELECT COUNT(*) FROM reservations WHERE reservations.book_id = books.id) - 
+                (SELECT COUNT(*) FROM loans WHERE loans.book_id = books.id AND loans.status = 'active')
+            ) AS available_copies`).
+		Joins("LEFT JOIN authors ON authors.id = books.author_id").
+		Joins("LEFT JOIN categories ON categories.id = books.category_id").
+		Find(&allBooks).Error
 	if err != nil {
 		log.Errorf("[BookManager.GetAll] Error fetching all books: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[BookManager.GetAll] Error fetching all books: %v", err)
-	}
-
-	booksMap := make(map[uuid.UUID]*models.Book)
-	for _, book := range allBooks {
-		booksMap[book.ID] = &book
-	}
-
-	availableCopiesMap, err := m.CalculateAvailableCopies(booksMap)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := range allBooks {
-		book := &allBooks[i]
-		book.AvailableCopies = availableCopiesMap[book.ID]
 	}
 
 	log.Infof("[BookManager.GetAll] Successfully fetched all books")
@@ -100,18 +47,22 @@ func (m *BookManager) Get(idToGet uuid.UUID) (models.Book, error) {
 	log.Infof("[BookManager.Get] Fetching book with ID: %s", idToGet)
 
 	var book models.Book
-	err := m.db.First(&book, "id = ?", idToGet).Error
+	err := m.db.Table("books").
+		Select(`books.*, 
+            CONCAT(authors.first_name, ' ', authors.last_name) AS author_name, 
+            categories.name AS category_name,
+            (books.total_copies - 
+                (SELECT COUNT(*) FROM reservations WHERE reservations.book_id = books.id) - 
+                (SELECT COUNT(*) FROM loans WHERE loans.book_id = books.id AND loans.status = 'active')
+            ) AS available_copies`).
+		Joins("LEFT JOIN authors ON authors.id = books.author_id").
+		Joins("LEFT JOIN categories ON categories.id = books.category_id").
+		Where("books.id = ?", idToGet).
+		First(&book).Error
 	if err != nil {
 		log.Errorf("[BookManager.Get] Error fetching book with ID %s: %v", idToGet, err)
 		return models.Book{}, db.NewDBError(db.InternalError, "[BookManager.Get] Error fetching book with ID %s: %v", idToGet, err)
 	}
-
-	availableCopiesMap, err := m.CalculateAvailableCopies(map[uuid.UUID]*models.Book{book.ID: &book})
-	if err != nil {
-		return models.Book{}, err
-	}
-
-	book.AvailableCopies = availableCopiesMap[idToGet]
 
 	log.Infof("[BookManager.Get] Successfully fetched book with ID: %s", idToGet)
 	return book, nil
@@ -190,11 +141,11 @@ func (m *BookManager) Delete(idToDelete uuid.UUID) (models.Book, error) {
 	return book, nil
 }
 
-func (m *BookManager) Count(accessScope *db.AccessScope) (int64, error) {
+func (m *BookManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[BookManager.Count] Counting books in the database")
 
 	var count int64
-	err := m.db.Scopes(accessScope.Get()).Model(&models.Book{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Model(&models.Book{}).Count(&count).Error
 	if err != nil {
 		log.Errorf("[BookManager.Count] Error counting books: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[BookManager.Count] Error counting books: %v", err)
