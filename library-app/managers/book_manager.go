@@ -67,11 +67,11 @@ func (m *BookManager) CalculateAvailableCopies(booksMap map[uuid.UUID]*models.Bo
 	return availableCopiesMap, nil
 }
 
-func (m *BookManager) GetAll() ([]models.Book, error) {
+func (m *BookManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.Book, error) {
 	log.Info("[BookManager.GetAll] Fetching all books")
 
 	var allBooks []models.Book
-	err := m.db.Find(&allBooks).Error
+	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allBooks).Error
 	if err != nil {
 		log.Errorf("[BookManager.GetAll] Error fetching all books: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[BookManager.GetAll] Error fetching all books: %v", err)
@@ -188,4 +188,18 @@ func (m *BookManager) Delete(idToDelete uuid.UUID) (models.Book, error) {
 
 	log.Infof("[BookManager.Delete] Successfully deleted book with ID: %s", idToDelete)
 	return book, nil
+}
+
+func (m *BookManager) Count(accessScope *db.AccessScope) (int64, error) {
+	log.Infof("[BookManager.Count] Counting books in the database")
+
+	var count int64
+	err := m.db.Scopes(accessScope.Get()).Model(&models.Book{}).Count(&count).Error
+	if err != nil {
+		log.Errorf("[BookManager.Count] Error counting books: %v", err)
+		return 0, db.NewDBError(db.InternalError, "[BookManager.Count] Error counting books: %v", err)
+	}
+
+	log.Infof("[BookManager.Count] Successfully counted books: %d", count)
+	return count, nil
 }

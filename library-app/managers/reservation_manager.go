@@ -132,3 +132,17 @@ func (m *ReservationManager) Delete(idToDelete uuid.UUID) (models.Reservation, e
 	log.Infof("[ReservationManager.Delete] Successfully deleted reservation with ID: %s", idToDelete)
 	return reservation, nil
 }
+
+func (m *ReservationManager) Count(accessScope *db.AccessScope) (int64, error) {
+	log.Infof("[ReservationManager.Count] Counting reservations in the database")
+
+	var count int64
+	err := m.db.Scopes(accessScope.Get()).Model(&models.Reservation{}).Count(&count).Error
+	if err != nil {
+		log.Errorf("[ReservationManager.Count] Error counting reservations: %v", err)
+		return 0, db.NewDBError(db.InternalError, "[ReservationManager.Count] Error counting reservations: %v", err)
+	}
+
+	log.Infof("[ReservationManager.Count] Successfully counted reservations: %d", count)
+	return count, nil
+}

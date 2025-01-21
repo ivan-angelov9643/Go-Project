@@ -3,6 +3,7 @@ package handlers
 import (
 	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/errors"
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -27,15 +28,23 @@ func (h *ReservationHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	pagingScope := db.NewPagingScope(r)
 	reservations, dbErr := h.reservationManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(reservations)
-	if err != nil {
+	count, dbErr := h.reservationManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Reservation]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     reservations,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		errors.HttpError(
 			w,
 			"[ReservationHandler.GetAll] Failed to encode reservations to JSON",
@@ -43,7 +52,6 @@ func (h *ReservationHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError,
 			err,
 		)
-		return
 	}
 }
 

@@ -13,7 +13,7 @@
 						backgroundColorShade="ShadeA"
 						width="3">
 					<Table
-							items="{path:'user>/users', templateShareable: false}"
+							items="{path:'user>/data', templateShareable: false}"
 							fixedLayout="false">
 						<headerToolbar>
 							<Toolbar design="Transparent">
@@ -63,6 +63,21 @@
 							</ColumnListItem>
 						</items>
 					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${user>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${user>/page} + ' of ' + ${user>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${user>/page} &lt; ${user>/total_pages} }"/>
+					</Toolbar>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>

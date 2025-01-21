@@ -19,6 +19,7 @@ sap.ui.define([
             });
             this.oAuthorModel.setSizeLimit(Number.MAX_VALUE);
             this.getView().setModel(this.oAuthorModel, "author");
+            // TODO
             await this.loadAuthors(this.oAuthorModel);
 
             this.oCategoryModel = new JSONModel({
@@ -26,6 +27,7 @@ sap.ui.define([
             });
             this.oCategoryModel.setSizeLimit(Number.MAX_VALUE);
             this.getView().setModel(this.oCategoryModel, "category");
+            // TODO
             await this.loadCategories(this.oCategoryModel);
         },
 
@@ -35,10 +37,12 @@ sap.ui.define([
         },
 
         handleAuthorsUpdated: async function (ns, ev, eventData) {
+            // TODO
             await this.loadAuthors(this.oAuthorModel)
         },
 
         handleCategoriesUpdated: async function (ns, ev, eventData) {
+            // TODO
             await this.loadCategories(this.oCategoryModel)
         },
 

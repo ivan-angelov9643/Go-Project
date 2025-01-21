@@ -18,11 +18,11 @@ func NewUserManager(db *gorm.DB) *UserManager {
 	return &UserManager{db}
 }
 
-func (m *UserManager) GetAll() ([]models.User, error) {
+func (m *UserManager) GetAll(accessScope *db.AccessScope, pagingScope *db.PagingScope) ([]models.User, error) {
 	log.Info("[UserManager.GetAll] Fetching all users")
 
 	var allUsers []models.User
-	err := m.db.Find(&allUsers).Error
+	err := m.db.Scopes(accessScope.Get(), pagingScope.Get()).Find(&allUsers).Error
 	if err != nil {
 		log.Errorf("[UserManager.GetAll] Error fetching all users: %v", err)
 		return nil, db.NewDBError(db.InternalError, "[UserManager.GetAll] Error fetching all users: %v", err)
@@ -115,4 +115,18 @@ func (m *UserManager) Delete(idToDelete uuid.UUID) (models.User, error) {
 
 	log.Infof("[UserManager.Delete] Successfully deleted user with ID: %s", idToDelete)
 	return user, nil
+}
+
+func (m *UserManager) Count(accessScope *db.AccessScope) (int64, error) {
+	log.Infof("[UserManager.Count] Counting users in the database")
+
+	var count int64
+	err := m.db.Scopes(accessScope.Get()).Model(&models.User{}).Count(&count).Error
+	if err != nil {
+		log.Errorf("[UserManager.Count] Error counting users: %v", err)
+		return 0, db.NewDBError(db.InternalError, "[UserManager.Count] Error counting users: %v", err)
+	}
+
+	log.Infof("[UserManager.Count] Successfully counted users: %d", count)
+	return count, nil
 }

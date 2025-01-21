@@ -16,15 +16,19 @@ sap.ui.define([
 			Core.getEventBus().subscribe("library-app", "categoriesUpdated", this.handleCategoriesUpdated, this);
 
 			this.oCategoryModel = new JSONModel({
-				categories: null,
+				count: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oCategoryModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oCategoryModel, "category");
-			await this.loadCategories(this.oCategoryModel);
+			await this.loadCategories(this.oCategoryModel, 1);
 		},
 
 		loadData: async function() {
-			await this.loadCategories(this.oCategoryModel);
+			await this.loadCategories(this.oCategoryModel, this.oCategoryModel.getData().page);
 		},
 
 
@@ -86,8 +90,16 @@ sap.ui.define([
 		},
 
 		handleCategoriesUpdated: async function (ns, ev, eventData) {
-			await this.loadCategories(this.oCategoryModel);
+			await this.loadData();
 			Core.getEventBus().publish("library-app", "booksUpdated", eventData);
+		},
+
+		onPreviousPage: async function () {
+			await this.loadCategories(this.oCategoryModel, this.oCategoryModel.getData().page - 1);
+		},
+
+		onNextPage: async function () {
+			await this.loadCategories(this.oCategoryModel, this.oCategoryModel.getData().page + 1);
 		},
 	});
 });

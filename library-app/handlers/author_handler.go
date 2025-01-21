@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/errors"
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -22,16 +24,27 @@ func NewAuthorHandler(authorManager managers.AuthorManagerInterface) *AuthorHand
 func (h *AuthorHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[AuthorHandler.GetAll] Fetching all authors")
 
-	authors, dbErr := h.authorManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	authors, dbErr := h.authorManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(authors)
+	count, dbErr := h.authorManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Author]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     authors,
+	}
+	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
 		errors.HttpError(
 			w,
@@ -101,10 +114,7 @@ func (h *AuthorHandler) Create(w http.ResponseWriter, r *http.Request) {
 	newAuthor.ID = uuid.Nil
 	createdAuthor, dbErr := h.authorManager.Create(newAuthor)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
@@ -151,10 +161,7 @@ func (h *AuthorHandler) Update(w http.ResponseWriter, r *http.Request) {
 	updatedAuthorBody.ID = id
 	updatedAuthor, dbErr := h.authorManager.Update(updatedAuthorBody)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 

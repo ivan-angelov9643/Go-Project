@@ -19,11 +19,15 @@ sap.ui.define([
 			Core.getEventBus().subscribe("library-app", "loansUpdated", this.handleLoansUpdated, this);
 
 			this.oLoanModel = new JSONModel({
-				loans: null,
+				count: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oLoanModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oLoanModel, "loan");
-			await this.loadLoans(this.oLoanModel);
+			await this.loadLoans(this.oLoanModel, 1);
 
 			this.sSortBy = this.getView().byId("sortBySelect").getSelectedKey();
 			this.sSortOrder = this.getView().byId("sortOrderSelect").getSelectedKey();
@@ -31,7 +35,7 @@ sap.ui.define([
 		},
 
 		loadData: async function() {
-			await this.loadLoans(this.oLoanModel);
+			await this.loadLoans(this.oLoanModel, this.oLoanModel.getData().page);
 		},
 
 		onExtendLoan: async function (oEvent) {
@@ -96,7 +100,7 @@ sap.ui.define([
 		},
 
 		handleLoansUpdated: async function (ns, ev, eventData) {
-			await this.loadLoans(this.oLoanModel);
+			await this.loadData();
 
 			if (!eventData.from_books && (eventData.delete_loan || eventData.return_book)) {
 				Core.getEventBus().publish("library-app", "booksUpdated", {from_loans: true});
@@ -165,6 +169,14 @@ sap.ui.define([
 
 				oBinding.sort(oSorter);
 			}
+		},
+
+		onPreviousPage: async function () {
+			await this.loadLoans(this.oLoanModel, this.oLoanModel.getData().page - 1);
+		},
+
+		onNextPage: async function () {
+			await this.loadLoans(this.oLoanModel, this.oLoanModel.getData().page + 1);
 		},
 	});
 });

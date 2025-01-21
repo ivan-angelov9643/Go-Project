@@ -3,6 +3,7 @@ package handlers
 import (
 	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/errors"
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -27,15 +28,23 @@ func (h *LoanHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	pagingScope := db.NewPagingScope(r)
 	loans, dbErr := h.loanManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(loans)
-	if err != nil {
+	count, dbErr := h.loanManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Loan]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     loans,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		errors.HttpError(
 			w,
 			"[LoanHandler.GetAll] Failed to encode loans to JSON",
@@ -43,7 +52,6 @@ func (h *LoanHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError,
 			err,
 		)
-		return
 	}
 }
 

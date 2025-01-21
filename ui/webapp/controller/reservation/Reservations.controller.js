@@ -19,11 +19,15 @@ sap.ui.define([
 			Core.getEventBus().subscribe("library-app", "reservationsUpdated", this.handleReservationsUpdated, this);
 
 			this.oReservationModel = new JSONModel({
-				reservations: null,
+				count: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oReservationModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oReservationModel, "reservation");
-			await this.loadReservations(this.oReservationModel);
+			await this.loadReservations(this.oReservationModel, 1);
 
 			this.sSortBy = this.getView().byId("sortBySelect").getSelectedKey();
 			this.sSortOrder = this.getView().byId("sortOrderSelect").getSelectedKey();
@@ -31,7 +35,7 @@ sap.ui.define([
 		},
 
 		loadData: async function() {
-			await this.loadReservations(this.oReservationModel);
+			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page);
 		},
 
 		onExtendReservation: async function (oEvent) {
@@ -104,7 +108,7 @@ sap.ui.define([
 		},
 
 		handleReservationsUpdated: async function (ns, ev, eventData) {
-			await this.loadReservations(this.oReservationModel)
+			await this.loadData()
 
 			if (eventData.make_loan) {
 				Core.getEventBus().publish("library-app", "loansUpdated");
@@ -172,6 +176,14 @@ sap.ui.define([
 
 				oBinding.sort(oSorter);
 			}
+		},
+
+		onPreviousPage: async function () {
+			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page - 1);
+		},
+
+		onNextPage: async function () {
+			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page + 1);
 		},
 	});
 });

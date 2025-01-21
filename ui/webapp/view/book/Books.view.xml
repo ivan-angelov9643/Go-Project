@@ -62,7 +62,7 @@
 							</Toolbar>
 							<Table
 									id="booksTable"
-									items="{path: 'book>/books', templateShareable: false}"
+									items="{path: 'book>/data', templateShareable: false}"
 									fixedLayout="false"
 									mode="SingleSelectMaster"
 									selectionChange="onSelectBook">
@@ -83,6 +83,21 @@
 									</ColumnListItem>
 								</items>
 							</Table>
+							<Toolbar design="Transparent">
+								<Button
+										text="Previous"
+										icon="sap-icon://slim-arrow-left"
+										press="onPreviousPage"
+										enabled="{= ${book>/page} > 1 }"/>
+								<Text
+										text="{= 'Page ' + ${book>/page} + ' of ' + ${book>/total_pages} }"
+										class="sapUiSmallMargin"/>
+								<Button
+										text="Next"
+										icon="sap-icon://slim-arrow-right"
+										press="onNextPage"
+										enabled="{= ${book>/page} &lt; ${book>/total_pages} }"/>
+							</Toolbar>
 						</l:BlockLayoutCell>
 					</l:BlockLayoutRow>
 				</l:BlockLayout>

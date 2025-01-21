@@ -23,11 +23,11 @@ sap.ui.define([
 				page_size: null,
 				page: null,
 				data: null,
+				total_pages: null,
 			});
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
 			await this.loadRatings(this.oRatingModel, 1);
-			console.log(this.oRatingModel.getData())
 		},
 
 		loadData: async function() {

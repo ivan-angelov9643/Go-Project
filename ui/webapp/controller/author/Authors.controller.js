@@ -16,15 +16,19 @@ sap.ui.define([
 			Core.getEventBus().subscribe("library-app", "authorsUpdated", this.handleAuthorsUpdated, this);
 
 			this.oAuthorModel = new JSONModel({
-				authors: null,
+				count: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oAuthorModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oAuthorModel, "author");
-			await this.loadAuthors(this.oAuthorModel);
+			await this.loadAuthors(this.oAuthorModel, 1);
 		},
 
 		loadData: async function() {
-			await this.loadAuthors(this.oAuthorModel);
+			await this.loadAuthors(this.oAuthorModel, this.oAuthorModel.getData().page);
 		},
 
 		onCreateAuthor: async function () {
@@ -85,8 +89,16 @@ sap.ui.define([
 		},
 
 		handleAuthorsUpdated: async function (ns, ev, eventData) {
-			await this.loadAuthors(this.oAuthorModel);
+			await this.loadData();
 			Core.getEventBus().publish("library-app", "booksUpdated", eventData);
+		},
+
+		onPreviousPage: async function () {
+			await this.loadAuthors(this.oAuthorModel, this.oAuthorModel.getData().page - 1);
+		},
+
+		onNextPage: async function () {
+			await this.loadAuthors(this.oAuthorModel, this.oAuthorModel.getData().page + 1);
 		},
 	});
 });

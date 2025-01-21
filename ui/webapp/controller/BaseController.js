@@ -7,7 +7,7 @@ sap.ui.define([
 	"use strict";
 
 	return Controller.extend("library-app.controller.BaseController", {
-		page_size: 5,
+		page_size: 2,
 
 		getRouter : function () {
 			return UIComponent.getRouterFor(this);
@@ -73,7 +73,8 @@ sap.ui.define([
 				token
 			);
 
-			const reservation = reservationsResponse.find(
+			// TODO
+			const reservation = reservationsResponse.data.find(
 				(reservation) =>
 					reservation.user_id === user_id && reservation.book_id === book_id
 			);
@@ -90,7 +91,8 @@ sap.ui.define([
 				token
 			);
 
-			const activeLoan = loansResponse.find(
+			// TODO
+			const activeLoan = loansResponse.data.find(
 				(loan) =>
 					loan.user_id === user_id &&
 					loan.book_id === book_id &&
@@ -109,7 +111,8 @@ sap.ui.define([
 				token
 			);
 
-			const rating = ratingsResponse.find(
+			// TODO
+			const rating = ratingsResponse.data.find(
 				(rating) =>
 					rating.user_id === user_id &&
 					rating.book_id === book_id
@@ -121,13 +124,15 @@ sap.ui.define([
 		userHasLoanOnBook: async function (user_id, book_id) {
 			const token = await this.getOwnerComponent().getToken();
 
+			// url param
 			const loansResponse = await this.sendRequest(
 				`http://localhost:8080/api/loans`,
 				"GET",
 				token
 			);
 
-			const activeLoan = loansResponse.find(
+			// TODO
+			const activeLoan = loansResponse.data.find(
 				(loan) =>
 					loan.user_id === user_id &&
 					loan.book_id === book_id
@@ -140,82 +145,103 @@ sap.ui.define([
 			return JSON.parse(atob(token.split(".")[1])).sub;
 		},
 
-		loadBooks: async function (model) {
+		loadBooks: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-
 			const [booksData, authorsData, categoriesData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/books', "GET", token),
+				this.sendRequest(`http://localhost:8080/api/books?page_size=${this.page_size}&page=${page}`, "GET", token),
 				this.sendRequest('http://localhost:8080/api/authors', "GET", token),
 				this.sendRequest('http://localhost:8080/api/categories', "GET", token)
 			]);
 
-			booksData.forEach(book => {
-				const author = authorsData.find(a => a.id === book.author_id);
-				const category = categoriesData.find(c => c.id === book.category_id);
+			// TODO
+			booksData.data.forEach(book => {
+				const author = authorsData.data.find(a => a.id === book.author_id);
+				const category = categoriesData.data.find(c => c.id === book.category_id);
 
 				book.author_name = author ? `${author.first_name} ${author.last_name}` : 'Unknown Author';
 				book.category_name = category ? category.name : 'Unknown Category';
 			});
-			model.setProperty("/books", booksData);
+
+			model.setProperty("/count", booksData.count);
+			model.setProperty("/page_size", booksData.page_size);
+			model.setProperty("/page", booksData.page);
+			model.setProperty("/data", booksData.data);
+			model.setProperty("/total_pages", Math.ceil(booksData.count / booksData.page_size));
 		},
 
-		loadAuthors: async function (model) {
+		loadAuthors: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const authorsData = await this.sendRequest("http://localhost:8080/api/authors", "GET", token);
+			const authorsData = await this.sendRequest(`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}`, "GET", token);
 
-			model.setProperty("/authors", authorsData);
+			model.setProperty("/count", authorsData.count);
+			model.setProperty("/page_size", authorsData.page_size);
+			model.setProperty("/page", authorsData.page);
+			model.setProperty("/data", authorsData.data);
+			model.setProperty("/total_pages", Math.ceil(authorsData.count / authorsData.page_size));
 		},
 
-		loadCategories: async function (model) {
+		loadCategories: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const categoriesData = await this.sendRequest("http://localhost:8080/api/categories", "GET", token);
+			const categoriesData = await this.sendRequest(`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}`, "GET", token);
 
-			model.setProperty("/categories", categoriesData);
+			model.setProperty("/count", categoriesData.count);
+			model.setProperty("/page_size", categoriesData.page_size);
+			model.setProperty("/page", categoriesData.page);
+			model.setProperty("/data", categoriesData.data);
+			model.setProperty("/total_pages", Math.ceil(categoriesData.count / categoriesData.page_size));
 		},
 
-		loadReservations: async function (model) {
+		loadReservations: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-
 			const [reservationsData, usersData, booksData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/reservations', "GET", token),
+				this.sendRequest(`http://localhost:8080/api/reservations?page_size=${this.page_size}&page=${page}`, "GET", token),
 				this.sendRequest('http://localhost:8080/api/users', "GET", token),
 				this.sendRequest('http://localhost:8080/api/books', "GET", token)
 			]);
 
-			reservationsData.forEach(reservation => {
-				const user = usersData.find(u => u.id === reservation.user_id);
-				const book = booksData.find(b => b.id === reservation.book_id);
+			// TODO
+			reservationsData.data.forEach(reservation => {
+				const user = usersData.data.find(u => u.id === reservation.user_id);
+				const book = booksData.data.find(b => b.id === reservation.book_id);
 
 				reservation.user_name = user ? user.preferred_username : 'Unknown User';
 				reservation.book_title = book ? book.title : 'Unknown Book';
 			});
-			model.setProperty("/reservations", reservationsData);
+
+			model.setProperty("/count", reservationsData.count);
+			model.setProperty("/page_size", reservationsData.page_size);
+			model.setProperty("/page", reservationsData.page);
+			model.setProperty("/data", reservationsData.data);
+			model.setProperty("/total_pages", Math.ceil(reservationsData.count / reservationsData.page_size));
 		},
 
-		loadLoans: async function (model) {
+		loadLoans: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-
 			const [loansData, usersData, booksData] = await Promise.all([
-				this.sendRequest('http://localhost:8080/api/loans', "GET", token),
+				this.sendRequest(`http://localhost:8080/api/loans?page_size=${this.page_size}&page=${page}`, "GET", token),
 				this.sendRequest('http://localhost:8080/api/users', "GET", token),
 				this.sendRequest('http://localhost:8080/api/books', "GET", token)
 			]);
 
-			loansData.forEach(loan => {
-				const user = usersData.find(u => u.id === loan.user_id);
-				const book = booksData.find(b => b.id === loan.book_id);
+			// TODO
+			loansData.data.forEach(loan => {
+				const user = usersData.data.find(u => u.id === loan.user_id);
+				const book = booksData.data.find(b => b.id === loan.book_id);
 
 				loan.user_name = user ? user.preferred_username : 'Unknown User';
 				loan.book_title = book ? book.title : 'Unknown Book';
 			});
-			model.setProperty("/loans", loansData);
+
+			model.setProperty("/count", loansData.count);
+			model.setProperty("/page_size", loansData.page_size);
+			model.setProperty("/page", loansData.page);
+			model.setProperty("/data", loansData.data);
+			model.setProperty("/total_pages", Math.ceil(loansData.count / loansData.page_size));
 		},
 
 		loadRatings: async function (model, page, book_id = null) {
 			const token = await this.getOwnerComponent().getToken();
-
 			// TODO: implement getting ratings for specific book in the backend
-
 			let [ratingData, usersData, booksData] = await Promise.all([
 				this.sendRequest(`http://localhost:8080/api/ratings?page_size=${this.page_size}&page=${page}`, "GET", token),
 				this.sendRequest('http://localhost:8080/api/users', "GET", token),
@@ -226,9 +252,10 @@ sap.ui.define([
 				ratingData.data = ratingData.data.filter(rating => rating.book_id === book_id);
 			}
 
+			// TODO
 			ratingData.data.forEach(rating => {
-				const user = usersData.find(u => u.id === rating.user_id);
-				const book = booksData.find(b => b.id === rating.book_id);
+				const user = usersData.data.find(u => u.id === rating.user_id);
+				const book = booksData.data.find(b => b.id === rating.book_id);
 
 				rating.user_name = user ? user.preferred_username : 'Unknown User';
 				rating.book_title = book ? book.title : 'Unknown Book';
@@ -241,11 +268,15 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(ratingData.count / ratingData.page_size));
 		},
 
-		loadUsers: async function (model) {
+		loadUsers: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
-			const userData = await this.sendRequest('http://localhost:8080/api/users', "GET", token);
+			const userData = await this.sendRequest(`http://localhost:8080/api/users?page_size=${this.page_size}&page=${page}`, "GET", token);
 
-			model.setProperty("/users", userData);
+			model.setProperty("/count", userData.count);
+			model.setProperty("/page_size", userData.page_size);
+			model.setProperty("/page", userData.page);
+			model.setProperty("/data", userData.data);
+			model.setProperty("/total_pages", Math.ceil(userData.count / userData.page_size));
 		},
 
 		loadCurrentUser: async function (model) {

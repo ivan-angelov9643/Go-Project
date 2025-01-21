@@ -20,7 +20,11 @@ sap.ui.define([
 			Core.getEventBus().subscribe("library-app", "booksUpdated", this.handleBooksUpdated, this);
 
 			this.oBookModel = new JSONModel({
-				books: null,
+				count: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oBookModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oBookModel, "book");
@@ -34,7 +38,7 @@ sap.ui.define([
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
 
-			await this.loadBooks(this.oBookModel);
+			await this.loadBooks(this.oBookModel, 1);
 
 			this.getView().byId("titleSearch").setFilterFunction(function(sTerm, oItem) {
 				return oItem.getText().match(new RegExp(sTerm, "i")) || oItem.getKey().match(new RegExp(sTerm, "i"));
@@ -42,7 +46,7 @@ sap.ui.define([
 		},
 
 		loadData: async function() {
-			await this.loadBooks(this.oBookModel);
+			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page);
 		},
 
 		onCreateBook: async function () {
@@ -196,7 +200,7 @@ sap.ui.define([
 		},
 
 		handleBooksUpdated: async function (ns, ev, eventData) {
-			await this.loadBooks(this.oBookModel)
+			await this.loadData()
 
 			const selectedBookID = this.oSelectedBookModel.getData().id;
 
@@ -208,7 +212,8 @@ sap.ui.define([
 			}
 
 			if (eventData.from_ratings && eventData.book_id === selectedBookID) {
-				await this.loadRatings(this.oRatingModel, 1, selectedBookID);
+				// TODO add paging for ratings in the books page ui
+				await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page, selectedBookID);
 			}
 
 			if (!eventData.from_reservations) {
@@ -295,6 +300,14 @@ sap.ui.define([
 			let oBinding = oTable.getBinding("items");
 
 			oBinding.filter(aFilters);
-		}
+		},
+
+		onPreviousPage: async function () {
+			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page - 1);
+		},
+
+		onNextPage: async function () {
+			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page + 1);
+		},
 	});
 });

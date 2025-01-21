@@ -62,7 +62,7 @@
 					</Toolbar>
 					<Table
 							id="reservationsTable"
-							items="{path:'reservation>/reservations', templateShareable: false}"
+							items="{path:'reservation>/data', templateShareable: false}"
 							fixedLayout="false">
 						<columns>
 							<Column>
@@ -115,6 +115,21 @@
 							</ColumnListItem>
 						</items>
 					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${reservation>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${reservation>/page} + ' of ' + ${reservation>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${reservation>/page} &lt; ${reservation>/total_pages} }"/>
+					</Toolbar>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>

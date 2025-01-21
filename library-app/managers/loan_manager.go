@@ -119,3 +119,17 @@ func (m *LoanManager) Delete(idToDelete uuid.UUID) (models.Loan, error) {
 	log.Infof("[LoanManager.Delete] Successfully deleted loan with ID: %s", idToDelete)
 	return loan, nil
 }
+
+func (m *LoanManager) Count(accessScope *db.AccessScope) (int64, error) {
+	log.Infof("[LoanManager.Count] Counting loans in the database")
+
+	var count int64
+	err := m.db.Scopes(accessScope.Get()).Model(&models.Loan{}).Count(&count).Error
+	if err != nil {
+		log.Errorf("[LoanManager.Count] Error counting loans: %v", err)
+		return 0, db.NewDBError(db.InternalError, "[LoanManager.Count] Error counting loans: %v", err)
+	}
+
+	log.Infof("[LoanManager.Count] Successfully counted loans: %d", count)
+	return count, nil
+}

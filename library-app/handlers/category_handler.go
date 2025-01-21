@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/errors"
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -22,17 +24,27 @@ func NewCategoryHandler(categoryManager managers.CategoryManagerInterface) *Cate
 func (h *CategoryHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[CategoryHandler.GetAll] Fetching all categories")
 
-	categories, dbErr := h.categoryManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	categories, dbErr := h.categoryManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(categories)
-	if err != nil {
+	count, dbErr := h.categoryManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Category]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     categories,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		errors.HttpError(
 			w,
 			"[CategoryHandler.GetAll] Failed to encode categories to JSON",
@@ -40,7 +52,6 @@ func (h *CategoryHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError,
 			err,
 		)
-		return
 	}
 }
 

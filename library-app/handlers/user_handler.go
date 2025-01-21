@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/errors"
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -22,15 +24,29 @@ func NewUserHandler(userManager managers.UserManagerInterface) *UserHandler {
 func (h *UserHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[UserHandler.GetAll] Fetching all users")
 
-	users, dbErr := h.userManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	users, dbErr := h.userManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(users)
-	if err != nil {
-		errors.HttpError(w,
+	count, dbErr := h.userManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.User]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     users,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		errors.HttpError(
+			w,
 			"[UserHandler.GetAll] Failed to encode users to JSON",
 			"Failed to return users",
 			http.StatusInternalServerError,

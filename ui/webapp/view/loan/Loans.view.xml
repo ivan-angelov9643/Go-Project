@@ -73,7 +73,7 @@
 					</Toolbar>
 					<Table
 							id="loansTable"
-							items="{path:'loan>/loans', templateShareable: false}"
+							items="{path:'loan>/data', templateShareable: false}"
 							fixedLayout="false">
 						<columns>
 							<Column>
@@ -134,6 +134,21 @@
 							</ColumnListItem>
 						</items>
 					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${loan>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${loan>/page} + ' of ' + ${loan>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${loan>/page} &lt; ${loan>/total_pages} }"/>
+					</Toolbar>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>

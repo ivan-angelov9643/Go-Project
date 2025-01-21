@@ -13,7 +13,7 @@
 						backgroundColorShade="ShadeA"
 						width="3">
 					<Table
-							items="{path:'author>/authors', templateShareable: false}"
+							items="{path:'author>/data', templateShareable: false}"
 							fixedLayout="false">
 						<headerToolbar>
 							<Toolbar design="Transparent">
@@ -88,6 +88,21 @@
 							</ColumnListItem>
 						</items>
 					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${author>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${author>/page} + ' of ' + ${author>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${author>/page} &lt; ${author>/total_pages} }"/>
+					</Toolbar>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>

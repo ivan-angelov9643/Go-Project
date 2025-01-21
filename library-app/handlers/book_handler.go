@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
 	"awesomeProject/library-app/errors"
+	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"encoding/json"
@@ -22,17 +24,27 @@ func NewBookHandler(bookManager managers.BookManagerInterface) *BookHandler {
 func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[BookHandler.GetAll] Fetching all books")
 
-	books, dbErr := h.bookManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	books, dbErr := h.bookManager.GetAll(accessScope, pagingScope)
 	if dbErr != nil {
-		errors.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(books)
-	if err != nil {
+	count, dbErr := h.bookManager.Count(accessScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Book]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     books,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		errors.HttpError(
 			w,
 			"[BookHandler.GetAll] Failed to encode books to JSON",
@@ -40,7 +52,6 @@ func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError,
 			err,
 		)
-		return
 	}
 }
 

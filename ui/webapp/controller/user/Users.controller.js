@@ -16,15 +16,19 @@ sap.ui.define([
 			Core.getEventBus().subscribe("library-app", "usersUpdated", this.handleUsersUpdated, this);
 
 			this.oUserModel = new JSONModel({
-				users: null,
+				count: null,
+				page_size: null,
+				page: null,
+				data: null,
+				total_pages: null,
 			});
 			this.oUserModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oUserModel, "user");
-			await this.loadUsers(this.oUserModel);
+			await this.loadUsers(this.oUserModel,1);
 		},
 
 		loadData: async function() {
-			await this.loadUsers(this.oUserModel);
+			await this.loadUsers(this.oUserModel, this.oUserModel.getData().page);
 		},
 
 		onEditUser: async function (oEvent) {
@@ -70,7 +74,15 @@ sap.ui.define([
 		},
 
 		handleUsersUpdated: async function (ns, ev, eventData) {
-			await this.loadUsers();
+			await this.loadData();
+		},
+
+		onPreviousPage: async function () {
+			await this.loadUsers(this.oUserModel, this.oUserModel.getData().page - 1);
+		},
+
+		onNextPage: async function () {
+			await this.loadUsers(this.oUserModel, this.oUserModel.getData().page + 1);
 		},
 	});
 });
