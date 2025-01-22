@@ -53,7 +53,12 @@ func (m *ReservationManager) Get(idToGet uuid.UUID) (models.Reservation, error) 
 	log.Infof("[ReservationManager.Get] Fetching reservation with ID: %s", idToGet)
 
 	var reservation models.Reservation
-	err := m.db.First(&reservation, "id = ?", idToGet).Error
+	err := m.db.Table("reservations").
+		Select("reservations.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = reservations.user_id").
+		Joins("JOIN books ON books.id = reservations.book_id").
+		Where("reservations.id = ?", idToGet).
+		First(&reservation).Error
 	if err != nil {
 		log.Errorf("[ReservationManager.Get] Error fetching reservation with ID %s: %v", idToGet, err)
 		return models.Reservation{}, db.NewDBError(db.InternalError, "[ReservationManager.Get] Error fetching reservation with ID %s: %v", idToGet, err)

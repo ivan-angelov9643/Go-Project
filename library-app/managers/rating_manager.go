@@ -36,11 +36,17 @@ func (m *RatingManager) GetAll(scopes ...db.DBScope) ([]models.Rating, error) {
 	log.Infof("[RatingManager.GetAll] Successfully fetched all ratings")
 	return allRatings, nil
 }
+
 func (m *RatingManager) Get(idToGet uuid.UUID) (models.Rating, error) {
 	log.Infof("[RatingManager.Get] Fetching rating with ID: %s", idToGet)
 
 	var rating models.Rating
-	err := m.db.First(&rating, "id = ?", idToGet).Error
+	err := m.db.Table("ratings").
+		Select("ratings.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = ratings.user_id").
+		Joins("JOIN books ON books.id = ratings.book_id").
+		Where("ratings.id = ?", idToGet).
+		First(&rating).Error
 	if err != nil {
 		log.Errorf("[RatingManager.Get] Error fetching rating with ID %s: %v", idToGet, err)
 		return models.Rating{}, db.NewDBError(db.InternalError, "[RatingManager.Get] Error fetching rating with ID %s: %v", idToGet, err)

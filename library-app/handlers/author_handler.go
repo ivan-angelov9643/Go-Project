@@ -26,13 +26,14 @@ func (h *AuthorHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	accessScope := db.NewAccessScope(r)
 	pagingScope := db.NewPagingScope(r)
-	authors, dbErr := h.authorManager.GetAll(accessScope, pagingScope)
+	searchScope := db.NewFilterByAuthorNameScope(r)
+	authors, dbErr := h.authorManager.GetAll(accessScope, pagingScope, searchScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	count, dbErr := h.authorManager.Count(accessScope)
+	count, dbErr := h.authorManager.Count(accessScope, searchScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return

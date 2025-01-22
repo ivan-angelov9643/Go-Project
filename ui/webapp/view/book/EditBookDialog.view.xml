@@ -28,20 +28,18 @@
                             value="{dialogBook>/year}"
                             type="Number" />
                     <Label text="Author" />
-                    <Select
-                            items="{path: 'author>/authors'}"
-                            id="authorSelect"
-                            selectedKey="{dialogBook>/author_id}">
-                        <items>
-                            <core:Item
-                                    key="{author>id}"
-                                    text="{author>first_name} {author>last_name}" />
-                        </items>
-                    </Select>
+
+                    <Label text="Author" />
+
+                    <Input
+                            id="authorInput"
+                            value="{dialogBook>/author_name}"
+                            editable="false" />
+                    <Button text="Select Author" press=".onOpenAuthorDialog"/>
 
                     <Label text="Category" />
                     <Select
-                            items="{path: 'category>/categories'}"
+                            items="{path: 'category>/data'}"
                             id="categorySelect"
                             selectedKey="{dialogBook>/category_id}">
                         <items>
@@ -81,4 +79,36 @@
             </Toolbar>
         </footer>
     </Dialog>
+
+<!--    <TableSelectDialog-->
+<!--            id="authorSelectDialog"-->
+<!--            title="Select Author"-->
+<!--            items="{displayAuthor>/data}"-->
+<!--            growing="true"-->
+<!--            growingThreshold="10"-->
+<!--            noDataText="No authors found"-->
+<!--            search=".onAuthorSearch"-->
+<!--            confirm=".onAuthorConfirm"-->
+<!--            cancel=".onDialogCancel"-->
+<!--            updateFinished=".onLoadMoreAuthors">-->
+
+<!--        <columns>-->
+<!--            <Column>-->
+<!--                <Text text="First Name"/>-->
+<!--            </Column>-->
+<!--            <Column>-->
+<!--                <Text text="Last Name"/>-->
+<!--            </Column>-->
+<!--        </columns>-->
+
+<!--        <items>-->
+<!--            <ColumnListItem>-->
+<!--                <cells>-->
+<!--                    <Text text="{displayAuthor>first_name}" />-->
+<!--                    <Text text="{displayAuthor>last_name}" />-->
+<!--                </cells>-->
+<!--            </ColumnListItem>-->
+<!--        </items>-->
+<!--    </TableSelectDialog>-->
+
 </mvc:View>

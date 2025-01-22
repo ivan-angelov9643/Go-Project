@@ -26,13 +26,16 @@ func (h *LoanHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	accessScope := db.NewAccessScope(r)
 	pagingScope := db.NewPagingScope(r)
-	loans, dbErr := h.loanManager.GetAll(accessScope, pagingScope)
+	filterByBookIDScope := db.NewFilterByBookIDScope(r)
+	filterByUserIDScope := db.NewFilterByUserIDScope(r)
+	filterByStatusScope := db.NewFilterByStatusScope(r)
+	loans, dbErr := h.loanManager.GetAll(accessScope, pagingScope, filterByBookIDScope, filterByUserIDScope, filterByStatusScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	count, dbErr := h.loanManager.Count(accessScope)
+	count, dbErr := h.loanManager.Count(accessScope, filterByBookIDScope, filterByUserIDScope, filterByStatusScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return

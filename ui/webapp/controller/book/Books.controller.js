@@ -216,7 +216,6 @@ sap.ui.define([
 			}
 
 			if (eventData.from_ratings && eventData.book_id === selectedBookID) {
-				// TODO add paging for ratings in the books page ui
 				await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page, selectedBookID);
 			}
 
@@ -233,8 +232,9 @@ sap.ui.define([
 				return;
 			}
 
-			const selectedBookData = this.oBookModel.getData().books.find(book => book.id === selectedBookID);
-			this.fillBookModel(this.oSelectedBookModel, selectedBookData);
+			if (eventData.edit_book) {
+				this.fillBookModel(this.oSelectedBookModel, eventData);
+			}
 		},
 
 		reserveButtonUpdateVisible: async function (user_id, book_id) {

@@ -41,7 +41,12 @@ func (m *LoanManager) Get(idToGet uuid.UUID) (models.Loan, error) {
 	log.Infof("[LoanManager.Get] Fetching loan with ID: %s", idToGet)
 
 	var loan models.Loan
-	err := m.db.First(&loan, "id = ?", idToGet).Error
+	err := m.db.Table("loans").
+		Select("loans.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = loans.user_id").
+		Joins("JOIN books ON books.id = loans.book_id").
+		Where("loans.id = ?", idToGet).
+		First(&loan).Error
 	if err != nil {
 		log.Errorf("[LoanManager.Get] Error fetching loan with ID %s: %v", idToGet, err)
 		return models.Loan{}, db.NewDBError(db.InternalError, "[LoanManager.Get] Error fetching loan with ID %s: %v", idToGet, err)

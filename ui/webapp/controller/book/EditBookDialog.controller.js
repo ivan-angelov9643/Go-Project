@@ -2,8 +2,9 @@ sap.ui.define([
     "../BaseController",
     "sap/m/MessageToast",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/core/Core"
-], function (BaseController, MessageToast, JSONModel, Core) {
+    "sap/ui/core/Core",
+    "sap/ui/core/mvc/XMLView",
+], function (BaseController, MessageToast, JSONModel, Core, XMLView) {
     "use strict";
 
     return BaseController.extend("library-app.controller.book.EditBookDialog", {
@@ -14,16 +15,12 @@ sap.ui.define([
             this.oDialogBookModel = new JSONModel(this.initBookModel());
             this.getView().setModel(this.oDialogBookModel, "dialogBook");
 
-            this.oAuthorModel = new JSONModel({
-                authors: null,
-            });
-            this.oAuthorModel.setSizeLimit(Number.MAX_VALUE);
-            this.getView().setModel(this.oAuthorModel, "author");
-            // TODO
-            await this.loadAuthors(this.oAuthorModel);
-
             this.oCategoryModel = new JSONModel({
-                categories: null,
+                count: null,
+                page_size: null,
+                page: null,
+                data: null,
+                total_pages: null,
             });
             this.oCategoryModel.setSizeLimit(Number.MAX_VALUE);
             this.getView().setModel(this.oCategoryModel, "category");
@@ -60,13 +57,18 @@ sap.ui.define([
                     token,
                     bookData
                 );
-
+//TODO
+                saveResponse.edit_book = true;
                 Core.getEventBus().publish("library-app", "booksUpdated", saveResponse);
 
                 MessageToast.show("Successfully updated book");
             } catch (error) {
                 MessageToast.show(error.error || "Error updating book");
                 return;
+            }
+
+            if (this._oAuthorSelectDialog && !this._oAuthorSelectDialog.bIsDestroyed) {
+                this._oAuthorSelectDialog.destroy();
             }
 
             this.onDialogClose();
@@ -81,6 +83,27 @@ sap.ui.define([
             if (dialog) {
                 dialog.close();
             }
-        }
+        },
+
+        onOpenAuthorDialog: async function () {
+            if (!this._oAuthorSelectDialog || this._oAuthorSelectDialog.bIsDestroyed) {
+                const oOwnerComponent = this.getOwnerComponent();
+                oOwnerComponent.runAsOwner(() => {
+                    this._oAuthorSelectDialog= new XMLView({
+                        id: "authorSelectDialogView",
+                        viewName: "library-app.view.book.AuthorSelectDialog",
+                    });
+                    this.getView().addDependent(this._oAuthorSelectDialog);
+                });
+            }
+            // const oData = this.oDialogBookModel.getData();
+            // const oDialogBookModel = this._oAuthorSelectDialog.getModel("dialogBook");
+
+            // this.fillBookModel(oDialogBookModel, oData);
+
+            console.log(this._oAuthorSelectDialog)
+            this._oAuthorSelectDialog.byId("authorSelectDialog").open();
+
+        },
     });
 });

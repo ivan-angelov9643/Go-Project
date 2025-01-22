@@ -66,79 +66,46 @@ sap.ui.define([
 
 		userHasReservedBook: async function (user_id, book_id) {
 			const token = await this.getOwnerComponent().getToken();
-
-			const reservationsResponse = await this.sendRequest(
-				`http://localhost:8080/api/reservations`,
+			const reservationsData = await this.sendRequest(
+				`http://localhost:8080/api/reservations?user_id=${user_id}&book_id=${book_id}`,
 				"GET",
 				token
 			);
-
-			// TODO
-			const reservation = reservationsResponse.data.find(
-				(reservation) =>
-					reservation.user_id === user_id && reservation.book_id === book_id
-			);
-
-			return reservation !== undefined;
+			// console.log("reservations: ", reservationsData)
+			return reservationsData.count > 0;
 		},
 
 		userHasActiveLoanOnBook: async function (user_id, book_id) {
 			const token = await this.getOwnerComponent().getToken();
-
-			const loansResponse = await this.sendRequest(
-				`http://localhost:8080/api/loans`,
+			const loansData = await this.sendRequest(
+				`http://localhost:8080/api/loans?user_id=${user_id}&book_id=${book_id}&status=active`,
 				"GET",
 				token
 			);
-
-			// TODO
-			const activeLoan = loansResponse.data.find(
-				(loan) =>
-					loan.user_id === user_id &&
-					loan.book_id === book_id &&
-					loan.status === "active"
-			);
-
-			return activeLoan !== undefined;
-		},
-
-		userHasRatedBook: async function (user_id, book_id) {
-			const token = await this.getOwnerComponent().getToken();
-
-			const ratingsResponse = await this.sendRequest(
-				`http://localhost:8080/api/ratings`,
-				"GET",
-				token
-			);
-
-			// TODO
-			const rating = ratingsResponse.data.find(
-				(rating) =>
-					rating.user_id === user_id &&
-					rating.book_id === book_id
-			);
-
-			return rating !== undefined;
+			// console.log("active loans: ", loansData)
+			return loansData.count > 0;
 		},
 
 		userHasLoanOnBook: async function (user_id, book_id) {
 			const token = await this.getOwnerComponent().getToken();
-
-			// url param
-			const loansResponse = await this.sendRequest(
-				`http://localhost:8080/api/loans`,
+			const loansData = await this.sendRequest(
+				`http://localhost:8080/api/loans?user_id=${user_id}&book_id=${book_id}`,
 				"GET",
 				token
 			);
+			// console.log("loans: ", loansData)
+			return loansData.count > 0;
+		},
 
-			// TODO
-			const activeLoan = loansResponse.data.find(
-				(loan) =>
-					loan.user_id === user_id &&
-					loan.book_id === book_id
+		userHasRatedBook: async function (user_id, book_id) {
+			const token = await this.getOwnerComponent().getToken();
+			const ratingsData = await this.sendRequest(
+				`http://localhost:8080/api/ratings?user_id=${user_id}&book_id=${book_id}`,
+				"GET",
+				token
 			);
-
-			return activeLoan !== undefined;
+			// console.log("ratings: ", ratingsData)
+			return ratingsData.count > 0;
 		},
 
 		getUserID: function (token) {
@@ -165,10 +132,10 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(booksData.count / booksData.page_size));
 		},
 
-		loadAuthors: async function (model, page) {
+		loadAuthors: async function (model, page, search = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const authorsData = await this.sendRequest(
-				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}`,
+				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}&search=${search}`,
 				"GET",
 				token
 			);
@@ -227,7 +194,6 @@ sap.ui.define([
 
 		loadRatings: async function (model, page, book_id = null) {
 			const token = await this.getOwnerComponent().getToken();
-
 			let ratingData = await this.sendRequest(
 				`http://localhost:8080/api/ratings?book_id=${book_id}&page_size=${this.page_size}&page=${page}`,
 				"GET",

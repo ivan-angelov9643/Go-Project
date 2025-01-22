@@ -10,7 +10,7 @@ type FilterByBookIDScope struct {
 	BookID *uuid.UUID
 }
 
-func NewRatingFilterScope(r *http.Request) *FilterByBookIDScope {
+func NewFilterByBookIDScope(r *http.Request) *FilterByBookIDScope {
 	bookIDParam := r.URL.Query().Get("book_id")
 
 	var bookID *uuid.UUID = nil
