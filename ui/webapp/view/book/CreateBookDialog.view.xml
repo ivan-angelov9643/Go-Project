@@ -21,38 +21,33 @@
                     <Input
                             id="titleInput"
                             value="{dialogBook>/title}" />
+
                     <Label text="Year" />
                     <Input
                             id="yearInput"
                             value="{dialogBook>/year}"
                             type="Number" />
+
                     <Label text="Author" />
-                    <Select
-                            items="{path:'author>/authors'}"
-                            id="authorSelect"
-                            selectedKey="{dialogBook>/author_id}">
-                        <items>
-                            <core:Item
-                                    key="{author>id}"
-                                    text="{author>first_name} {author>last_name}" />
-                        </items>
-                    </Select>
+                    <Input
+                            id="authorInput"
+                            value="{dialogBook>/author_name}"
+                            editable="false" />
+                    <Button text="Select Author" press=".onOpenAuthorDialog"/>
+
                     <Label text="Category" />
-                    <Select
-                            items="{path:'category>/categories'}"
-                            id="categorySelect"
-                            selectedKey="{dialogBook>/category_id}">
-                        <items>
-                            <core:Item
-                                    key="{category>id}"
-                                    text="{category>name}" />
-                        </items>
-                    </Select>
+                    <Input
+                            id="categoryInput"
+                            value="{dialogBook>/category_name}"
+                            editable="false" />
+                    <Button text="Select Category" press=".onOpenCategoryDialog"/>
+
                     <Label text="Total Copies" />
                     <Input
                             id="totalCopiesInput"
                             value="{dialogBook>/total_copies}"
                             type="Number" />
+
                     <Label text="Language" />
                     <Input
                             id="languageInput"

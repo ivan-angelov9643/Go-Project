@@ -10,7 +10,7 @@ type FilterByAuthorNameScope struct {
 }
 
 func NewFilterByAuthorNameScope(r *http.Request) *FilterByAuthorNameScope {
-	searchParam := r.URL.Query().Get("search")
+	searchParam := r.URL.Query().Get("author_name")
 
 	var search *string = nil
 	if searchParam != "" && searchParam != "null" {

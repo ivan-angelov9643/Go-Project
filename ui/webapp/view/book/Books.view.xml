@@ -14,51 +14,60 @@
 						<l:BlockLayoutCell backgroundColorSet="ColorSet9" backgroundColorShade="ShadeA" width="3">
 							<Toolbar design="Transparent">
 								<Title
-										text="Books"
-									   width="50px"
-									   level="H3"/>
+									text="Books"
+								   width="50px"
+								   level="H3"/>
 								<Button
-										tooltip="Refresh"
-										icon="sap-icon://refresh"
-										press="loadData"
-										visible="{= ${userRoles>/book.create} ? true: false }"/>
+									tooltip="Refresh"
+									icon="sap-icon://refresh"
+									press="loadData"
+									visible="{= ${userRoles>/book.create} ? true: false }"/>
 								<Text text="Search by title:" width="160px"/>
 								<Text text="Search by author name:" width="180px"/>
 								<Text text="Search by category name:" width="190px"/>
-								<Text text="Search by language:" width="160px"/>
+								<Text text="Search by language:" width="157px"/>
+								<Button
+									icon="sap-icon://search"
+									type="Ghost"
+									text="Search"
+									press="onSearch"
+									tooltip="Apply filters"
+								/>
 							</Toolbar>
 							<Toolbar design="Transparent">
 								<Button
-										text="Create"
-										icon="sap-icon://add"
-										press="onCreateBook"
-										type="Ghost"
-										class="sapUiTinyMarginEnd"
-										visible="{= ${userRoles>/book.create} ? true: false }" />
+									text="Create"
+									icon="sap-icon://add"
+									press="onCreateBook"
+									type="Ghost"
+									class="sapUiTinyMarginEnd"
+									visible="{= ${userRoles>/book.create} ? true: false }" />
 								<Button
-										tooltip="Refresh"
-										icon="sap-icon://refresh"
-										press="loadData"
-										visible="{= ${userRoles>/book.create} ? false: true }"/>
+									tooltip="Refresh"
+									icon="sap-icon://refresh"
+									press="loadData"
+									visible="{= ${userRoles>/book.create} ? false: true }"/>
 								<ToolbarSpacer width="13px"
-											   visible="{= ${userRoles>/book.create} ? false: true }" />
+									   visible="{= ${userRoles>/book.create} ? false: true }" />
 								<Input
-										id="titleSearch"
-										placeholder="Enter title"
-										liveChange="onTitleSearchChange"
-										width="160px"/>
+									id="titleSearch"
+									placeholder="Enter title"
+									width="160px"/>
 								<Input id="authorSearch"
-									   placeholder="Enter author name"
-									   liveChange="onAuthorNameSearchChange"
-									   width="180px" />
+									placeholder="Enter author name"
+									width="180px" />
 								<Input id="categorySearch"
-									   placeholder="Enter category name"
-									   liveChange="onCategoryNameSearchChange"
-									   width="190px"/>
+									placeholder="Enter category name"
+									width="190px"/>
 								<Input id="languageSearch"
-									   placeholder="Enter language"
-									   liveChange="onLanguageSearchChange"
-									   width="160px"/>
+									placeholder="Enter language"
+									width="160px"/>
+								<Button
+									text="Clear"
+									icon="sap-icon://decline"
+									type="Ghost"
+									press="onClearSearch"
+									tooltip="Clear filters"/>
 							</Toolbar>
 							<Table
 									id="booksTable"

@@ -21,15 +21,16 @@ sap.ui.define([
             await this.loadAuthors(this.oAuthorModel, 1);
 
             this.oDisplayAuthorModel = new JSONModel({
-                count: null,
-                page_size: null,
-                page: null,
                 data: null,
-                total_pages: null,
             });
             this.oDisplayAuthorModel.setSizeLimit(Number.MAX_VALUE);
             this.getView().setModel(this.oDisplayAuthorModel, "displayAuthor");
             await this.loadAuthors(this.oDisplayAuthorModel, 1); // can be filled with oauthor data
+
+            this.oSearchModel = new JSONModel({
+               value: null
+            });
+            this.getView().setModel(this.oSearchModel, "search");
         },
 
         onAuthorSearch: async function (oEvent) {
@@ -46,7 +47,7 @@ sap.ui.define([
             if (this.oAuthorModel.getData().page < this.oAuthorModel.getData().total_pages &&
                 actual === total) {
                 await this.loadAuthors(this.oAuthorModel, this.oAuthorModel.getData().page + 1, this.sSearch);
-                this._appendData(this.oDisplayAuthorModel, this.oAuthorModel);
+                this.AppendData(this.oDisplayAuthorModel, this.oAuthorModel);
             }
         },
 
@@ -68,14 +69,5 @@ sap.ui.define([
         onDialogCancel: function () {
             this.getView().destroy()
         },
-
-        _appendData: function (displayModel, model) {
-            const displayData = displayModel.getData().data;
-            const newData = model.getData().data;
-
-            displayData.push(...newData);
-
-            displayModel.setProperty("/data", displayData);
-        }
     });
 });

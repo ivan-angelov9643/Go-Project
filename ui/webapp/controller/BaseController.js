@@ -1,13 +1,12 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/core/UIComponent",
-	"sap/ui/model/json/JSONModel",
-	"library-app/controller/BaseController"
-], function(Controller, UIComponent, JSONModel, BaseController) {
+	"sap/ui/core/mvc/XMLView",
+], function(Controller, UIComponent, XMLView) {
 	"use strict";
 
 	return Controller.extend("library-app.controller.BaseController", {
-		page_size: 2,
+		page_size: 10,
 
 		getRouter : function () {
 			return UIComponent.getRouterFor(this);
@@ -71,7 +70,7 @@ sap.ui.define([
 				"GET",
 				token
 			);
-			// console.log("reservations: ", reservationsData)
+
 			return reservationsData.count > 0;
 		},
 
@@ -82,7 +81,7 @@ sap.ui.define([
 				"GET",
 				token
 			);
-			// console.log("active loans: ", loansData)
+
 			return loansData.count > 0;
 		},
 
@@ -93,7 +92,7 @@ sap.ui.define([
 				"GET",
 				token
 			);
-			// console.log("loans: ", loansData)
+
 			return loansData.count > 0;
 		},
 
@@ -104,7 +103,7 @@ sap.ui.define([
 				"GET",
 				token
 			);
-			// console.log("ratings: ", ratingsData)
+
 			return ratingsData.count > 0;
 		},
 
@@ -112,10 +111,13 @@ sap.ui.define([
 			return JSON.parse(atob(token.split(".")[1])).sub;
 		},
 
-		loadBooks: async function (model, page) {
+		loadBooks: async function (model, page, title = null, authorName = null,
+								   categoryName = null, language = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const booksData = await this.sendRequest(
-				`http://localhost:8080/api/books?page_size=${this.page_size}&page=${page}`,
+				`http://localhost:8080/api/books?page_size=${this.page_size}&page=${page}&
+				title=${title}&author_name=${authorName}&
+				category_name=${categoryName}&language=${language}`,
 				"GET",
 				token
 			);
@@ -132,10 +134,10 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(booksData.count / booksData.page_size));
 		},
 
-		loadAuthors: async function (model, page, search = null) {
+		loadAuthors: async function (model, page, authorName = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const authorsData = await this.sendRequest(
-				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}&search=${search}`,
+				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}&author_name=${authorName}`,
 				"GET",
 				token
 			);
@@ -147,10 +149,10 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(authorsData.count / authorsData.page_size));
 		},
 
-		loadCategories: async function (model, page) {
+		loadCategories: async function (model, page, categoryName = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const categoriesData = await this.sendRequest(
-				`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}`,
+				`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}&category_name=${categoryName}`,
 				"GET",
 				token
 			);
@@ -195,7 +197,7 @@ sap.ui.define([
 		loadRatings: async function (model, page, book_id = null) {
 			const token = await this.getOwnerComponent().getToken();
 			let ratingData = await this.sendRequest(
-				`http://localhost:8080/api/ratings?book_id=${book_id}&page_size=${this.page_size}&page=${page}`,
+				`http://localhost:8080/api/ratings?page_size=${this.page_size}&page=${page}&book_id=${book_id}`,
 				"GET",
 				token
 			);
@@ -228,6 +230,15 @@ sap.ui.define([
 			const userData = await this.sendRequest(`http://localhost:8080/api/users/${userID}`, "GET", token);
 
 			this.fillUserModel(model, userData);
+		},
+
+		AppendData: function (displayModel, model) {
+			const displayData = displayModel.getData().data;
+			const newData = model.getData().data;
+
+			displayData.push(...newData);
+
+			displayModel.setProperty("/data", displayData);
 		},
 
 		toISO8601: function (dateString) {
@@ -398,5 +409,32 @@ sap.ui.define([
 			ratingModel.setProperty("/value", data.value);
 		},
 
+		onOpenAuthorDialog: async function () {
+			if (!this._oAuthorSelectDialog || this._oAuthorSelectDialog.bIsDestroyed) {
+				const oOwnerComponent = this.getOwnerComponent();
+				oOwnerComponent.runAsOwner(() => {
+					this._oAuthorSelectDialog= new XMLView({
+						id: "authorSelectDialogView",
+						viewName: "library-app.view.book.AuthorSelectDialog",
+					});
+					this.getView().addDependent(this._oAuthorSelectDialog);
+				});
+			}
+			this._oAuthorSelectDialog.byId("authorSelectDialog").open();
+		},
+
+		onOpenCategoryDialog: async function () {
+			if (!this._oCategorySelectDialog || this._oCategorySelectDialog.bIsDestroyed) {
+				const oOwnerComponent = this.getOwnerComponent();
+				oOwnerComponent.runAsOwner(() => {
+					this._oCategorySelectDialog = new XMLView({
+						id: "categorySelectDialogView",
+						viewName: "library-app.view.book.CategorySelectDialog",
+					});
+					this.getView().addDependent(this._oCategorySelectDialog);
+				});
+			}
+			this._oCategorySelectDialog.byId("categorySelectDialog").open();
+		},
 	});
 });

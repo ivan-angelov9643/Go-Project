@@ -26,13 +26,21 @@ func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	accessScope := db.NewAccessScope(r)
 	pagingScope := db.NewPagingScope(r)
-	books, dbErr := h.bookManager.GetAll(accessScope, pagingScope)
+	searchByTitleScope := db.NewFilterByTitleScope(r)
+	searchByAuthorScope := db.NewFilterByAuthorNameScope(r)
+	searchByCategoryScope := db.NewFilterByCategoryNameScope(r)
+	searchByLanguageScope := db.NewFilterByLanguageScope(r)
+	books, dbErr := h.bookManager.GetAll(
+		accessScope, pagingScope, searchByTitleScope, searchByAuthorScope, searchByCategoryScope, searchByLanguageScope,
+	)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	count, dbErr := h.bookManager.Count(accessScope)
+	count, dbErr := h.bookManager.Count(
+		accessScope, searchByTitleScope, searchByAuthorScope, searchByCategoryScope, searchByLanguageScope,
+	)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return

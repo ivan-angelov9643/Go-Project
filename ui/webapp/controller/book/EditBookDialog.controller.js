@@ -4,7 +4,7 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/ui/core/Core",
     "sap/ui/core/mvc/XMLView",
-], function (BaseController, MessageToast, JSONModel, Core, XMLView) {
+], function (BaseController, MessageToast, JSONModel, Core) {
     "use strict";
 
     return BaseController.extend("library-app.controller.book.EditBookDialog", {
@@ -67,9 +67,7 @@ sap.ui.define([
                 return;
             }
 
-            if (this._oAuthorSelectDialog && !this._oAuthorSelectDialog.bIsDestroyed) {
-                this._oAuthorSelectDialog.destroy();
-            }
+
 
             this.onDialogClose();
         },
@@ -85,25 +83,6 @@ sap.ui.define([
             }
         },
 
-        onOpenAuthorDialog: async function () {
-            if (!this._oAuthorSelectDialog || this._oAuthorSelectDialog.bIsDestroyed) {
-                const oOwnerComponent = this.getOwnerComponent();
-                oOwnerComponent.runAsOwner(() => {
-                    this._oAuthorSelectDialog= new XMLView({
-                        id: "authorSelectDialogView",
-                        viewName: "library-app.view.book.AuthorSelectDialog",
-                    });
-                    this.getView().addDependent(this._oAuthorSelectDialog);
-                });
-            }
-            // const oData = this.oDialogBookModel.getData();
-            // const oDialogBookModel = this._oAuthorSelectDialog.getModel("dialogBook");
 
-            // this.fillBookModel(oDialogBookModel, oData);
-
-            console.log(this._oAuthorSelectDialog)
-            this._oAuthorSelectDialog.byId("authorSelectDialog").open();
-
-        },
     });
 });
