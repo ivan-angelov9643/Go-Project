@@ -26,12 +26,12 @@ func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	accessScope := db.NewAccessScope(r)
 	pagingScope := db.NewPagingScope(r)
-	searchByTitleScope := db.NewFilterByTitleScope(r)
-	searchByAuthorScope := db.NewFilterByAuthorNameScope(r)
-	searchByCategoryScope := db.NewFilterByCategoryNameScope(r)
-	searchByLanguageScope := db.NewFilterByLanguageScope(r)
+	filterByTitleScope := db.NewFilterByTitleScope(r)
+	filterByAuthorNameScope := db.NewFilterByAuthorNameScope(r)
+	filterByCategoryNameScope := db.NewFilterByCategoryNameScope(r)
+	filterByLanguageScope := db.NewFilterByLanguageScope(r)
 	books, dbErr := h.bookManager.GetAll(
-		accessScope, pagingScope, searchByTitleScope, searchByAuthorScope, searchByCategoryScope, searchByLanguageScope,
+		accessScope, pagingScope, filterByTitleScope, filterByAuthorNameScope, filterByCategoryNameScope, filterByLanguageScope,
 	)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
@@ -39,7 +39,7 @@ func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	count, dbErr := h.bookManager.Count(
-		accessScope, searchByTitleScope, searchByAuthorScope, searchByCategoryScope, searchByLanguageScope,
+		accessScope, filterByTitleScope, filterByAuthorNameScope, filterByCategoryNameScope, filterByLanguageScope,
 	)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)

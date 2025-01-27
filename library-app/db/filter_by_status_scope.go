@@ -22,7 +22,7 @@ func NewFilterByStatusScope(r *http.Request) *FilterByStatusScope {
 
 func (s *FilterByStatusScope) Get() func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if s.Status == nil {
+		if s.Status == nil || *s.Status == "all" {
 			return db
 		} else {
 			return db.Where("status = ?", s.Status)

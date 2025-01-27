@@ -26,14 +26,14 @@ func (h *CategoryHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 
 	accessScope := db.NewAccessScope(r)
 	pagingScope := db.NewPagingScope(r)
-	searchScope := db.NewFilterByCategoryNameScope(r)
-	categories, dbErr := h.categoryManager.GetAll(accessScope, pagingScope, searchScope)
+	filterByCategoryNameScope := db.NewFilterByCategoryNameScope(r)
+	categories, dbErr := h.categoryManager.GetAll(accessScope, pagingScope, filterByCategoryNameScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	count, dbErr := h.categoryManager.Count(accessScope, searchScope)
+	count, dbErr := h.categoryManager.Count(accessScope, filterByCategoryNameScope)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return

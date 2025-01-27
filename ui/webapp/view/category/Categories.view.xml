@@ -13,6 +13,7 @@
 						backgroundColorShade="ShadeA"
 						width="3">
 					<Table
+							noData="There are not any categories"
 							items="{path:'category>/data', templateShareable: false}"
 							fixedLayout="false">
 						<headerToolbar>
@@ -79,6 +80,7 @@
 								class="sapUiSmallMargin"/>
 						<Button
 								text="Next"
+								iconFirst="false"
 								icon="sap-icon://slim-arrow-right"
 								press="onNextPage"
 								enabled="{= ${category>/page} &lt; ${category>/total_pages} }"/>

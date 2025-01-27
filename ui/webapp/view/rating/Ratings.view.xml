@@ -38,6 +38,7 @@
 					</Toolbar>
 					<Table
 							id="ratingsTable"
+							noData="There are not any ratings"
 							items="{path:'rating>/data', templateShareable: false}"
 							fixedLayout="false">
 						<columns>
@@ -87,6 +88,7 @@
 								class="sapUiSmallMargin"/>
 						<Button
 								text="Next"
+								iconFirst="false"
 								icon="sap-icon://slim-arrow-right"
 								press="onNextPage"
 								enabled="{= ${rating>/page} &lt; ${rating>/total_pages} }"/>

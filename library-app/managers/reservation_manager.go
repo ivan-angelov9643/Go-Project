@@ -146,7 +146,11 @@ func (m *ReservationManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[ReservationManager.Count] Counting reservations in the database")
 
 	var count int64
-	err := db.ApplyScopes(m.db, scopes).Model(&models.Reservation{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Table("reservations").
+		Select("reservations.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = reservations.user_id").
+		Joins("JOIN books ON books.id = reservations.book_id").
+		Count(&count).Error
 	if err != nil {
 		log.Errorf("[ReservationManager.Count] Error counting reservations: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[ReservationManager.Count] Error counting reservations: %v", err)

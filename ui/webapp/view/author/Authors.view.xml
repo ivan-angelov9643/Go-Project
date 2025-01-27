@@ -13,6 +13,7 @@
 						backgroundColorShade="ShadeA"
 						width="3">
 					<Table
+							noData="There are not any authors"
 							items="{path:'author>/data', templateShareable: false}"
 							fixedLayout="false">
 						<headerToolbar>
@@ -99,6 +100,7 @@
 								class="sapUiSmallMargin"/>
 						<Button
 								text="Next"
+								iconFirst="false"
 								icon="sap-icon://slim-arrow-right"
 								press="onNextPage"
 								enabled="{= ${author>/page} &lt; ${author>/total_pages} }"/>

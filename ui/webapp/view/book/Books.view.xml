@@ -71,6 +71,7 @@
 							</Toolbar>
 							<Table
 									id="booksTable"
+									noData="There are not any books"
 									items="{path: 'book>/data', templateShareable: false}"
 									fixedLayout="false"
 									mode="SingleSelectMaster"
@@ -103,6 +104,7 @@
 										class="sapUiSmallMargin"/>
 								<Button
 										text="Next"
+										iconFirst="false"
 										icon="sap-icon://slim-arrow-right"
 										press="onNextPage"
 										enabled="{= ${book>/page} &lt; ${book>/total_pages} }"/>
@@ -257,6 +259,7 @@
 							class="sapUiSmallMargin"/>
 					<Button
 							text="Next"
+							iconFirst="false"
 							icon="sap-icon://slim-arrow-right"
 							press="onNextPageRatings"
 							enabled="{= ${rating>/page} &lt; ${rating>/total_pages} }"/>

@@ -9,12 +9,6 @@
 			"key": "home"
 		},
 		{
-			"titleI18nKey": "sideContentUserDashboard",
-			"icon": "sap-icon://bbyd-dashboard",
-			"expanded": false,
-			"key": "userDashboard"
-		},
-		{
 			"titleI18nKey": "sideContentProfile",
 			"icon": "sap-icon://customer",
 			"expanded": false,

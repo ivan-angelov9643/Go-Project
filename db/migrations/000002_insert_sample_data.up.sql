@@ -1,13 +1,28 @@
 BEGIN;
 
--- Insert sample data into `users`
 INSERT INTO users (id, preferred_username, given_name, family_name, email, created_at, updated_at)
 VALUES
-    ('548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', 'user1', 'User', 'One', 'user1@example.com', NOW(), NOW()),
-    ('c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'user2', 'User', 'Two', 'user2@example.com', NOW(), NOW()),
-    ('a4dfe207-f3bc-4710-8ba4-d9f69a45c093', 'user3', 'User', 'Three', 'user3@example.com', NOW(), NOW());
+    ('1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', 'jdoe', 'John', 'Doe', 'johndoe@example.com', NOW(), NOW()),
+    ('2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', 'asmith', 'Alice', 'Smith', 'alicesmith@example.com', NOW(), NOW()),
+    ('3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1', 'bwilliams', 'Bob', 'Williams', 'bobwilliams@example.com', NOW(), NOW()),
+    ('4e2a96d4-81c5-4aa2-b762-dac50c0f9e32', 'cmiller', 'Charlie', 'Miller', 'charliemiller@example.com', NOW(), NOW()),
+    ('5f74b10e-9279-44c6-91e3-0179c2a312a6', 'ddavis', 'David', 'Davis', 'daviddavis@example.com', NOW(), NOW()),
+    ('6a0f3e24-04c5-4993-9f08-89d25c83e941', 'ejohnson', 'Emma', 'Johnson', 'emmajohnson@example.com', NOW(), NOW()),
+    ('7b7e2c6a-9b2d-4a97-8fc6-9e5a43db3d1c', 'fanderson', 'Frank', 'Anderson', 'frankanderson@example.com', NOW(), NOW()),
+    ('8c124a3b-65fa-4d43-8c4c-1f5bda8d8704', 'gharris', 'Grace', 'Harris', 'graceharris@example.com', NOW(), NOW()),
+    ('9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd', 'hclark', 'Henry', 'Clark', 'henryclark@example.com', NOW(), NOW()),
+    ('10e7a6bd-378b-4645-a5a4-0d4f874b298a', 'ikim', 'Ivy', 'Kim', 'ivykim@example.com', NOW(), NOW()),
+    ('11a4bc3d-5476-4f3c-846f-5cfc972a18d2', 'jlopez', 'Jack', 'Lopez', 'jacklopez@example.com', NOW(), NOW()),
+    ('12b8d4a7-2134-4f19-b1f7-6e5dc09b3d94', 'kwright', 'Kelly', 'Wright', 'kellywright@example.com', NOW(), NOW()),
+    ('13c3f6ea-73b2-42fb-9a3e-8d9c6b4d5c52', 'lmorgan', 'Luke', 'Morgan', 'lukemorgan@example.com', NOW(), NOW()),
+    ('14d2e7c5-875a-40f1-95f2-1d6a3b5c8a1e', 'mgarcia', 'Mia', 'Garcia', 'miagarcia@example.com', NOW(), NOW()),
+    ('15e94a1b-65c7-4f82-9e5c-3a2c5b4f9d27', 'nmartin', 'Noah', 'Martin', 'noahmartin@example.com', NOW(), NOW()),
+    ('16f7c92a-4e32-4a67-a9f5-74e3d5b7c8a5', 'orodriguez', 'Olivia', 'Rodriguez', 'oliviarodriguez@example.com', NOW(), NOW()),
+    ('17a8e43d-7219-4c8b-bf92-85a4d9c0e6f3', 'pperez', 'Paul', 'Perez', 'paulperez@example.com', NOW(), NOW()),
+    ('18b2d74a-6387-4fa5-8a9c-5b6a2f34e9d4', 'qsanchez', 'Quinn', 'Sanchez', 'quinnsanchez@example.com', NOW(), NOW()),
+    ('19c3f6e8-97d2-4c71-b4e5-6d5a39c2f0a8', 'rreyes', 'Rachel', 'Reyes', 'rachelreyes@example.com', NOW(), NOW()),
+    ('20d1a6b5-48f3-4e5a-a2c4-7b8e9c3d5f2a', 'slee', 'Samuel', 'Lee', 'samuellee@example.com', NOW(), NOW());
 
--- Insert sample data into `categories`
 INSERT INTO categories (id, name, description, created_at, updated_at)
 VALUES
     ('08d4b7cf-5618-42fa-943b-854e00e65d22', 'Fiction', 'Category for fictional books', NOW(), NOW()),
@@ -49,8 +64,6 @@ VALUES
     ('5f92c3a2-6b2d-48e2-9b5d-5f794eb5a7c5', 'Adventure', 'Books featuring exciting adventures and quests', NOW(), NOW()),
     ('d82e1c5a-31a9-4b22-9e54-7c392d8231d4', 'Drama', 'Books featuring dramatic storytelling', NOW(), NOW());
 
-
--- Insert sample data into `authors`
 INSERT INTO authors (id, first_name, last_name, nationality, birth_date, death_date, bio, website, created_at, updated_at)
 VALUES
     ('e2435d88-dc2d-4c18-9068-85c3b5d885cd', 'Author', 'One', 'American', '1980-01-01', NULL, 'Bio of Author One', 'https://authorone.com', NOW(), NOW()),
@@ -157,31 +170,75 @@ VALUES
     ('97fabcbb-7a3a-43f2-b545-97d99b99fab4', 'Gardening 101', 2023, 'f72e1c5a-51a9-4b22-8e94-1c392d8231b3', '3435b61f-bbd1-47cb-9937-ec54d61e54f2', 14, 'Chinese', '2023-06-20 09:55:32', '2023-12-30 17:23:19'),
     ('fe4714bc-3100-4497-98f3-c313ae7b63ad', 'The Lost Civilization', 2016, '5f92c3a2-6b2d-48e2-9b5d-5f794eb5a7c5', '94e0d276-cf16-4ba5-a137-e63d3cfb9db5', 10, 'Arabic', '2021-03-12 11:29:45', '2023-05-09 14:35:22');
 
--- Insert sample data into `loans`
 INSERT INTO loans (id, user_id, book_id, start_date, due_date, return_date, status, created_at, updated_at)
 VALUES
-    ('dd69a43a-f51f-4f03-9302-c96f13b6b90b', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', 'fc2a831c-e997-4ec7-884a-e228af55b2b2', '2024-01-01', '2024-01-15', NULL, 'active', NOW(), NOW()),
-    ('b63c0269-df60-49cb-b815-685d8a587d6a', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'f12bbee7-2fb2-474c-bd96-60ba8d59ec64', '2024-02-01', '2024-02-15', '2024-02-10', 'completed', NOW(), NOW());
+    ('c14b6a21-3b5d-4f9e-9301-2d8f4c6a0e3b', '1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', '23cb2f7a-af2b-4279-b825-806703236698', '2024-01-10', '2024-01-24', NULL, 'active', NOW(), NOW()),
+    ('9fa874f3-5c4e-4d7b-943f-0175c8d9b630', '2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', '6092514b-7dcc-40c2-a2d4-8ae8387618d4', '2024-02-05', '2024-02-19', '2024-02-18', 'completed', NOW(), NOW()),
+    ('bf64c3f7-d124-4b59-9e31-7a6e2f8d5c4a', '3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1', '8c2252bf-37e0-4027-a65c-cd4c09f83358', '2023-12-01', '2023-12-15', '2023-12-14', 'completed', NOW(), NOW()),
+    ('e6a3c2d9-5b48-487e-931d-2c3f4b5a7601', '4e2a96d4-81c5-4aa2-b762-dac50c0f9e32', 'fca4b6a0-2bfc-494e-8696-7e9c01395871', '2024-03-10', '2024-03-24', NULL, 'active', NOW(), NOW()),
+    ('d4f3c8a5-2b6a-4e79-981d-3c5f2a4b7306', '5f74b10e-9279-44c6-91e3-0179c2a312a6', '18fde869-22d5-41d2-b9cf-b98636b41b0e', '2024-04-01', '2024-04-15', NULL, 'active', NOW(), NOW()),
+    ('c81b7a4d-35f2-493a-9e81-4f5c2d6a730b', '6a0f3e24-04c5-4993-9f08-89d25c83e941', 'fb48072f-50ae-4269-9b4a-06cf72ad9dcb', '2023-11-15', '2023-11-29', '2023-11-28', 'completed', NOW(), NOW()),
+    ('a5c3b1d7-9f84-42e9-931d-6a2f4d5c8b07', '7b7e2c6a-9b2d-4a97-8fc6-9e5a43db3d1c', '2ce38e8e-ca43-4878-8970-2902d9562636', '2024-05-10', '2024-05-24', NULL, 'active', NOW(), NOW()),
+    ('3f4a2c9b-6a78-41d3-9e75-2d5c3f8a4901', '8c124a3b-65fa-4d43-8c4c-1f5bda8d8704', '4ad2d4fb-f209-480f-94db-5cf86f897be9', '2023-10-20', '2023-11-03', '2023-11-02', 'completed', NOW(), NOW()),
+    ('b9d4c5a2-7f61-48a3-92d8-1c3f4b7a5d03', '9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd', 'e6aed76a-b0a1-4ef8-ac13-657ddfd24a15', '2024-06-01', '2024-06-15', NULL, 'active', NOW(), NOW()),
+    ('5a3c8d4b-2f67-4e91-937d-1c5f4a2b7d06', '10e7a6bd-378b-4645-a5a4-0d4f874b298a', 'a6e0dae2-9fdb-4b7b-8fee-a4be6ff80761', '2024-07-10', '2024-07-24', NULL, 'active', NOW(), NOW());
 
--- Insert sample data into `reservations`
 INSERT INTO reservations (id, user_id, book_id, created_at, expiry_date, updated_at)
 VALUES
-    ('ecdc1e64-8be3-4857-bf2f-c5a54d79f76a', 'a4dfe207-f3bc-4710-8ba4-d9f69a45c093', '80c6993d-6368-4633-b554-9c81226ea0b6', NOW(), '2025-03-01', NOW()),
-    ('dd97be09-9467-4b22-91a8-f3c4bb743cc7', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '127f2114-8c86-469d-af97-b0b09af1353d', NOW(), '2025-02-20', NOW());
+    ('d0c9a6f9-7a68-4d61-8d1e-0c1b4e6f8c1b', '11a4bc3d-5476-4f3c-846f-5cfc972a18d2', '23cb2f7a-af2b-4279-b825-806703236698', '2024-01-10', '2025-03-15', '2024-01-10'),
+    ('5c5d61b5-256d-493f-9312-e825557bcb9b', '13c3f6ea-73b2-42fb-9a3e-8d9c6b4d5c52', '6092514b-7dcc-40c2-a2d4-8ae8387618d4', '2024-02-05', '2025-04-20', '2024-02-05'),
+    ('e7439d6e-4703-45a1-b38b-1f8b49298391', '17a8e43d-7219-4c8b-bf92-85a4d9c0e6f3', '8c2252bf-37e0-4027-a65c-cd4c09f83358', '2024-01-15', '2025-03-10', '2024-01-15'),
+    ('30b0b684-6a9f-4ea7-bd62-c08d75d576c9', '9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd', 'fca4b6a0-2bfc-494e-8696-7e9c01395871', '2024-02-10', '2025-05-01', '2024-02-10'),
+    ('b08b53cd-fd5f-49ae-a576-4e9c9b0b65b3', '6a0f3e24-04c5-4993-9f08-89d25c83e941', '18fde869-22d5-41d2-b9cf-b98636b41b0e', '2024-03-05', '2025-06-10', '2024-03-05'),
+    ('f3b8d3c5-1207-4c7a-8195-b8cbcf2f4f99', '19c3f6e8-97d2-4c71-b4e5-6d5a39c2f0a8', 'fb48072f-50ae-4269-9b4a-06cf72ad9dcb', '2024-04-01', '2025-07-01', '2024-04-01'),
+    ('b0ffdbf9-1c59-46ad-b156-7adce7b9fa07', '20d1a6b5-48f3-4e5a-a2c4-7b8e9c3d5f2a', '2ce38e8e-ca43-4878-8970-2902d9562636', '2024-02-20', '2025-04-30', '2024-02-20'),
+    ('93b8489a-d83b-44be-bfcb-9203ea62fdc3', '5f74b10e-9279-44c6-91e3-0179c2a312a6', '4ad2d4fb-f209-480f-94db-5cf86f897be9', '2024-01-30', '2025-03-25', '2024-01-30'),
+    ('ab1f0155-6b22-47ae-b7db-6f67c3e9824d', '11a4bc3d-5476-4f3c-846f-5cfc972a18d2', 'e6aed76a-b0a1-4ef8-ac13-657ddfd24a15', '2024-03-12', '2025-05-22', '2024-03-12'),
+    ('1e53115d-82f9-4297-b740-f4b3a86b3a3f', '8c124a3b-65fa-4d43-8c4c-1f5bda8d8704', 'a6e0dae2-9fdb-4b7b-8fee-a4be6ff80761', '2024-04-05', '2025-06-15', '2024-04-05'),
+    ('3e901f89-3b94-4186-bfd1-90f4d32a3b6b', '2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', 'fc2a831c-e997-4ec7-884a-e228af55b2b2', '2024-02-15', '2025-04-15', '2024-02-15'),
+    ('1ff8b2bb-e38f-4f09-a539-68b99b7a86b7', '20d1a6b5-48f3-4e5a-a2c4-7b8e9c3d5f2a', 'f12bbee7-2fb2-474c-bd96-60ba8d59ec64', '2024-03-01', '2025-05-10', '2024-03-01'),
+    ('515c4987-8ae4-4424-b006-e6d5d9282a09', '18b2d74a-6387-4fa5-8a9c-5b6a2f34e9d4', '80c6993d-6368-4633-b554-9c81226ea0b6', '2024-01-25', '2025-04-05', '2024-01-25'),
+    ('a12d0d16-7641-4968-8a6e-7a739ba9e849', '9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd', '127f2114-8c86-469d-af97-b0b09af1353d', '2024-04-20', '2025-07-15', '2024-04-20'),
+    ('b2e6b908-f11d-48d4-9896-7638c9d3d057', '20d1a6b5-48f3-4e5a-a2c4-7b8e9c3d5f2a', 'f3a4e1b4-ecc0-477a-85f9-eec218cd8793', '2024-02-10', '2025-05-01', '2024-02-10');
 
--- Insert sample data into `ratings`
 INSERT INTO ratings (id, user_id, book_id, content, value, created_at, updated_at)
 VALUES
-    ('6bded01c-0207-42ed-8b09-5455b8167e25', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', 'f3a4e1b4-ecc0-477a-85f9-eec218cd8793', 'Great book!', 5, NOW(), NOW()),
-    ('8a90d7fc-dc2d-4e96-b6d4-9a3d7139641d', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', '07234180-e178-4852-98b9-d4158fe94c9a', 'Informative but hard to read.', 3, NOW(), NOW()),
-
-    ('6bded01c-0207-42ed-8b09-5455b8167e21', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '9a87e24a-a691-42e9-9345-6457e123b2b7', '3', 5, NOW(), NOW()),
-    ('8a90d7fc-dc2d-4e96-b6d4-9a3d71396412', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', '024a961f-e867-45a3-ba3c-941d934595c3', '4', 3, NOW(), NOW()),
-
-    ('6bded01c-0207-42ed-8b09-5455b8167e23', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', '97fabcbb-7a3a-43f2-b545-97d99b99fab4', '5', 5, NOW(), NOW()),
-    ('8a90d7fc-dc2d-4e96-b6d4-9a3d71396414', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'fe4714bc-3100-4497-98f3-c313ae7b63ad', '6', 3, NOW(), NOW()),
-
-    ('6bded01c-0207-42ed-8b09-5455b8167e26', '548f3b6c-63a1-4c2d-9e85-6a9f76bc3a90', 'fc2a831c-e997-4ec7-884a-e228af55b2b2', '7', 5, NOW(), NOW()),
-    ('8a90d7fc-dc2d-4e96-b6d4-9a3d71396417', 'c87bfa5f-9d84-450d-b96e-0e42b8e72673', 'f12bbee7-2fb2-474c-bd96-60ba8d59ec64', '8', 3, NOW(), NOW());
-
+    ('b8d66d1a-2c07-4c4b-a5df-8a21c2e52f2e', '1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', '23cb2f7a-af2b-4279-b825-806703236698', 'Excellent read!', 5, NOW(), NOW()),
+    ('c3f2a99d-b3a9-4116-80a5-1e76a3f52c98', '2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', '6092514b-7dcc-40c2-a2d4-8ae8387618d4', 'Informative but a bit lengthy.', 4, NOW(), NOW()),
+    ('a5df2b89-4187-48c5-9b14-6f8b362c5d7a', '3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1', '8c2252bf-37e0-4027-a65c-cd4c09f83358', 'Not what I expected.', 3, NOW(), NOW()),
+    ('9a6e2f3b-85c9-49c3-a1d2-5b89c6d14f52', '4e2a96d4-81c5-4aa2-b762-dac50c0f9e32', 'fca4b6a0-2bfc-494e-8696-7e9c01395871', 'Loved every bit of it.', 5, NOW(), NOW()),
+    ('e72b4c59-23a1-4db2-8c5d-78e92f3b41c6', '5f74b10e-9279-44c6-91e3-0179c2a312a6', '18fde869-22d5-41d2-b9cf-b98636b41b0e', 'Well written and engaging.', 4, NOW(), NOW()),
+    ('1c5b82a4-5f9e-4f3b-89c7-2d14a52e97b6', '6a0f3e24-04c5-4993-9f08-89d25c83e941', 'fb48072f-50ae-4269-9b4a-06cf72ad9dcb', 'Could have been better.', 3, NOW(), NOW()),
+    ('47b9f2d6-a831-4825-bc2f-4d7a81c59e23', '7b7e2c6a-9b2d-4a97-8fc6-9e5a43db3d1c', '2ce38e8e-ca43-4878-8970-2902d9562636', 'Fantastic insights.', 5, NOW(), NOW()),
+    ('5c4a821d-b2e9-4991-839c-5d7a3e48f2c6', '8c124a3b-65fa-4d43-8c4c-1f5bda8d8704', '4ad2d4fb-f209-480f-94db-5cf86f897be9', 'Average book.', 3, NOW(), NOW()),
+    ('92f3b5c7-41d6-49c3-b1a2-6e74f98c5a23', '9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd', 'e6aed76a-b0a1-4ef8-ac13-657ddfd24a15', 'Highly recommended.', 5, NOW(), NOW()),
+    ('8a41d3b6-5f29-47c2-b8e1-6c5f92a3d74b', '10e7a6bd-378b-4645-a5a4-0d4f874b298a', 'a6e0dae2-9fdb-4b7b-8fee-a4be6ff80761', 'Would read again.', 4, NOW(), NOW()),
+    ('2d7a1f3b-49c8-4e25-b61d-5c8a92f3b741', '11a4bc3d-5476-4f3c-846f-5cfc972a18d2', 'fc2a831c-e997-4ec7-884a-e228af55b2b2', 'Overrated book.', 2, NOW(), NOW()),
+    ('8c5f92a3-1d47-48b6-a3d2-9e75c4b8291f', '12b8d4a7-2134-4f19-b1f7-6e5dc09b3d94', 'f12bbee7-2fb2-474c-bd96-60ba8d59ec64', 'Perfect for beginners.', 5, NOW(), NOW()),
+    ('f2b83c59-74a6-4c2f-a9d7-51e83b4125c9', '13c3f6ea-73b2-42fb-9a3e-8d9c6b4d5c52', '80c6993d-6368-4633-b554-9c81226ea0b6', 'Good reference material.', 4, NOW(), NOW()),
+    ('d5a78c41-b29f-4e92-b1c6-3d47f5a83c29', '14d2e7c5-875a-40f1-95f2-1d6a3b5c8a1e', '127f2114-8c86-469d-af97-b0b09af1353d', 'Did not enjoy it much.', 2, NOW(), NOW()),
+    ('c2f7a59e-5d41-4c38-a1d2-6f3b92e75c84', '15e94a1b-65c7-4f82-9e5c-3a2c5b4f9d27', 'f3a4e1b4-ecc0-477a-85f9-eec218cd8793', 'Very insightful!', 5, NOW(), NOW()),
+    ('e9a4c57d-3b29-4c8f-a1d2-5c78f2e39a15', '16f7c92a-4e32-4a67-a9f5-74e3d5b7c8a5', '07234180-e178-4852-98b9-d4158fe94c9a', 'A masterpiece.', 5, NOW(), NOW()),
+    ('5f29c81d-4a3b-4e92-b7d6-3c78a5f29e14', '17a8e43d-7219-4c8b-bf92-85a4d9c0e6f3', '9a87e24a-a691-42e9-9345-6457e123b2b7', 'Boring at times.', 3, NOW(), NOW()),
+    ('c3a7b592-5d14-4c83-a1d2-6f97e2b8c5a9', '18b2d74a-6387-4fa5-8a9c-5b6a2f34e9d4', '024a961f-e867-45a3-ba3c-941d934595c3', 'A good weekend read.', 4, NOW(), NOW()),
+    ('4d7a3f92-b18c-49e2-a5d2-7c85f2a39e14', '19c3f6e8-97d2-4c71-b4e5-6d5a39c2f0a8', '97fabcbb-7a3a-43f2-b545-97d99b99fab4', 'Helpful in my research.', 5, NOW(), NOW()),
+    ('2c59a7e3-d8b1-48f9-a2d4-5f39c8a1e75d', '10e7a6bd-378b-4645-a5a4-0d4f874b298a', 'fe4714bc-3100-4497-98f3-c313ae7b63ad', 'Couldn’t put it down!', 5, NOW(), NOW()),
+    ('a1e67b0c-2f49-41f7-b1d8-64f9b6c0d5a8', '1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', '23cb2f7a-af2b-4279-b825-806703236698', 'Fantastic read!', 5, NOW(), NOW()),
+    ('b2d47c1e-89fa-439d-a7e4-59f3b612c0a9', '2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', '23cb2f7a-af2b-4279-b825-806703236698', 'Enjoyed every page.', 4, NOW(), NOW()),
+    ('c3f68a2e-17d3-472a-b5e9-8c41f602d7b3', '3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1', '23cb2f7a-af2b-4279-b825-806703236698', 'A thought-provoking book.', 5, NOW(), NOW()),
+    ('d4b79a3f-62d8-482e-b4c5-7e1f9d60a3f2', '4e2a96d4-81c5-4aa2-b762-dac50c0f9e32', '23cb2f7a-af2b-4279-b825-806703236698', 'Good but a bit lengthy.', 3, NOW(), NOW()),
+    ('e5c80b4a-21e6-49a2-83f9-5d47c6b2f0a8', '5f74b10e-9279-44c6-91e3-0179c2a312a6', '23cb2f7a-af2b-4279-b825-806703236698', 'Highly recommended!', 5, NOW(), NOW()),
+    ('f6d91c5b-72f1-4c8a-a2e7-49d3b610f9c2', '6a0f3e24-04c5-4993-9f08-89d25c83e941', '23cb2f7a-af2b-4279-b825-806703236698', 'Couldn''t put it down.', 5, NOW(), NOW()),
+    ('07e1a6d7-89b3-4f8e-b2a9-3c2d5a60f9b4', '7b7e2c6a-9b2d-4a97-8fc6-9e5a43db3d1c', '23cb2f7a-af2b-4279-b825-806703236698', 'Interesting perspectives.', 4, NOW(), NOW()),
+    ('18f2b7c8-5a41-409d-82e3-6d5c0a4b9f7a', '8c124a3b-65fa-4d43-8c4c-1f5bda8d8704', '23cb2f7a-af2b-4279-b825-806703236698', 'Could be better.', 3, NOW(), NOW()),
+    ('29d3a8c9-4e76-4a1b-83f7-2d5c7a10f9b5', '9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd', '23cb2f7a-af2b-4279-b825-806703236698', 'Loved it!', 5, NOW(), NOW()),
+    ('30e4b9d5-1a72-40c8-b3e6-5c2d7a10f9b6', '10e7a6bd-378b-4645-a5a4-0d4f874b298a', '23cb2f7a-af2b-4279-b825-806703236698', 'A bit confusing at times.', 4, NOW(), NOW()),
+    ('41f5c0a6-8b7d-49e2-b3a9-6d5c7a10f9b7', '11a4bc3d-5476-4f3c-846f-5cfc972a18d2', '23cb2f7a-af2b-4279-b825-806703236698', 'Masterpiece.', 5, NOW(), NOW()),
+    ('52a6d1b7-2f8a-48c3-b4e9-7d5c0a4b9f8a', '12b8d4a7-2134-4f19-b1f7-6e5dc09b3d94', '23cb2f7a-af2b-4279-b825-806703236698', 'Not my cup of tea.', 2, NOW(), NOW()),
+    ('63b7e2a8-3f9c-46d4-a5e8-9d5c0a4b9f9a', '13c3f6ea-73b2-42fb-9a3e-8d9c6b4d5c52', '23cb2f7a-af2b-4279-b825-806703236698', 'Worth reading.', 4, NOW(), NOW()),
+    ('74c8f3a9-4e5d-45b2-b6e7-0d5c7a10f9c1', '14d2e7c5-875a-40f1-95f2-1d6a3b5c8a1e', '23cb2f7a-af2b-4279-b825-806703236698', 'Couldn''t relate much.', 3, NOW(), NOW()),
+    ('85d9e4b1-5f6a-48c7-b3e8-1d5c7a10f9c2', '15e94a1b-65c7-4f82-9e5c-3a2c5b4f9d27', '23cb2f7a-af2b-4279-b825-806703236698', 'Solid storyline.', 5, NOW(), NOW()),
+    ('96e0f5c2-6a7b-49d8-b4e9-2d5c0a4b9c3a', '16f7c92a-4e32-4a67-a9f5-74e3d5b7c8a5', '23cb2f7a-af2b-4279-b825-806703236698', 'Expected more depth.', 3, NOW(), NOW()),
+    ('07f1a6d3-7b8c-42f9-b5ea-3d5c0a4b9c4a', '17a8e43d-7219-4c8b-bf92-85a4d9c0e6f3', '23cb2f7a-af2b-4279-b825-806703236698', 'Very informative.', 4, NOW(), NOW()),
+    ('18f2b7c4-8a9d-41e0-b6fb-4d5c0a4b9c5a', '18b2d74a-6387-4fa5-8a9c-5b6a2f34e9d4', '23cb2f7a-af2b-4279-b825-806703236698', 'A must-read.', 5, NOW(), NOW());
 COMMIT;

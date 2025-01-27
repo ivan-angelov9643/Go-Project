@@ -133,7 +133,11 @@ func (m *LoanManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[LoanManager.Count] Counting loans in the database")
 
 	var count int64
-	err := db.ApplyScopes(m.db, scopes).Model(&models.Loan{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Table("loans").
+		Select("loans.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = loans.user_id").
+		Joins("JOIN books ON books.id = loans.book_id").
+		Count(&count).Error
 	if err != nil {
 		log.Errorf("[LoanManager.Count] Error counting loans: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[LoanManager.Count] Error counting loans: %v", err)

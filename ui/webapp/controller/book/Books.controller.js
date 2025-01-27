@@ -41,11 +41,13 @@ sap.ui.define([
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
 
-			this._clearSearchFields()
+			this._setDefaultSearchFields()
 		},
 
 		loadData: async function() {
-			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page);
+			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page,
+				this.sTitleSearch, this.sAuthorSearch,
+				this.sCategorySearch, this.sLanguageSearch);
 		},
 
 		onCreateBook: async function () {
@@ -248,35 +250,6 @@ sap.ui.define([
 			);
 		},
 
-		onSearch: async function () {
-			this.sTitleSearch = this.byId("titleSearch").getValue();
-			this.sAuthorSearch = this.byId("authorSearch").getValue();
-			this.sCategorySearch = this.byId("categorySearch").getValue();
-			this.sLanguageSearch = this.byId("languageSearch").getValue();
-
-			if (this._searchFieldsEmpty()) {
-				return;
-			}
-
-			await this.loadBooks(this.oBookModel, 1, this.sTitleSearch, this.sAuthorSearch,
-				this.sCategorySearch, this.sLanguageSearch);
-		},
-
-		onClearSearch: async function () {
-			if (this._searchFieldsEmpty()) {
-				return;
-			}
-
-			this._clearSearchFields()
-
-			this.byId("titleSearch").setValue("");
-			this.byId("authorSearch").setValue("");
-			this.byId("categorySearch").setValue("");
-			this.byId("languageSearch").setValue("");
-
-			await this.loadBooks(this.oBookModel, 1);
-		},
-
 		onPreviousPage: async function () {
 			await this.loadBooks(this.oBookModel, this.oBookModel.getData().page - 1, this.sTitleSearch, this.sAuthorSearch,
 				this.sCategorySearch, this.sLanguageSearch);
@@ -295,11 +268,47 @@ sap.ui.define([
 			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page + 1, this.oSelectedBookModel.getData().id);
 		},
 
-		_clearSearchFields() {
+		onSearch: async function () {
+			if (!this._searchFieldsChanged()) {
+				return;
+			}
+
+			this.sTitleSearch = this.byId("titleSearch").getValue();
+			this.sAuthorSearch = this.byId("authorSearch").getValue();
+			this.sCategorySearch = this.byId("categorySearch").getValue();
+			this.sLanguageSearch = this.byId("languageSearch").getValue();
+
+			await this.loadBooks(this.oBookModel, 1, this.sTitleSearch, this.sAuthorSearch,
+				this.sCategorySearch, this.sLanguageSearch);
+		},
+
+		onClearSearch: async function () {
+			if (this._searchFieldsEmpty()) {
+				return;
+			}
+
+			this._setDefaultSearchFields()
+
+			this.byId("titleSearch").setValue("");
+			this.byId("authorSearch").setValue("");
+			this.byId("categorySearch").setValue("");
+			this.byId("languageSearch").setValue("");
+
+			await this.loadBooks(this.oBookModel, 1);
+		},
+
+		_setDefaultSearchFields() {
 			this.sTitleSearch = "";
 			this.sAuthorSearch = "";
 			this.sCategorySearch = "";
 			this.sLanguageSearch = "";
+		},
+
+		_searchFieldsChanged() {
+			return this.sTitleSearch !== this.byId("titleSearch").getValue() ||
+				this.sAuthorSearch !== this.byId("authorSearch").getValue() ||
+				this.sCategorySearch !== this.byId("categorySearch").getValue() ||
+				this.sLanguageSearch !== this.byId("languageSearch").getValue();
 		},
 
 		_searchFieldsEmpty() {
@@ -307,6 +316,6 @@ sap.ui.define([
 				this.sAuthorSearch === "" &&
 				this.sCategorySearch === "" &&
 				this.sLanguageSearch === "";
-		}
+		},
 	});
 });

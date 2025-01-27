@@ -145,7 +145,17 @@ func (m *BookManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[BookManager.Count] Counting books in the database")
 
 	var count int64
-	err := db.ApplyScopes(m.db, scopes).Model(&models.Book{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Table("books").
+		Select(`books.*, 
+            CONCAT(authors.first_name, ' ', authors.last_name) AS author_name, 
+            categories.name AS category_name,
+            (books.total_copies - 
+                (SELECT COUNT(*) FROM reservations WHERE reservations.book_id = books.id) - 
+                (SELECT COUNT(*) FROM loans WHERE loans.book_id = books.id AND loans.status = 'active')
+            ) AS available_copies`).
+		Joins("LEFT JOIN authors ON authors.id = books.author_id").
+		Joins("LEFT JOIN categories ON categories.id = books.category_id").
+		Count(&count).Error
 	if err != nil {
 		log.Errorf("[BookManager.Count] Error counting books: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[BookManager.Count] Error counting books: %v", err)

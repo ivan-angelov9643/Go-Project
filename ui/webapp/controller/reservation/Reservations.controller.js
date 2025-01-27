@@ -1,4 +1,4 @@
-sap.ui.define([
+ sap.ui.define([
 	'../BaseController',
 	'sap/ui/model/json/JSONModel',
 	'sap/ui/Device',
@@ -8,7 +8,7 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/Sorter"
-], function (BaseController, JSONModel, Device, formatter, Core, XMLView, Filter, FilterOperator, Sorter) {
+], function (BaseController, JSONModel, Device, formatter, Core, XMLView) {
 	"use strict";
 	return BaseController.extend("library-app.controller.Reservations", {formatter: formatter,
 
@@ -27,15 +27,16 @@ sap.ui.define([
 			});
 			this.oReservationModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oReservationModel, "reservation");
-			await this.loadReservations(this.oReservationModel, 1);
 
-			this.sSortBy = this.getView().byId("sortBySelect").getSelectedKey();
-			this.sSortOrder = this.getView().byId("sortOrderSelect").getSelectedKey();
-			this._applySorting()
+			this._setDefaultSearchFields()
+
+			await this.loadReservations(this.oReservationModel, 1, this.sSortBy, this.sSortOrder);
 		},
 
 		loadData: async function() {
-			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page);
+			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page,
+				this.sSortBy, this.sSortOrder,
+				this.sUsernameSearch, this.sTitleSearch);
 		},
 
 		onExtendReservation: async function (oEvent) {
@@ -125,65 +126,68 @@ sap.ui.define([
 			}
 		},
 
-		onTitleSearchChange: function(oEvent) {
-			this.sTitleSearch = oEvent.getParameter("value");
-			this._applyCombinedFilters();
-		},
-
-		onUsernameSearchChange: function(oEvent) {
-			this.sUsernameSearch = oEvent.getParameter("value");
-			this._applyCombinedFilters();
-		},
-
-		_applyCombinedFilters: function() {
-			let aFilters = [];
-
-			if (this.sTitleSearch && this.sTitleSearch.trim() !== "") {
-				aFilters.push(
-					new Filter("book_title", FilterOperator.Contains, this.sTitleSearch)
-				);
-			}
-
-			if (this.sUsernameSearch && this.sUsernameSearch.trim() !== "") {
-				aFilters.push(
-					new Filter("user_name", FilterOperator.Contains, this.sUsernameSearch)
-				);
-			}
-
-			let oTable = this.getView().byId("reservationsTable");
-			let oBinding = oTable.getBinding("items");
-
-			oBinding.filter(aFilters);
-		},
-
-		onSortByChange: function (oEvent) {
-			this.sSortBy = oEvent.getParameter("selectedItem").getKey();
-			this._applySorting();
-		},
-
-		onSortOrderChange: function (oEvent) {
-			this.sSortOrder = oEvent.getParameter("selectedItem").getKey();
-			this._applySorting();
-		},
-
-		_applySorting: function () {
-			let oTable = this.getView().byId("reservationsTable");
-			let oBinding = oTable.getBinding("items");
-
-			if (this.sSortBy && this.sSortOrder) {
-				let bDescending = this.sSortOrder === "desc";
-				let oSorter = new Sorter(this.sSortBy, bDescending);
-
-				oBinding.sort(oSorter);
-			}
-		},
-
 		onPreviousPage: async function () {
-			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page - 1);
+			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page - 1,
+				this.sSortBy, this.sSortOrder,
+				this.sUsernameSearch, this.sTitleSearch);
 		},
 
 		onNextPage: async function () {
-			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page + 1);
+			await this.loadReservations(this.oReservationModel, this.oReservationModel.getData().page + 1,
+				this.sSortBy, this.sSortOrder,
+				this.sUsernameSearch, this.sTitleSearch);
+		},
+
+		onSearch: async function () {
+			if (!this._searchFieldsChanged()) {
+				return;
+			}
+
+			this.sSortBy = this.byId("sortBySelect").getSelectedKey();
+			this.sSortOrder = this.byId("sortOrderSelect").getSelectedKey();
+			this.sUsernameSearch = this.byId("usernameSearch").getValue();
+			this.sTitleSearch = this.byId("titleSearch").getValue();
+
+			await this.loadReservations(this.oReservationModel, 1,
+				this.sSortBy, this.sSortOrder,
+				this.sUsernameSearch, this.sTitleSearch);
+		},
+
+		onClearSearch: async function () {
+			if (this._searchFieldsEmpty()) {
+				return;
+			}
+
+			this._setDefaultSearchFields()
+
+			this.byId("sortBySelect").setSelectedKey("created_at");
+			this.byId("sortOrderSelect").setSelectedKey("asc");
+			this.byId("usernameSearch").setValue("");
+			this.byId("titleSearch").setValue("");
+
+			await this.loadReservations(this.oReservationModel, 1,
+				this.sSortBy, this.sSortOrder);
+		},
+
+		_setDefaultSearchFields() {
+			this.sSortBy = "created_at";
+			this.sSortOrder = "asc";
+			this.sUsernameSearch = "";
+			this.sTitleSearch = "";
+		},
+
+		_searchFieldsChanged() {
+			return this.sSortBy !== this.byId("sortBySelect").getSelectedKey() ||
+				this.sSortOrder !== this.byId("sortOrderSelect").getSelectedKey() ||
+				this.sUsernameSearch !== this.byId("usernameSearch").getValue() ||
+				this.sTitleSearch !== this.byId("titleSearch").getValue();
+		},
+
+		_searchFieldsEmpty() {
+			return this.sSortBy === "created_at" &&
+			this.sSortOrder === "asc" &&
+			this.sUsernameSearch === "" &&
+			this.sTitleSearch ==="";
 		},
 	});
 });

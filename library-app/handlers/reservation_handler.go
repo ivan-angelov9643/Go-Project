@@ -28,13 +28,21 @@ func (h *ReservationHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	pagingScope := db.NewPagingScope(r)
 	filterByBookIDScope := db.NewFilterByBookIDScope(r)
 	filterByUserIDScope := db.NewFilterByUserIDScope(r)
-	reservations, dbErr := h.reservationManager.GetAll(accessScope, pagingScope, filterByUserIDScope, filterByBookIDScope)
+	filterByUsernameScope := db.NewFilterByUsernameScope(r)
+	filterByTitleScope := db.NewFilterByTitleScope(r)
+	sortScope := db.NewSortScope(r)
+	reservations, dbErr := h.reservationManager.GetAll(
+		accessScope, pagingScope, filterByUserIDScope, filterByBookIDScope, filterByUsernameScope, filterByTitleScope,
+		sortScope,
+	)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	count, dbErr := h.reservationManager.Count(accessScope, filterByUserIDScope, filterByBookIDScope)
+	count, dbErr := h.reservationManager.Count(
+		accessScope, filterByUserIDScope, filterByBookIDScope, filterByUsernameScope, filterByTitleScope,
+	)
 	if dbErr != nil {
 		errors.HttpDBError(w, dbErr)
 		return

@@ -137,7 +137,8 @@ sap.ui.define([
 		loadAuthors: async function (model, page, authorName = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const authorsData = await this.sendRequest(
-				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}&author_name=${authorName}`,
+				`http://localhost:8080/api/authors?page_size=${this.page_size}&page=${page}&
+				author_name=${authorName}`,
 				"GET",
 				token
 			);
@@ -152,7 +153,8 @@ sap.ui.define([
 		loadCategories: async function (model, page, categoryName = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const categoriesData = await this.sendRequest(
-				`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}&category_name=${categoryName}`,
+				`http://localhost:8080/api/categories?page_size=${this.page_size}&page=${page}&
+				category_name=${categoryName}`,
 				"GET",
 				token
 			);
@@ -164,10 +166,12 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(categoriesData.count / categoriesData.page_size));
 		},
 
-		loadReservations: async function (model, page) {
+		loadReservations: async function (model, page, sortBy = null, sortOrder = null,
+										  username = null, title = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const reservationsData = await this.sendRequest(
-				`http://localhost:8080/api/reservations?page_size=${this.page_size}&page=${page}`,
+				`http://localhost:8080/api/reservations?page_size=${this.page_size}&page=${page}&
+				sort_by=${sortBy}&sort_order=${sortOrder}&username=${username}&title=${title}`,
 				"GET",
 				token
 			);
@@ -179,10 +183,12 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(reservationsData.count / reservationsData.page_size));
 		},
 
-		loadLoans: async function (model, page) {
+		loadLoans: async function (model, page, sortBy = null, sortOrder = null, status,
+								   username = null, title = null) {
 			const token = await this.getOwnerComponent().getToken();
 			const loansData = await this.sendRequest(
-				`http://localhost:8080/api/loans?page_size=${this.page_size}&page=${page}`,
+				`http://localhost:8080/api/loans?page_size=${this.page_size}&page=${page}&
+				sort_by=${sortBy}&sort_order=${sortOrder}&status=${status}&username=${username}&title=${title}`,
 				"GET",
 				token
 			);

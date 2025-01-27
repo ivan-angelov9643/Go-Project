@@ -133,7 +133,11 @@ func (m *RatingManager) Count(scopes ...db.DBScope) (int64, error) {
 	log.Infof("[RatingManager.Count] Counting ratings in the database")
 
 	var count int64
-	err := db.ApplyScopes(m.db, scopes).Model(&models.Rating{}).Count(&count).Error
+	err := db.ApplyScopes(m.db, scopes).Table("ratings").
+		Select("ratings.*, preferred_username as user_name, books.title as book_title").
+		Joins("JOIN users ON users.id = ratings.user_id").
+		Joins("JOIN books ON books.id = ratings.book_id").
+		Count(&count).Error
 	if err != nil {
 		log.Errorf("[RatingManager.Count] Error counting ratings: %v", err)
 		return 0, db.NewDBError(db.InternalError, "[RatingManager.Count] Error counting ratings: %v", err)
