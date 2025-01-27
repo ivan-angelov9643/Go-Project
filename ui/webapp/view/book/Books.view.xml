@@ -190,51 +190,6 @@
 							press="onRateBook"
 							type="Emphasized"/>
 				</HBox>
-<!--				<VBox class="sapUiSmallMargin">-->
-<!--					<form:Form>-->
-<!--						<form:layout>-->
-<!--							<form:ResponsiveGridLayout-->
-<!--									labelSpanXL="9"-->
-<!--									labelSpanL="8"-->
-<!--									labelSpanM="7"-->
-<!--									labelSpanS="6"-->
-<!--									adjustLabelSpan="false"-->
-<!--									singleContainerFullSize="true"-->
-<!--							/>-->
-<!--						</form:layout>-->
-<!--						<form:title>-->
-<!--							<core:Title text="Title" />-->
-<!--						</form:title>-->
-<!--						<form:formContainers>-->
-<!--							<form:FormContainer-->
-<!--									binding="{rating>/ratings}"-->
-<!--									title="{rating>user_name}">-->
-<!--								<form:formElements>-->
-<!--									<form:FormElement label="Value">-->
-<!--										<form:fields>-->
-<!--											<RatingIndicator-->
-<!--													maxValue="5"-->
-<!--													value="{rating>value}"-->
-<!--													enabled="false" />-->
-<!--										</form:fields>-->
-<!--									</form:FormElement>-->
-<!--									<form:FormElement label="Content">-->
-<!--										<form:fields>-->
-<!--											<Text text="{rating>content}" />-->
-<!--										</form:fields>-->
-<!--									</form:FormElement>-->
-<!--									<form:FormElement label="Date">-->
-<!--										<form:fields>-->
-<!--											<Text-->
-<!--													text="{path: 'rating>created_at', type: 'sap.ui.model.type.DateTime', formatOptions: {style: 'medium'}}" />-->
-<!--										</form:fields>-->
-<!--									</form:FormElement>-->
-<!--								</form:formElements>-->
-<!--							</form:FormContainer>-->
-<!--						</form:formContainers>-->
-<!--					</form:Form>-->
-<!--				</VBox>-->
-
 				<Title text="Ratings" level="H2" class="sapUiSmallMargin" />
 				<List
 						id="ratingsList"

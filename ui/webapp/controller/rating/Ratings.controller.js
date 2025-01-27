@@ -7,7 +7,7 @@ sap.ui.define([
 	"sap/ui/core/mvc/XMLView",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
-], function (BaseController, JSONModel, Device, formatter, Core, XMLView, Filter, FilterOperator) {
+], function (BaseController, JSONModel, Device, formatter, Core) {
 	"use strict";
 	return BaseController.extend("library-app.controller.rating.Ratings", {
 		formatter: formatter,
@@ -28,10 +28,13 @@ sap.ui.define([
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
 			await this.loadRatings(this.oRatingModel, 1);
+
+			this._setDefaultSearchFields()
 		},
 
 		loadData: async function() {
-			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page);
+			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page, null,
+				this.sUsernameSearch, this.sTitleSearch);
 		},
 
 		onExit: function () {
@@ -45,43 +48,54 @@ sap.ui.define([
 			Core.getEventBus().publish("library-app", "booksUpdated", eventData);
 		},
 
-		onTitleSearchChange: function(oEvent) {
-			this.sTitleSearch = oEvent.getParameter("value");
-			this._applyCombinedFilters();
-		},
-
-		onUsernameSearchChange: function(oEvent) {
-			this.sUsernameSearch = oEvent.getParameter("value");
-			this._applyCombinedFilters();
-		},
-
-		_applyCombinedFilters: function() {
-			let aFilters = [];
-
-			if (this.sTitleSearch && this.sTitleSearch.trim() !== "") {
-				aFilters.push(
-					new Filter("book_title", FilterOperator.Contains, this.sTitleSearch)
-				);
-			}
-
-			if (this.sUsernameSearch && this.sUsernameSearch.trim() !== "") {
-				aFilters.push(
-					new Filter("user_name", FilterOperator.Contains, this.sUsernameSearch)
-				);
-			}
-
-			let oTable = this.getView().byId("ratingsTable");
-			let oBinding = oTable.getBinding("items");
-
-			oBinding.filter(aFilters);
-		},
-
 		onPreviousPage: async function () {
-			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page - 1);
+			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page - 1, null,
+				this.sUsernameSearch, this.sTitleSearch);
 		},
 
 		onNextPage: async function () {
-			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page + 1);
+			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page + 1, null,
+				this.sUsernameSearch, this.sTitleSearch);
+		},
+
+		onSearch: async function () {
+			if (!this._searchFieldsChanged()) {
+				return;
+			}
+
+			this.sUsernameSearch = this.byId("usernameSearch").getValue();
+			this.sTitleSearch = this.byId("titleSearch").getValue();
+
+			await this.loadRatings(this.oRatingModel, 1, null,
+				this.sUsernameSearch, this.sTitleSearch);
+		},
+
+		onClearSearch: async function () {
+			if (this._searchFieldsEmpty()) {
+				return;
+			}
+
+			this._setDefaultSearchFields()
+
+			this.byId("usernameSearch").setValue("");
+			this.byId("titleSearch").setValue("");
+
+			await this.loadRatings(this.oRatingModel, 1);
+		},
+
+		_setDefaultSearchFields() {
+			this.sUsernameSearch = "";
+			this.sTitleSearch = "";
+		},
+
+		_searchFieldsChanged() {
+			return this.sUsernameSearch !== this.byId("usernameSearch").getValue() ||
+				this.sTitleSearch !== this.byId("titleSearch").getValue();
+		},
+
+		_searchFieldsEmpty() {
+			return this.sUsernameSearch === "" &&
+				this.sTitleSearch === "";
 		},
 	});
 });

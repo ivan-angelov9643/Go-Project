@@ -200,10 +200,11 @@ sap.ui.define([
 			model.setProperty("/total_pages", Math.ceil(loansData.count / loansData.page_size));
 		},
 
-		loadRatings: async function (model, page, book_id = null) {
+		loadRatings: async function (model, page, book_id = null, username = null, title = null) {
 			const token = await this.getOwnerComponent().getToken();
 			let ratingData = await this.sendRequest(
-				`http://localhost:8080/api/ratings?page_size=${this.page_size}&page=${page}&book_id=${book_id}`,
+				`http://localhost:8080/api/ratings?page_size=${this.page_size}&page=${page}&
+				book_id=${book_id}&username=${username}&title=${title}`,
 				"GET",
 				token
 			);
