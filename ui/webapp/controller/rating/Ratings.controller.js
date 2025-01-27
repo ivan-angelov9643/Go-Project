@@ -34,27 +34,6 @@ sap.ui.define([
 			await this.loadRatings(this.oRatingModel, this.oRatingModel.getData().page);
 		},
 
-		onDeleteRating: async function (oEvent) {
-			if (!this._oDeleteRatingDialog) {
-				const oOwnerComponent = this.getOwnerComponent();
-				oOwnerComponent.runAsOwner(() => {
-					this._oDeleteRatingDialog = new XMLView({
-						id: "deleteRatingDialogView",
-						viewName: "library-app.view.rating.DeleteRatingDialog",
-					});
-					this.getView().addDependent(this._oDeleteRatingDialog);
-				});
-			}
-
-			const oContext = oEvent.getSource().getBindingContext("rating");
-			const oData = oContext.getObject();
-
-			const oDialogRatingModel = this._oDeleteRatingDialog.getModel("dialogRating");
-			this.fillRatingModel(oDialogRatingModel, oData);
-
-			this._oDeleteRatingDialog.byId("deleteRatingDialog").open();
-		},
-
 		onExit: function () {
 			Core.getEventBus().unsubscribe("library-app", "ratingsUpdated", this.handleRatingsUpdated, this);
 		},

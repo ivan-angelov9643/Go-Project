@@ -41,6 +41,11 @@ sap.ui.define([
 			this.oRatingModel.setSizeLimit(Number.MAX_VALUE);
 			this.getView().setModel(this.oRatingModel, "rating");
 
+			this.oUserID = new JSONModel({value: null})
+			this.getView().setModel(this.oUserID, "userID")
+			const token = await this.getOwnerComponent().getToken();
+			this.oUserID.setProperty("/value", this.getUserID(token))
+
 			this._setDefaultSearchFields()
 		},
 

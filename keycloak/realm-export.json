@@ -761,6 +761,7 @@
         "rating.global",
         "rating.read",
         "rating.create",
+        "rating.delete",
 
         "reservation.read",
         "reservation.create",

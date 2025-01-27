@@ -442,5 +442,25 @@ sap.ui.define([
 			}
 			this._oCategorySelectDialog.byId("categorySelectDialog").open();
 		},
+
+		onDeleteRating: async function (oEvent) {
+			if (!this._oDeleteRatingDialog) {
+				const oOwnerComponent = this.getOwnerComponent();
+				oOwnerComponent.runAsOwner(() => {
+					this._oDeleteRatingDialog = new XMLView({
+						viewName: "library-app.view.rating.DeleteRatingDialog",
+					});
+					this.getView().addDependent(this._oDeleteRatingDialog);
+				});
+			}
+
+			const oContext = oEvent.getSource().getBindingContext("rating");
+			const oData = oContext.getObject();
+
+			const oDialogRatingModel = this._oDeleteRatingDialog.getModel("dialogRating");
+			this.fillRatingModel(oDialogRatingModel, oData);
+
+			this._oDeleteRatingDialog.byId("deleteRatingDialog").open();
+		},
 	});
 });

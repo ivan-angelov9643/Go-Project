@@ -5,6 +5,7 @@
 		xmlns:l="sap.ui.layout"
 		xmlns:mvc="sap.ui.core.mvc"
 		xmlns:f="sap.f"
+		xmlns:core="sap.ui.core"
 		xmlns:form="sap.ui.layout.form">
 	<f:FlexibleColumnLayout id="flexibleColumnLayout">
 		<f:beginColumnPages>
@@ -241,11 +242,30 @@
 						class="sapUiSmallMargin"
 						noData="There are not ratings for this book">
 					<items>
-						<StandardListItem
-								title="{rating>user_name} rated {rating>value}/5"
-								description="{rating>content}"
-								icon="sap-icon://comment">
-						</StandardListItem>
+						<CustomListItem>
+							<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTopBottom">
+								<HBox>
+									<core:Icon
+											size="2rem"
+											src="sap-icon://comment"
+											class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom"
+									/>
+									<VBox class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom">
+										<Text text="{rating>user_name} rated {rating>value}/5" class="sapMTextBold" />
+										<Label text="{rating>content}" />
+									</VBox>
+								</HBox>
+								<Button
+										text="Delete"
+										icon="sap-icon://delete"
+										class="sapUiMediumMarginEnd"
+										press="onDeleteRating"
+										type="Ghost"
+										tooltip="Delete rating"
+										visible="{= ${userRoles>/mainrole.administrator} || ${userRoles>/mainrole.librarian} || ${userID>/value} === ${rating>user_id} }"
+								/>
+							</HBox>
+						</CustomListItem>
 					</items>
 				</List>
 				<Toolbar design="Transparent">
