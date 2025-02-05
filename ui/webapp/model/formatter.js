@@ -59,8 +59,6 @@ sap.ui.define([
 
 		hasRole: function (sValue) {
 			var oComponent = Component.getOwnerComponentFor(this.getView());
-			console.log(oComponent)
-			console.log(oComponent.hasRole(sValue))
 			return oComponent.hasRole(sValue);
 		},
 	};

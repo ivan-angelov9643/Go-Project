@@ -17,7 +17,7 @@ type ReservationManager struct {
 
 func NewReservationManager(db *gorm.DB) *ReservationManager {
 	log.Info("[NewReservationManager] Initializing ReservationManager")
-	// TODO change reservation time
+
 	return &ReservationManager{db}
 }
 

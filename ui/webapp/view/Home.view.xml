@@ -22,7 +22,15 @@
 								level="H3"
 								titleStyle="H2"
 								class="sapUiTinyMarginTopBottom"/>
-
+						<Title
+								text="You are logged as
+										{= ${userRoles>/mainrole.administrator} ? 'Admin.' :
+										${userRoles>/mainrole.librarian} ? 'Librarian.' :
+										${userRoles>/mainrole.user} ? 'Member.' :
+										'You are not assigned a role.' }"
+								level="H3"
+								titleStyle="H2"
+								class="sapUiTinyMarginTop"/>
 					</l:VerticalLayout>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>

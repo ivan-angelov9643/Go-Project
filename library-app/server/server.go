@@ -6,6 +6,7 @@ import (
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/middlewares"
 	"awesomeProject/library-app/security"
+	"context"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -25,13 +26,13 @@ type Server struct {
 	ReservationManager *managers.ReservationManager
 }
 
-func (server *Server) Initialize() {
+func (server *Server) Initialize(ctx context.Context) {
 	server.InitializeAuthClient()
 	server.InitializeDatabase()
 	server.UserManager = managers.NewUserManager(server.DB)
 	server.ReservationManager = managers.NewReservationManager(server.DB)
 	server.InitializeRouter()
-	server.StartReservationCleanupTicker()
+	server.StartReservationCleanupTicker(ctx)
 }
 
 func (server *Server) InitializeAuthClient() {
@@ -165,11 +166,20 @@ func (server *Server) DefineRoutes() {
 	log.Info("[Server.DefineRoutes] Defined routes")
 }
 
-func (server *Server) StartReservationCleanupTicker() {
+func (server *Server) StartReservationCleanupTicker(ctx context.Context) {
 	ticker := time.NewTicker(global.ReservationCleanupInterval)
-	//defer ticker.Stop() // Ensures the ticker is stopped when this function ends
 
-	go server.RunReservationCleanupTicker(ticker)
+	go func() {
+		defer ticker.Stop() // Stop the ticker when the goroutine exits
+		for {
+			select {
+			case <-ticker.C:
+				server.ReservationManager.CleanupExpiredReservations()
+			case <-ctx.Done(): // Stop when the server context is canceled
+				return
+			}
+		}
+	}()
 }
 
 func (server *Server) RunReservationCleanupTicker(ticker *time.Ticker) {

@@ -50,12 +50,5 @@
 			"expanded": false,
 			"key": "ratings"
 		}
-	],
-	"fixedNavigation": [
-		{
-			"titleI18nKey": "sideContentImportantLinks",
-			"icon": "sap-icon://chain-link",
-			"key": "importantLinks"
-		}
 	]
 }

@@ -22,6 +22,7 @@
 				<Title
 					text="{i18n>appTitle}"
 					level="H2"/>
+
 				<ToolbarSpacer/>
 				<Button
 					id="userButton"
@@ -39,7 +40,6 @@
 			<tnt:SideNavigation
 			expanded="true"
 				selectedKey="{side>/selectedKey}">
-<!--			itemSelect="onNavigationSelect">-->
 				<tnt:NavigationList
 					items="{
 						path: 'side>/navigation',

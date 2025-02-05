@@ -47,8 +47,6 @@ sap.ui.define([
       this.userRoles = new JSONModel(this._populateUserRoles(keycloak));
       this.setModel(this.userRoles, "userRoles");
 
-      console.log(this.getModel("userRoles").getData())
-
       this.getRouter().initialize();
     },
 

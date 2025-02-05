@@ -71,7 +71,7 @@ func (m *BookManager) Get(idToGet uuid.UUID) (models.Book, error) {
 func (m *BookManager) Create(newBook models.Book) (models.Book, error) {
 	log.Infof("[BookManager.Create] Creating new book")
 
-	err := newBook.Validate()
+	err := newBook.Validate(m.db)
 	if err != nil {
 		return models.Book{}, db.NewDBError(db.ValidationError, err.Error())
 	}
@@ -91,7 +91,7 @@ func (m *BookManager) Create(newBook models.Book) (models.Book, error) {
 func (m *BookManager) Update(updatedBook models.Book) (models.Book, error) {
 	log.Infof("[BookManager.Update] Updating book with ID: %s", updatedBook.ID)
 
-	err := updatedBook.Validate()
+	err := updatedBook.Validate(m.db)
 	if err != nil {
 		return models.Book{}, db.NewDBError(db.ValidationError, err.Error())
 	}

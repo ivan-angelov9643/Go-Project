@@ -33,7 +33,6 @@ sap.ui.define([
             }
 
             this.onDialogClose();
-            this.fillCategoryModel(this.oDialogCategoryModel, this.initCategoryModel());
         },
 
         onCancelCreate: function () {
@@ -41,6 +40,7 @@ sap.ui.define([
         },
 
         onDialogClose: function () {
+            this.fillCategoryModel(this.oDialogCategoryModel, this.initCategoryModel());
             const dialog = this.byId("createCategoryDialog");
             if (dialog) {
                 dialog.close();

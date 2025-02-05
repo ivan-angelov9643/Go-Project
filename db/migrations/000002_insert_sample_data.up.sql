@@ -2,6 +2,9 @@ BEGIN;
 
 INSERT INTO users (id, preferred_username, given_name, family_name, email, created_at, updated_at)
 VALUES
+    ('0115ab9d-e51b-4fe3-b252-44962011ca36', 'admin', 'John', 'Admin', 'admin@ivan.com', NOW(), NOW()),
+    ('d96beb0c-b788-4a2b-8c0c-f71d2faa6d43', 'librarian', 'Betty', 'Librarian', 'librarian@ivan.com', NOW(), NOW()),
+    ('dfa0a0bb-a480-4115-b447-7e5eab694d2f', 'user', 'Sarah', 'User', 'user@ivan.com', NOW(), NOW()),
     ('1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', 'jdoe', 'John', 'Doe', 'johndoe@example.com', NOW(), NOW()),
     ('2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', 'asmith', 'Alice', 'Smith', 'alicesmith@example.com', NOW(), NOW()),
     ('3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1', 'bwilliams', 'Bob', 'Williams', 'bobwilliams@example.com', NOW(), NOW()),
@@ -203,7 +206,7 @@ VALUES
 
 INSERT INTO ratings (id, user_id, book_id, content, value, created_at, updated_at)
 VALUES
-    ('b8d66d1a-2c07-4c4b-a5df-8a21c2e52f2e', '1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', '23cb2f7a-af2b-4279-b825-806703236698', 'Excellent read!', 5, NOW(), NOW()),
+    ('b8d66d1a-2c07-4c4b-a5df-8a21c2e52f2e', '1d3a5c9e-8f2b-43d7-9394-8a31b70562d5', 'e6aed76a-b0a1-4ef8-ac13-657ddfd24a15', 'Excellent read!', 5, NOW(), NOW()),
     ('c3f2a99d-b3a9-4116-80a5-1e76a3f52c98', '2b48f7d9-6f24-4a1b-987c-6d63e5a04b75', '6092514b-7dcc-40c2-a2d4-8ae8387618d4', 'Informative but a bit lengthy.', 4, NOW(), NOW()),
     ('a5df2b89-4187-48c5-9b14-6f8b362c5d7a', '3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1', '8c2252bf-37e0-4027-a65c-cd4c09f83358', 'Not what I expected.', 3, NOW(), NOW()),
     ('9a6e2f3b-85c9-49c3-a1d2-5b89c6d14f52', '4e2a96d4-81c5-4aa2-b762-dac50c0f9e32', 'fca4b6a0-2bfc-494e-8696-7e9c01395871', 'Loved every bit of it.', 5, NOW(), NOW()),

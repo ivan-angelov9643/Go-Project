@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate mockery --name=RatingManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
+//go:generate mockery --name=RatingManagerInterface --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
 type RatingManagerInterface interface {
 	GetAll(...db.DBScope) ([]models.Rating, error)
 	Get(uuid.UUID) (models.Rating, error)

@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate mockery --name=BookManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
+//go:generate mockery --name=BookManagerInterface --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
 type BookManagerInterface interface {
 	GetAll(...db.DBScope) ([]models.Book, error)
 	Get(uuid.UUID) (models.Book, error)

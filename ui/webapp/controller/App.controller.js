@@ -7,8 +7,6 @@ sap.ui.define([
 	'sap/m/library',
 	'library-app/model/formatter',
 	"sap/ui/core/mvc/XMLView",
-	"sap/ui/core/Core",
-	// '../libs/keycloak-js/dist/keycloak'
 ], function (
 	BaseController,
 	ActionSheet,
@@ -18,8 +16,6 @@ sap.ui.define([
 	mobileLibrary,
 	formatter,
 	XMLView,
-	Core
-	// keycloakLibrary
 ) {
 	"use strict";
 	return BaseController.extend("library-app.controller.App", {

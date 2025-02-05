@@ -7,8 +7,6 @@ sap.ui.define([
     return BaseController.extend("library-app.controller.book.Categories", {
 
         onInit: async function() {
-            // events
-
             this.oCategoryModel = new JSONModel({
                 count: null,
                 page_size: null,

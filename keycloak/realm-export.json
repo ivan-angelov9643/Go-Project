@@ -756,7 +756,6 @@
         "category.read",
 
         "loan.read",
-        "loan.delete",
 
         "rating.global",
         "rating.read",
@@ -902,6 +901,345 @@
       "groups": [
         "Librarians"
       ]
+    },{
+      "id": "1d3a5c9e-8f2b-43d7-9394-8a31b70562d5",
+      "createdTimestamp": 1685949792638,
+      "username": "jdoe",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "johndoe@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "2b48f7d9-6f24-4a1b-987c-6d63e5a04b75",
+      "createdTimestamp": 1685949792638,
+      "username": "asmith",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "email": "alicesmith@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "3c89a1e5-4d37-4fb7-a8e1-4a14b6c8e9c1",
+      "createdTimestamp": 1685949792638,
+      "username": "bwilliams",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Bob",
+      "lastName": "Williams",
+      "email": "bobwilliams@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "4e2a96d4-81c5-4aa2-b762-dac50c0f9e32",
+      "createdTimestamp": 1685949792638,
+      "username": "cmiller",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Charlie",
+      "lastName": "Miller",
+      "email": "charliemiller@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "5f74b10e-9279-44c6-91e3-0179c2a312a6",
+      "createdTimestamp": 1685949792638,
+      "username": "ddavis",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "David",
+      "lastName": "Davis",
+      "email": "daviddavis@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "6a0f3e24-04c5-4993-9f08-89d25c83e941",
+      "createdTimestamp": 1685949792638,
+      "username": "ejohnson",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Emma",
+      "lastName": "Johnson",
+      "email": "emmajohnson@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "7b7e2c6a-9b2d-4a97-8fc6-9e5a43db3d1c",
+      "createdTimestamp": 1685949792638,
+      "username": "fanderson",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Frank",
+      "lastName": "Anderson",
+      "email": "frankanderson@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "8c124a3b-65fa-4d43-8c4c-1f5bda8d8704",
+      "createdTimestamp": 1685949792638,
+      "username": "gharris",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Grace",
+      "lastName": "Harris",
+      "email": "graceharris@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "9d5b08c2-8723-44eb-8de4-bf3a1e07e9fd",
+      "createdTimestamp": 1685949792638,
+      "username": "hclark",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Henry",
+      "lastName": "Clark",
+      "email": "henryclark@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "10e7a6bd-378b-4645-a5a4-0d4f874b298a",
+      "createdTimestamp": 1685949792638,
+      "username": "ikim",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Ivy",
+      "lastName": "Kim",
+      "email": "ivykim@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "11a4bc3d-5476-4f3c-846f-5cfc972a18d2",
+      "createdTimestamp": 1685949792638,
+      "username": "jlopez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Jack",
+      "lastName": "Lopez",
+      "email": "jacklopez@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "12b8d4a7-2134-4f19-b1f7-6e5dc09b3d94",
+      "createdTimestamp": 1685949792638,
+      "username": "kwright",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Kelly",
+      "lastName": "Wright",
+      "email": "kellywright@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "13c9e2f5-89da-4b67-b27c-5e3d48a40d75",
+      "createdTimestamp": 1685949792638,
+      "username": "lthomas",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Laura",
+      "lastName": "Thomas",
+      "email": "laurathomas@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "14d7f8b6-6a42-4fa5-9a8c-63b87e5c2b45",
+      "createdTimestamp": 1685949792638,
+      "username": "mhernandez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Mike",
+      "lastName": "Hernandez",
+      "email": "mikehernandez@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "15e4a5d3-7c8b-4961-80c7-4e2a5d9b6f34",
+      "createdTimestamp": 1685949792638,
+      "username": "nbrown",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Nancy",
+      "lastName": "Brown",
+      "email": "nancybrown@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "16f5b6c4-8d3a-4e9f-a17b-5f7c3a2d8e91",
+      "createdTimestamp": 1685949792638,
+      "username": "opatel",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Oliver",
+      "lastName": "Patel",
+      "email": "oliverpatel@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "17g6c7d5-9e4b-43f2-b27d-6e4d5a7c3f82",
+      "createdTimestamp": 1685949792638,
+      "username": "pramirez",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Paul",
+      "lastName": "Ramirez",
+      "email": "paulramirez@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "18h7d8e6-af5b-40e8-9b6c-7f8c4e3d5a12",
+      "createdTimestamp": 1685949792638,
+      "username": "qsanders",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Quinn",
+      "lastName": "Sanders",
+      "email": "quinnsanders@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "19i8e9f7-bc6a-45f3-a28d-8e6d7f5c4b31",
+      "createdTimestamp": 1685949792638,
+      "username": "rlee",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Rachel",
+      "lastName": "Lee",
+      "email": "rachellee@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
+    },
+    {
+      "id": "20j9f0g8-cd7b-42e6-b38d-9f7e6d5a4c23",
+      "createdTimestamp": 1685949792638,
+      "username": "sbaker",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Sam",
+      "lastName": "Baker",
+      "email": "sambaker@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user"
+        }
+      ],
+      "groups": ["Users"]
     },
     {
       "id": "759462c4-376e-4cf1-bd7b-41a032268f4f",
@@ -2001,8 +2339,8 @@
       "linkOnly": false,
       "config": {
         "syncMode": "LEGACY",
-        "clientSecret": "4d2ff91d88a890874a1d5d96fdbac833e80ee408",
-        "clientId": "Ov23liFLmUUhSc8XlzDv"
+        "clientSecret": "4b1bc3e04e00cfe9fb43a34b0083874a2f9c7987",
+        "clientId": "Ov23limGKizUZBxhT6vK"
       }
     }
   ],

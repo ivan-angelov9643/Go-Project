@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate mockery --name=CategoryManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
+//go:generate mockery --name=CategoryManagerInterface --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
 type CategoryManagerInterface interface {
 	GetAll(...db.DBScope) ([]models.Category, error)
 	Get(uuid.UUID) (models.Category, error)

@@ -40,7 +40,6 @@ sap.ui.define([
             }
 
             this.onDialogClose();
-            this.fillAuthorModel(this.oDialogAuthorModel, this.initAuthorModel());
         },
 
         onCancelCreate: function () {
@@ -48,6 +47,7 @@ sap.ui.define([
         },
 
         onDialogClose: function () {
+            this.fillAuthorModel(this.oDialogAuthorModel, this.initAuthorModel());
             const dialog = this.byId("createAuthorDialog");
             if (dialog) {
                 dialog.close();

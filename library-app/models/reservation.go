@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -17,7 +18,13 @@ type Reservation struct {
 
 func (reservation *Reservation) Validate() error {
 	log.Info("[Reservation.Validate] Validating reservation data")
-	// Add validation logic here
+
+	if reservation.CreatedAt.After(reservation.ExpiryDate) {
+		err := fmt.Errorf("CreatedAt cannot be after ExpiryDate: CreatedAt = %v, ExpiryDate = %v", reservation.CreatedAt, reservation.ExpiryDate)
+		log.Errorf("[Reservation.Validate] Validation failed: %v", err)
+		return err
+	}
+
 	log.Info("[Reservation.Validate] Validation completed successfully")
 	return nil
 }

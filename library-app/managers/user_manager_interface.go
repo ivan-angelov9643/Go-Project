@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate mockery --name=UserManager --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
+//go:generate mockery --name=UserManagerInterface --output=automock --with-expecter=true --outpkg=automock --case=underscore --disable-version-string
 type UserManagerInterface interface {
 	GetAll(...db.DBScope) ([]models.User, error)
 	Get(uuid.UUID) (models.User, error)

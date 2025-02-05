@@ -83,6 +83,8 @@ sap.ui.define([
 			}
 			const oData = this.oSelectedBookModel.getData();
 			const oDialogBookModel = this._oEditBookDialog.getModel("dialogBook");
+			const oTotalCopiesModel = this._oEditBookDialog.getModel("totalCopies");
+			oTotalCopiesModel.setProperty("/value", oData.total_copies)
 
 			this.fillBookModel(oDialogBookModel, oData);
 			this._oEditBookDialog.byId("editBookDialog").open();

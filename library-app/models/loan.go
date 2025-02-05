@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -20,7 +21,13 @@ type Loan struct {
 
 func (loan *Loan) Validate() error {
 	log.Info("[Loan.Validate] Validating loan data")
-	// Add validation logic here
+
+	if loan.StartDate.After(loan.DueDate) {
+		err := fmt.Errorf("StartDate cannot be after DueDate: StartDate = %v, DueDate = %v", loan.StartDate, loan.DueDate)
+		log.Errorf("[Loan.Validate] Validation failed: %v", err)
+		return err
+	}
+
 	log.Info("[Loan.Validate] Validation completed successfully")
 	return nil
 }

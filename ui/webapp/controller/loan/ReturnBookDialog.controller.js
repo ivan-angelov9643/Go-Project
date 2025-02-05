@@ -8,9 +8,6 @@ sap.ui.define([
 
     return BaseController.extend("library-app.controller.loan.ReturnBookDialog", {
         onInit: function () {
-            // Core.getEventBus().subscribe("library-app", "authorsUpdated", this.handleAuthorsUpdated, this);
-            // Core.getEventBus().subscribe("library-app", "categoriesUpdated", this.handleCategoriesUpdated, this);
-
             this.oDialogLoanModel = new JSONModel(this.initLoanModel());
             this.getView().setModel(this.oDialogLoanModel, "dialogLoan");
         },

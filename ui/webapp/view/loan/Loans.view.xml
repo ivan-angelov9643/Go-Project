@@ -18,7 +18,8 @@
 								text="Loans"
 								width="55px"
 						/>
-						<Text text="Search by username:" width="160px"/>
+						<Text text="Search by username:" width="160px"
+							  visible="{= ${userRoles>/loan.global} ? true: false }"/>
 						<Text text="Search by book title:" width="160px"/>
 						<Text text="Filter by status:" width="160px"/>
 						<Text text="Sort by:" width="160px"/>
@@ -40,7 +41,8 @@
 						<Input
 								id="usernameSearch"
 								placeholder="Enter username"
-								width="160px"/>
+								width="160px"
+								visible="{= ${userRoles>/loan.global} ? true: false }"/>
 						<Input
 								id="titleSearch"
 								placeholder="Enter title"

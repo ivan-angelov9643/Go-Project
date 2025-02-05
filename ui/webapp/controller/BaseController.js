@@ -218,11 +218,14 @@ sap.ui.define([
 
 		loadUsers: async function (model, page) {
 			const token = await this.getOwnerComponent().getToken();
+			const currentUserID = this.getUserID(token);
 			const userData = await this.sendRequest(
 				`http://localhost:8080/api/users?page_size=${this.page_size}&page=${page}`,
 				"GET",
 				token
 			);
+
+			userData.data = userData.data.filter(user => user.id !== currentUserID);
 
 			model.setProperty("/count", userData.count);
 			model.setProperty("/page_size", userData.page_size);

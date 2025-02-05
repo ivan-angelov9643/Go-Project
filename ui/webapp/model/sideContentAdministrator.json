@@ -56,12 +56,5 @@
 			"expanded": false,
 			"key": "users"
 		}
-	],
-	"fixedNavigation": [
-		{
-			"titleI18nKey": "sideContentImportantLinks",
-			"icon": "sap-icon://chain-link",
-			"key": "importantLinks"
-		}
 	]
 }

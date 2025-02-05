@@ -37,7 +37,7 @@ sap.ui.define([
                         book_id: ratingData.book_id
                     }
                 );
-console.log("publish")
+
                 MessageToast.show("Successfully created rating.");
             } catch (error) {
                 MessageToast.show(error.error || "Error creating rating.");

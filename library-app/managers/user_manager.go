@@ -49,12 +49,7 @@ func (m *UserManager) Get(idToGet uuid.UUID) (models.User, error) {
 func (m *UserManager) Create(newUser models.User) (models.User, error) {
 	log.Infof("[UserManager.Create] Creating new user")
 
-	err := newUser.Validate()
-	if err != nil {
-		return models.User{}, db.NewDBError(db.ValidationError, err.Error())
-	}
-
-	err = m.db.Create(&newUser).Error
+	err := m.db.Create(&newUser).Error
 	if err != nil {
 		log.Errorf("[UserManager.Create] Error creating new user with ID %s: %v", newUser.ID, err)
 		return models.User{}, db.NewDBError(db.InternalError, "[UserManager.Create] Error creating new user with ID %s: %v", newUser.ID, err)
@@ -67,13 +62,8 @@ func (m *UserManager) Create(newUser models.User) (models.User, error) {
 func (m *UserManager) Update(updatedUser models.User) (models.User, error) {
 	log.Infof("[UserManager.Update] Updating user with ID: %s", updatedUser.ID)
 
-	err := updatedUser.Validate()
-	if err != nil {
-		return models.User{}, db.NewDBError(db.ValidationError, err.Error())
-	}
-
 	var user models.User
-	err = m.db.First(&user, "id = ?", updatedUser.ID).Error
+	err := m.db.First(&user, "id = ?", updatedUser.ID).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Errorf("[UserManager.Update] User with ID %s does not exist", updatedUser.ID)

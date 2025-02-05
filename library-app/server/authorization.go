@@ -12,18 +12,8 @@ import (
 	"strings"
 )
 
-//func Static() http.Handler {
-//	return http.FileServer(http.Dir("./public"))
-//}
-
-//func (server *Server) Public(next http.HandlerFunc) http.HandlerFunc {
-//	return server.Protected(next, global.PUBLIC, global.PUBLIC)
-//}
-
 func (server *Server) Protected(next http.HandlerFunc, resource string, role string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//if !strings.EqualFold(resource, global.PUBLIC) {
-		//	// Parse token
 		authHeader := r.Header.Get("Authorization")
 		if len(authHeader) < 7 {
 			errors.HttpError(
