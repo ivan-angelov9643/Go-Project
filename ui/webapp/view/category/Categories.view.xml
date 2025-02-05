@@ -1,0 +1,92 @@
+<mvc:View
+		controllerName="library-app.controller.category.Categories"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page showHeader="false">
+		<l:BlockLayout
+				id="BlockLayoutCategories"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							noData="There are not any categories"
+							items="{path:'category>/data', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Categories"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+								<Button
+										text="Create"
+										icon="sap-icon://add"
+										press="onCreateCategory"
+										type="Ghost"
+										class="sapUiTinyMarginBegin"
+										visible="{= ${userRoles>/category.create} ? true: false }" />
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="Name"/>
+							</Column>
+							<Column>
+								<Text text="Description"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"
+									  visible="{= ${userRoles>/category.edit} ||
+												 ${userRoles>/category.delete}? true: false }"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{category>name}"/>
+									<Text text="{category>description}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Edit"
+												icon="sap-icon://edit"
+												press="onEditCategory"
+												class="sapUiTinyMarginEnd"
+												visible="{= ${userRoles>/category.edit} ? true: false }" />
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteCategory"
+												visible="{= ${userRoles>/category.delete} ? true: false }" />
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${category>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${category>/page} + ' of ' + ${category>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								iconFirst="false"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${category>/page} &lt; ${category>/total_pages} }"/>
+					</Toolbar>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

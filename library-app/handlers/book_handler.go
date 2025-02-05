@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
+	"awesomeProject/library-app/errors"
 	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
@@ -22,25 +24,42 @@ func NewBookHandler(bookManager managers.BookManagerInterface) *BookHandler {
 func (h *BookHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[BookHandler.GetAll] Fetching all books")
 
-	books, dbErr := h.bookManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	filterByTitleScope := db.NewFilterByTitleScope(r)
+	filterByAuthorNameScope := db.NewFilterByAuthorNameScope(r)
+	filterByCategoryNameScope := db.NewFilterByCategoryNameScope(r)
+	filterByLanguageScope := db.NewFilterByLanguageScope(r)
+	books, dbErr := h.bookManager.GetAll(
+		accessScope, pagingScope, filterByTitleScope, filterByAuthorNameScope, filterByCategoryNameScope, filterByLanguageScope,
+	)
 	if dbErr != nil {
-		global.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(books)
-	if err != nil {
-		global.HttpError(
+	count, dbErr := h.bookManager.Count(
+		accessScope, filterByTitleScope, filterByAuthorNameScope, filterByCategoryNameScope, filterByLanguageScope,
+	)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Book]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     books,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		errors.HttpError(
 			w,
 			"[BookHandler.GetAll] Failed to encode books to JSON",
 			"Failed to return books",
 			http.StatusInternalServerError,
 			err,
 		)
-		return
 	}
 }
 
@@ -51,7 +70,7 @@ func (h *BookHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[BookHandler.Get] Invalid UUID format",
 			"Invalid book ID format",
@@ -63,7 +82,7 @@ func (h *BookHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	book, dbErr := h.bookManager.Get(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -72,7 +91,7 @@ func (h *BookHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(book)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[BookHandler.Get] Failed to encode book to JSON",
 			"Failed to return book",
@@ -88,7 +107,7 @@ func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var newBook models.Book
 	err := json.NewDecoder(r.Body).Decode(&newBook)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[BookHandler.Create] Failed to decode JSON body into Book struct",
 			"Invalid JSON format in request body",
@@ -101,7 +120,7 @@ func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 	newBook.ID = uuid.Nil
 	createdBook, dbErr := h.bookManager.Create(newBook)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -110,7 +129,7 @@ func (h *BookHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(createdBook)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[BookHandler.Create] Failed to encode created book to JSON",
 			"Failed to return created book",
 			http.StatusInternalServerError,
@@ -126,7 +145,7 @@ func (h *BookHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[BookHandler.Update] Invalid UUID format",
 			"Invalid book ID format",
 			http.StatusBadRequest,
@@ -138,7 +157,7 @@ func (h *BookHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var updatedBookBody models.Book
 	err = json.NewDecoder(r.Body).Decode(&updatedBookBody)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[BookHandler.Update] Failed to decode JSON body into Book struct",
 			"Invalid JSON format in request body",
@@ -151,7 +170,7 @@ func (h *BookHandler) Update(w http.ResponseWriter, r *http.Request) {
 	updatedBookBody.ID = id
 	updatedBook, dbErr := h.bookManager.Update(updatedBookBody)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -160,7 +179,7 @@ func (h *BookHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(updatedBook)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[BookHandler.Update] Failed to encode updated book to JSON",
 			"Failed to return updated book",
 			http.StatusInternalServerError,
@@ -176,7 +195,7 @@ func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[BookHandler.Delete] Invalid UUID format",
 			"Invalid book ID format",
 			http.StatusBadRequest,
@@ -187,7 +206,7 @@ func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	deletedBook, dbErr := h.bookManager.Delete(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -196,7 +215,7 @@ func (h *BookHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(deletedBook)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[BookHandler.Delete] Failed to encode book to JSON",
 			"Failed to return deleted book",
 			http.StatusInternalServerError,

@@ -1,0 +1,30 @@
+<mvc:View
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns="sap.m"
+        controllerName="library-app.controller.book.DeleteBookDialog">
+    <Dialog
+            id="deleteBookDialog"
+            title="Delete Book"
+            type="Message"
+            afterClose=".onDialogClose">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Text
+                        text="Are you sure you want to delete {dialogBook>/title}?"
+                        wrapping="true" />
+            </VBox>
+        </content>
+        <buttons>
+            <Button
+                    id="yesButton"
+                    text="Yes"
+                    type="Accept"
+                    press=".onConfirmDelete" />
+            <Button
+                    id="noButton"
+                    text="No"
+                    type="Reject"
+                    press=".onCancelDelete" />
+        </buttons>
+    </Dialog>
+</mvc:View>

@@ -1,0 +1,12 @@
+{
+	"selectedKey": "home",
+
+	"navigation": [
+		{
+			"titleI18nKey": "sideContentHome",
+			"icon": "sap-icon://home",
+			"expanded": true,
+			"key": "home"
+		}
+	]
+}

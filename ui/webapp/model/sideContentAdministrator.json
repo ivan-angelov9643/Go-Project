@@ -1,0 +1,60 @@
+{
+	"selectedKey": "home",
+
+	"navigation": [
+		{
+			"titleI18nKey": "sideContentHome",
+			"icon": "sap-icon://home",
+			"expanded": true,
+			"key": "home"
+		},
+		{
+			"titleI18nKey": "sideContentProfile",
+			"icon": "sap-icon://customer",
+			"expanded": false,
+			"key": "profile"
+		},
+		{
+			"titleI18nKey": "sideContentBooks",
+			"icon": "sap-icon://education",
+			"expanded": false,
+			"key": "books"
+		},
+		{
+			"titleI18nKey": "sideContentAuthors",
+			"icon": "sap-icon://supplier",
+			"expanded": false,
+			"key": "authors"
+		},
+		{
+			"titleI18nKey": "sideContentCategories",
+			"icon": "sap-icon://shelf",
+			"expanded": false,
+			"key": "categories"
+		},
+		{
+			"titleI18nKey": "sideContentReservations",
+			"icon": "sap-icon://bookmark-2",
+			"expanded": false,
+			"key": "reservations"
+		},
+		{
+			"titleI18nKey": "sideContentLoans",
+			"icon": "sap-icon://action",
+			"expanded": false,
+			"key": "loans"
+		},
+		{
+			"titleI18nKey": "sideContentRatings",
+			"icon": "sap-icon://badge",
+			"expanded": false,
+			"key": "ratings"
+		},
+		{
+			"titleI18nKey": "sideContentUsers",
+			"icon": "sap-icon://group",
+			"expanded": false,
+			"key": "users"
+		}
+	]
+}

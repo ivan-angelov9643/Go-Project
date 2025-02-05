@@ -1,0 +1,30 @@
+<mvc:View
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns="sap.m"
+        controllerName="library-app.controller.reservation.DeleteReservationDialog">
+    <Dialog
+            id="deleteReservationDialog"
+            title="Delete Reservation"
+            type="Message"
+            afterClose=".onDialogClose">
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <Text
+                        text="Are you sure you want to delete the reservation for the book '{dialogReservation>/book_title}' made from {dialogReservation>/user_name}?"
+                        wrapping="true" />
+            </VBox>
+        </content>
+        <buttons>
+            <Button
+                    id="confirmButton"
+                    text="Yes"
+                    type="Accept"
+                    press=".onConfirmDelete" />
+            <Button
+                    id="cancelButton"
+                    text="No"
+                    type="Reject"
+                    press=".onCancelDelete" />
+        </buttons>
+    </Dialog>
+</mvc:View>

@@ -1,0 +1,63 @@
+<mvc:View
+        controllerName="library-app.controller.reservation.MakeLoanDialog"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="makeLoanDialog"
+            title="Create Loan"
+            initialFocus="loanDurationInput"
+            afterClose=".onDialogClose"
+            horizontalScrolling="false"
+            verticalScrolling="true"
+            contentWidth="610px">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    columnsL="1"
+                    columnsM="1">
+                <f:content>
+                    <Label text="User" />
+                    <Text text="{dialogReservation>/user_name}" />
+
+                    <Label text="Book" />
+                    <Text text="{dialogReservation>/book_title}" />
+
+                    <Label text="Reservation Date" />
+                    <Text text="{path: 'dialogReservation>/created_at', formatter: '.formatter.formatDateTime'}" />
+
+                    <Label text="Reservation Expiry" />
+                    <Text text="{path: 'dialogReservation>/expiry_date', formatter: '.formatter.formatDateTime'}" />
+
+                    <Label text="Loan Duration (Days)" />
+                    <Input
+                            id="loanDurationInput"
+                            value="{dialogLoan>/loan_duration}"
+                            type="Number"
+                            width="150px"
+                            placeholder="Enter number of days" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Create Loan"
+                            press=".onCreateLoan" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelMakeLoan" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

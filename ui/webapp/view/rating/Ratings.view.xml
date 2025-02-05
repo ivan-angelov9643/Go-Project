@@ -1,0 +1,113 @@
+<mvc:View
+		controllerName="library-app.controller.rating.Ratings"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page showHeader="false">
+		<l:BlockLayout
+				id="BlockLayoutRatings"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Toolbar design="Transparent">
+						<Title
+								text="Ratings"
+								width="63px"/>
+						<Text text="Search by username:" width="160px"/>
+						<Text text="Search by book title:" width="157px"/>
+						<Button
+								icon="sap-icon://search"
+								type="Ghost"
+								text="Search"
+								press="onSearch"
+								tooltip="Apply filters"
+						/>
+					</Toolbar>
+					<Toolbar design="Transparent">
+						<Button
+								tooltip="Refresh"
+								icon="sap-icon://refresh"
+								press="loadData"/>
+						<ToolbarSpacer width="25px"/>
+						<Input
+								id="usernameSearch"
+								placeholder="Enter username"
+								liveChange="onUsernameSearchChange"
+								width="160px"/>
+						<Input
+								id="titleSearch"
+								placeholder="Enter title"
+								liveChange="onTitleSearchChange"
+								width="160px"/>
+						<Button
+								text="Clear"
+								icon="sap-icon://decline"
+								type="Ghost"
+								press="onClearSearch"
+								tooltip="Clear filters"/>
+					</Toolbar>
+					<Table
+							id="ratingsTable"
+							noData="There are not any ratings"
+							items="{path:'rating>/data', templateShareable: false}"
+							fixedLayout="false">
+						<columns>
+							<Column>
+								<Text text="User"/>
+							</Column>
+							<Column>
+								<Text text="Book"/>
+							</Column>
+							<Column>
+								<Text text="Content"/>
+							</Column>
+							<Column>
+								<Text text="Value"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"
+									  visible="{= ${userRoles>/rating.delete} ? true: false }"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{rating>user_name}"/>
+									<Text text="{rating>book_title}"/>
+									<Text text="{rating>content}"/>
+									<Text text="{rating>value}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Delete"
+												icon="sap-icon://delete"
+												press="onDeleteRating"
+												visible="{= ${userRoles>/rating.delete} ? true: false }"/>
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${rating>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${rating>/page} + ' of ' + ${rating>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								iconFirst="false"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${rating>/page} &lt; ${rating>/total_pages} }"/>
+					</Toolbar>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

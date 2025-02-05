@@ -1,0 +1,69 @@
+<mvc:View
+		controllerName="library-app.controller.profile.Profile"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns:form="sap.ui.layout.form"
+		xmlns:core="sap.ui.core">
+	<Page showHeader="false">
+		<l:BlockLayout id="BlockLayoutProfile" background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell>
+					<VBox class="sapUiMediumMargin" width="400px">
+						<form:Form>
+							<form:layout>
+								<form:ResponsiveGridLayout
+										labelSpanXL="9"
+										labelSpanL="8"
+										labelSpanM="7"
+										labelSpanS="6"
+										adjustLabelSpan="false"
+										singleContainerFullSize="true" />
+							</form:layout>
+							<form:title>
+								<core:Title text="Profile Details" />
+							</form:title>
+							<form:formContainers>
+								<form:FormContainer>
+									<form:formElements>
+										<form:FormElement label="Username">
+											<form:fields>
+												<Text text="{user>/preferred_username}"/>
+											</form:fields>
+										</form:FormElement>
+										<form:FormElement label="First Name">
+											<form:fields>
+												<Text text="{user>/given_name}"/>
+											</form:fields>
+										</form:FormElement>
+										<form:FormElement label="Last Name">
+											<form:fields>
+												<Text text="{user>/family_name}"/>
+											</form:fields>
+										</form:FormElement>
+										<form:FormElement label="Email">
+											<form:fields>
+												<Text text="{user>/email}"/>
+											</form:fields>
+										</form:FormElement>
+									</form:formElements>
+								</form:FormContainer>
+								<form:FormContainer>
+									<form:formElements>
+										<form:FormElement>
+											<HBox justifyContent="End">
+												<Button text="Edit"
+														press="onEditProfile"
+														icon="sap-icon://edit"/>
+											</HBox>
+										</form:FormElement>
+									</form:formElements>
+								</form:FormContainer>
+							</form:formContainers>
+						</form:Form>
+					</VBox>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

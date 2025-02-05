@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
+	"awesomeProject/library-app/errors"
 	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
@@ -22,18 +24,30 @@ func NewAuthorHandler(authorManager managers.AuthorManagerInterface) *AuthorHand
 func (h *AuthorHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[AuthorHandler.GetAll] Fetching all authors")
 
-	authors, dbErr := h.authorManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	filterByAuthorNameScope := db.NewFilterByAuthorNameScope(r)
+	authors, dbErr := h.authorManager.GetAll(accessScope, pagingScope, filterByAuthorNameScope)
 	if dbErr != nil {
-		global.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(authors)
+	count, dbErr := h.authorManager.Count(accessScope, filterByAuthorNameScope)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Author]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     authors,
+	}
+	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[AuthorHandler.GetAll] Failed to encode authors to JSON",
 			"Failed to return authors",
@@ -51,7 +65,7 @@ func (h *AuthorHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[AuthorHandler.Get] Invalid UUID format",
 			"Invalid author ID format",
@@ -63,7 +77,7 @@ func (h *AuthorHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	author, dbErr := h.authorManager.Get(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -72,7 +86,7 @@ func (h *AuthorHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(author)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[AuthorHandler.Get] Failed to encode author to JSON",
 			"Failed to return author",
@@ -88,7 +102,7 @@ func (h *AuthorHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var newAuthor models.Author
 	err := json.NewDecoder(r.Body).Decode(&newAuthor)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[AuthorHandler.Create] Failed to decode JSON body into Author struct",
 			"Invalid JSON format in request body",
@@ -101,16 +115,13 @@ func (h *AuthorHandler) Create(w http.ResponseWriter, r *http.Request) {
 	newAuthor.ID = uuid.Nil
 	createdAuthor, dbErr := h.authorManager.Create(newAuthor)
 	if dbErr != nil {
-		global.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(createdAuthor)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[AuthorHandler.Create] Failed to encode created author to JSON",
 			"Failed to return created author",
 			http.StatusInternalServerError,
@@ -126,7 +137,7 @@ func (h *AuthorHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[AuthorHandler.Update] Invalid UUID format",
 			"Invalid author ID format",
 			http.StatusBadRequest,
@@ -138,7 +149,7 @@ func (h *AuthorHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var updatedAuthorBody models.Author
 	err = json.NewDecoder(r.Body).Decode(&updatedAuthorBody)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[AuthorHandler.Update] Failed to decode JSON body into Author struct",
 			"Invalid JSON format in request body",
@@ -151,16 +162,13 @@ func (h *AuthorHandler) Update(w http.ResponseWriter, r *http.Request) {
 	updatedAuthorBody.ID = id
 	updatedAuthor, dbErr := h.authorManager.Update(updatedAuthorBody)
 	if dbErr != nil {
-		global.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(updatedAuthor)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[AuthorHandler.Update] Failed to encode updated author to JSON",
 			"Failed to return updated author",
 			http.StatusInternalServerError,
@@ -176,7 +184,7 @@ func (h *AuthorHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[AuthorHandler.Delete] Invalid UUID format",
 			"Invalid author ID format",
 			http.StatusBadRequest,
@@ -187,7 +195,7 @@ func (h *AuthorHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	deletedAuthor, dbErr := h.authorManager.Delete(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -196,7 +204,7 @@ func (h *AuthorHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(deletedAuthor)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[AuthorHandler.Delete] Failed to encode author to JSON",
 			"Failed to return deleted author",
 			http.StatusInternalServerError,

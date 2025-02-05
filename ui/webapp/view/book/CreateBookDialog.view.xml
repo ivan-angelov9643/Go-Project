@@ -1,0 +1,75 @@
+<mvc:View
+        controllerName="library-app.controller.book.CreateBookDialog"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="createBookDialog"
+            title="Create Book"
+            initialFocus="titleInput"
+            afterClose=".onDialogClose">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ColumnLayout"
+                    columnsM="1"
+                    columnsL="1"
+                    columnsXL="1">
+                <f:content>
+                    <Label text="Title" />
+                    <Input
+                            id="titleInput"
+                            value="{dialogBook>/title}" />
+
+                    <Label text="Year" />
+                    <Input
+                            id="yearInput"
+                            value="{dialogBook>/year}"
+                            type="Number" />
+
+                    <Label text="Author" />
+                    <Input
+                            id="authorInput"
+                            value="{dialogBook>/author_name}"
+                            editable="false" />
+                    <Button text="Select Author" press=".onOpenAuthorDialog"/>
+
+                    <Label text="Category" />
+                    <Input
+                            id="categoryInput"
+                            value="{dialogBook>/category_name}"
+                            editable="false" />
+                    <Button text="Select Category" press=".onOpenCategoryDialog"/>
+
+                    <Label text="Total Copies" />
+                    <Input
+                            id="totalCopiesInput"
+                            value="{dialogBook>/total_copies}"
+                            type="Number" />
+
+                    <Label text="Language" />
+                    <Input
+                            id="languageInput"
+                            value="{dialogBook>/language}" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Create"
+                            press=".onCreateBook" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelCreate" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

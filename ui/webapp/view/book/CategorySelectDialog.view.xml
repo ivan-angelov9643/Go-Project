@@ -1,0 +1,34 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+          xmlns="sap.m"
+          controllerName="library-app.controller.book.CategorySelectDialog">
+    <TableSelectDialog
+            id="categorySelectDialog"
+            title="Select Category"
+            items="{displayCategory>/data}"
+            growing="true"
+            growingThreshold="10"
+            noDataText="No categories found"
+            search=".onCategorySearch"
+            confirm=".onCategoryConfirm"
+            cancel=".onDialogCancel"
+            updateFinished=".onLoadMoreCategories">
+
+        <columns>
+            <Column>
+                <Text text="Category Name"/>
+            </Column>
+            <Column>
+                <Text text="Description"/>
+            </Column>
+        </columns>
+
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <Text text="{displayCategory>name}" />
+                    <Text text="{displayCategory>description}" />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </TableSelectDialog>
+</mvc:View>

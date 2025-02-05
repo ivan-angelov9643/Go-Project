@@ -1,0 +1,74 @@
+<mvc:View
+        controllerName="library-app.controller.author.CreateAuthorDialog"
+        xmlns="sap.m"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="createAuthorDialog"
+            title="Create Author"
+            initialFocus="firstNameInput"
+            afterClose=".onDialogClose">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ColumnLayout"
+                    columnsM="1"
+                    columnsL="1"
+                    columnsXL="1">
+                <f:content>
+                    <Label text="First Name" />
+                    <Input
+                            id="firstNameInput"
+                            value="{dialogAuthor>/first_name}" />
+                    <Label text="Last Name" />
+                    <Input
+                            id="lastNameInput"
+                            value="{dialogAuthor>/last_name}" />
+                    <Label text="Nationality" />
+                    <Input
+                            id="nationalityInput"
+                            value="{dialogAuthor>/nationality}" />
+                    <Label text="Birth Date" />
+                    <DatePicker
+                            id="birthDatePicker"
+                            value="{dialogAuthor>/birth_date}"
+                            displayFormat="yyyy-MM-dd"
+                            valueFormat="yyyy-MM-dd" />
+                    <Label text="Death Date" />
+                    <DatePicker
+                            id="deathDatePicker"
+                            value="{dialogAuthor>/death_date}"
+                            displayFormat="yyyy-MM-dd"
+                            valueFormat="yyyy-MM-dd" />
+                    <Label text="Bio" />
+                    <TextArea
+                            id="bioInput"
+                            value="{dialogAuthor>/bio}"
+                            rows="3"
+                            placeholder="Optional"/>
+                    <Label text="Website" />
+                    <Input
+                            id="websiteInput"
+                            value="{dialogAuthor>/website}"
+                            placeholder="Optional"/>
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Create"
+                            press=".onCreateAuthor" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelCreate" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

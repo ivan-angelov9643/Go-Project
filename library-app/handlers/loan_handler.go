@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"awesomeProject/library-app/db"
+	"awesomeProject/library-app/errors"
 	"awesomeProject/library-app/global"
 	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
@@ -22,25 +24,46 @@ func NewLoanHandler(loanManager managers.LoanManagerInterface) *LoanHandler {
 func (h *LoanHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	log.Info("[LoanHandler.GetAll] Fetching all loans")
 
-	loans, dbErr := h.loanManager.GetAll()
+	accessScope := db.NewAccessScope(r)
+	pagingScope := db.NewPagingScope(r)
+	filterByBookIDScope := db.NewFilterByBookIDScope(r)
+	filterByUserIDScope := db.NewFilterByUserIDScope(r)
+	filterByUsernameScope := db.NewFilterByUsernameScope(r)
+	filterByTitleScope := db.NewFilterByTitleScope(r)
+	filterByStatusScope := db.NewFilterByStatusScope(r)
+	sortScope := db.NewSortScope(r)
+	loans, dbErr := h.loanManager.GetAll(
+		accessScope, pagingScope, filterByBookIDScope, filterByUserIDScope, filterByUsernameScope, filterByTitleScope,
+		filterByStatusScope, sortScope,
+	)
 	if dbErr != nil {
-		global.HttpDBError(
-			w,
-			dbErr,
-		)
+		errors.HttpDBError(w, dbErr)
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(loans)
-	if err != nil {
-		global.HttpError(
+	count, dbErr := h.loanManager.Count(
+		accessScope, filterByBookIDScope, filterByUserIDScope, filterByUsernameScope, filterByTitleScope,
+		filterByStatusScope,
+	)
+	if dbErr != nil {
+		errors.HttpDBError(w, dbErr)
+		return
+	}
+
+	response := global.PaginatedResponse[models.Loan]{
+		Count:    count,
+		PageSize: pagingScope.PageSize,
+		Page:     pagingScope.Page,
+		Data:     loans,
+	}
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		errors.HttpError(
 			w,
 			"[LoanHandler.GetAll] Failed to encode loans to JSON",
 			"Failed to return loans",
 			http.StatusInternalServerError,
 			err,
 		)
-		return
 	}
 }
 
@@ -51,7 +74,7 @@ func (h *LoanHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[LoanHandler.Get] Invalid UUID format",
 			"Invalid loan ID format",
@@ -63,7 +86,7 @@ func (h *LoanHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	loan, dbErr := h.loanManager.Get(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -72,7 +95,7 @@ func (h *LoanHandler) Get(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(loan)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[LoanHandler.Get] Failed to encode loan to JSON",
 			"Failed to return loan",
@@ -88,7 +111,7 @@ func (h *LoanHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var newLoan models.Loan
 	err := json.NewDecoder(r.Body).Decode(&newLoan)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[LoanHandler.Create] Failed to decode JSON body into Loan struct",
 			"Invalid JSON format in request body",
@@ -101,7 +124,7 @@ func (h *LoanHandler) Create(w http.ResponseWriter, r *http.Request) {
 	newLoan.ID = uuid.Nil
 	createdLoan, dbErr := h.loanManager.Create(newLoan)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -110,7 +133,7 @@ func (h *LoanHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(createdLoan)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[LoanHandler.Create] Failed to encode created loan to JSON",
 			"Failed to return created loan",
 			http.StatusInternalServerError,
@@ -126,7 +149,7 @@ func (h *LoanHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[LoanHandler.Update] Invalid UUID format",
 			"Invalid loan ID format",
 			http.StatusBadRequest,
@@ -138,7 +161,7 @@ func (h *LoanHandler) Update(w http.ResponseWriter, r *http.Request) {
 	var updatedLoanBody models.Loan
 	err = json.NewDecoder(r.Body).Decode(&updatedLoanBody)
 	if err != nil {
-		global.HttpError(
+		errors.HttpError(
 			w,
 			"[LoanHandler.Update] Failed to decode JSON body into Loan struct",
 			"Invalid JSON format in request body",
@@ -151,7 +174,7 @@ func (h *LoanHandler) Update(w http.ResponseWriter, r *http.Request) {
 	updatedLoanBody.ID = id
 	updatedLoan, dbErr := h.loanManager.Update(updatedLoanBody)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -160,7 +183,7 @@ func (h *LoanHandler) Update(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(updatedLoan)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[LoanHandler.Update] Failed to encode updated loan to JSON",
 			"Failed to return updated loan",
 			http.StatusInternalServerError,
@@ -176,7 +199,7 @@ func (h *LoanHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	id, err := uuid.Parse(vars["id"])
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[LoanHandler.Delete] Invalid UUID format",
 			"Invalid loan ID format",
 			http.StatusBadRequest,
@@ -187,7 +210,7 @@ func (h *LoanHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	deletedLoan, dbErr := h.loanManager.Delete(id)
 	if dbErr != nil {
-		global.HttpDBError(
+		errors.HttpDBError(
 			w,
 			dbErr,
 		)
@@ -196,7 +219,7 @@ func (h *LoanHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewEncoder(w).Encode(deletedLoan)
 	if err != nil {
-		global.HttpError(w,
+		errors.HttpError(w,
 			"[LoanHandler.Delete] Failed to encode loan to JSON",
 			"Failed to return deleted loan",
 			http.StatusInternalServerError,

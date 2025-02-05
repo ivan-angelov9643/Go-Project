@@ -1,6 +1,6 @@
 BEGIN;
 
-DROP TABLE reviews;
+DROP TABLE ratings;
 DROP TABLE reservations;
 DROP TABLE loans;
 DROP TABLE books;

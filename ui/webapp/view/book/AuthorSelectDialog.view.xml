@@ -1,0 +1,34 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc"
+          xmlns="sap.m"
+          controllerName="library-app.controller.book.AuthorSelectDialog">
+    <TableSelectDialog
+            id="authorSelectDialog"
+            title="Select Author"
+            items="{displayAuthor>/data}"
+            growing="true"
+            growingThreshold="10"
+            noDataText="No authors found"
+            search=".onAuthorSearch"
+            confirm=".onAuthorConfirm"
+            cancel=".onDialogCancel"
+            updateFinished=".onLoadMoreAuthors">
+
+        <columns>
+            <Column>
+                <Text text="First Name"/>
+            </Column>
+            <Column>
+                <Text text="Last Name"/>
+            </Column>
+        </columns>
+
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <Text text="{displayAuthor>first_name}" />
+                    <Text text="{displayAuthor>last_name}" />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </TableSelectDialog>
+</mvc:View>

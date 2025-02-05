@@ -1,0 +1,87 @@
+<mvc:View
+		controllerName="library-app.controller.user.Users"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page showHeader="false">
+		<l:BlockLayout
+				id="BlockLayoutUsers"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet9"
+						backgroundColorShade="ShadeA"
+						width="3">
+					<Table
+							noData="There are not any users"
+							items="{path:'user>/data', templateShareable: false}"
+							fixedLayout="false">
+						<headerToolbar>
+							<Toolbar design="Transparent">
+								<Title
+										text="Users"
+										level="H3"/>
+								<Button
+										tooltip="Refresh"
+										icon="sap-icon://refresh"
+										press="loadData"/>
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<Text text="Username"/>
+							</Column>
+							<Column>
+								<Text text="First Name"/>
+							</Column>
+							<Column>
+								<Text text="Last Name"/>
+							</Column>
+							<Column>
+								<Text text="Email"/>
+							</Column>
+							<Column hAlign="Center">
+								<Text text="Actions"
+									  visible="{= ${userRoles>/user.edit} ? true : false }"/>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{user>preferred_username}"/>
+									<Text text="{user>given_name}"/>
+									<Text text="{user>family_name}"/>
+									<Text text="{user>email}"/>
+									<HBox justifyContent="Center">
+										<Button
+												text="Edit"
+												icon="sap-icon://edit"
+												press="onEditUser"
+												class="sapUiTinyMarginEnd"
+												visible="{= ${userRoles>/user.edit} ? true : false }" />
+									</HBox>
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+					<Toolbar design="Transparent">
+						<Button
+								text="Previous"
+								icon="sap-icon://slim-arrow-left"
+								press="onPreviousPage"
+								enabled="{= ${user>/page} > 1 }"/>
+						<Text
+								text="{= 'Page ' + ${user>/page} + ' of ' + ${user>/total_pages} }"
+								class="sapUiSmallMargin"/>
+						<Button
+								text="Next"
+								iconFirst="false"
+								icon="sap-icon://slim-arrow-right"
+								press="onNextPage"
+								enabled="{= ${user>/page} &lt; ${user>/total_pages} }"/>
+					</Toolbar>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

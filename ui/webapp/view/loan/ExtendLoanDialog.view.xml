@@ -1,0 +1,67 @@
+<mvc:View
+        controllerName="library-app.controller.loan.ExtendLoanDialog"
+        xmlns="sap.m"
+        xmlns:core="sap.ui.core"
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:f="sap.ui.layout.form">
+    <Dialog
+            id="extendLoanDialog"
+            title="Extend Loan"
+            initialFocus="daysToExtendInput"
+            afterClose=".onDialogClose"
+            horizontalScrolling="false"
+            verticalScrolling="true"
+            contentWidth="610px">
+        <content>
+            <f:SimpleForm
+                    editable="true"
+                    layout="ColumnLayout"
+                    columnsM="1"
+                    columnsL="1"
+                    columnsXL="1">
+                <f:content>
+                    <Label text="User" />
+                    <Text text="{dialogLoan>/user_name}" />
+
+                    <Label text="Book" />
+                    <Text text="{dialogLoan>/book_title}" />
+
+                    <Label text="Start Date" />
+                    <Text text="{path: 'dialogLoan>/start_date', formatter:'.formatter.formatDate'}"/>
+
+                    <Label text="Due Date" />
+                    <Text text="{path: 'dialogLoan>/due_date', formatter:'.formatter.formatDate'}"/>
+
+                    <Label text="Return Date" />
+                    <Text text="{path: 'dialogLoan>/return_date', formatter:'.formatter.formatOptionalDate'}"/>
+
+                    <Label text="Status" />
+                    <Text text="{dialogLoan>/status}" />
+
+                    <Label text="Days to Extend" />
+                    <Input
+                            id="daysToExtendInput"
+                            value="{dialogLoan>/days_to_extend}"
+                            type="Number"
+                            width="30%"/>
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <content>
+                    <ToolbarSpacer />
+                    <Button
+                            type="Accept"
+                            text="Extend"
+                            press=".onExtendLoan" />
+                    <Button
+                            id="cancelButton"
+                            type="Reject"
+                            text="Cancel"
+                            press=".onCancelExtend" />
+                </content>
+            </Toolbar>
+        </footer>
+    </Dialog>
+</mvc:View>

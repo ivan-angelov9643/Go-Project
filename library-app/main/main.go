@@ -3,6 +3,7 @@ package main
 import (
 	"awesomeProject/library-app/global"
 	server2 "awesomeProject/library-app/server"
+	"context"
 	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 )
@@ -10,8 +11,12 @@ import (
 func main() {
 	log.Info("[server] Starting app...")
 
+	ctx, cancel := context.WithCancel(context.Background())
+
 	server := server2.Server{}
 	server.InitializeConfig(global.DefaultConfigurationFilePath)
-	server.Initialize()
+	server.Initialize(ctx)
 	server.StartWebServer()
+
+	cancel()
 }

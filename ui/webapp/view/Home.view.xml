@@ -1,0 +1,39 @@
+<mvc:View
+		controllerName="library-app.controller.Home"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:core="sap.ui.core"
+		xmlns:mvc="sap.ui.core.mvc">
+	<Page showHeader="false">
+		<l:BlockLayout
+				id="BlockLayout"
+				background="Default">
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell
+						backgroundColorSet="ColorSet11"
+						backgroundColorShade="ShadeB">
+					<l:VerticalLayout>
+						<core:Icon
+								src="sap-icon://home"
+								size="2.5rem"
+								color="Default"/>
+						<Title
+								text="Welcome, {user>/given_name} {user>/family_name}!"
+								level="H3"
+								titleStyle="H2"
+								class="sapUiTinyMarginTopBottom"/>
+						<Title
+								text="You are logged as
+										{= ${userRoles>/mainrole.administrator} ? 'Admin.' :
+										${userRoles>/mainrole.librarian} ? 'Librarian.' :
+										${userRoles>/mainrole.user} ? 'Member.' :
+										'You are not assigned a role.' }"
+								level="H3"
+								titleStyle="H2"
+								class="sapUiTinyMarginTop"/>
+					</l:VerticalLayout>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
+	</Page>
+</mvc:View>

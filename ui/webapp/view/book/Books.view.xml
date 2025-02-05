@@ -1,0 +1,245 @@
+<mvc:View
+		id="booksView"
+		controllerName="library-app.controller.book.Books"
+		xmlns="sap.m"
+		xmlns:l="sap.ui.layout"
+		xmlns:mvc="sap.ui.core.mvc"
+		xmlns:f="sap.f"
+		xmlns:core="sap.ui.core"
+		xmlns:form="sap.ui.layout.form">
+	<f:FlexibleColumnLayout id="flexibleColumnLayout">
+		<f:beginColumnPages>
+			<Page showHeader="false">
+				<l:BlockLayout id="BlockLayoutBooks" background="Default">
+					<l:BlockLayoutRow>
+						<l:BlockLayoutCell backgroundColorSet="ColorSet9" backgroundColorShade="ShadeA" width="3">
+							<Toolbar design="Transparent">
+								<Title
+									text="Books"
+								   width="50px"
+								   level="H3"/>
+								<Button
+									tooltip="Refresh"
+									icon="sap-icon://refresh"
+									press="loadData"
+									visible="{= ${userRoles>/book.create} ? true: false }"/>
+								<Text text="Search by title:" width="160px"/>
+								<Text text="Search by author name:" width="180px"/>
+								<Text text="Search by category name:" width="190px"/>
+								<Text text="Search by language:" width="157px"/>
+								<Button
+									icon="sap-icon://search"
+									type="Ghost"
+									text="Search"
+									press="onSearch"
+									tooltip="Apply filters"
+								/>
+							</Toolbar>
+							<Toolbar design="Transparent">
+								<Button
+									text="Create"
+									icon="sap-icon://add"
+									press="onCreateBook"
+									type="Ghost"
+									class="sapUiTinyMarginEnd"
+									visible="{= ${userRoles>/book.create} ? true: false }" />
+								<Button
+									tooltip="Refresh"
+									icon="sap-icon://refresh"
+									press="loadData"
+									visible="{= ${userRoles>/book.create} ? false: true }"/>
+								<ToolbarSpacer width="13px"
+									   visible="{= ${userRoles>/book.create} ? false: true }" />
+								<Input
+									id="titleSearch"
+									placeholder="Enter title"
+									width="160px"/>
+								<Input id="authorSearch"
+									placeholder="Enter author name"
+									width="180px" />
+								<Input id="categorySearch"
+									placeholder="Enter category name"
+									width="190px"/>
+								<Input id="languageSearch"
+									placeholder="Enter language"
+									width="160px"/>
+								<Button
+									text="Clear"
+									icon="sap-icon://decline"
+									type="Ghost"
+									press="onClearSearch"
+									tooltip="Clear filters"/>
+							</Toolbar>
+							<Table
+									id="booksTable"
+									noData="There are not any books"
+									items="{path: 'book>/data', templateShareable: false}"
+									fixedLayout="false"
+									mode="SingleSelectMaster"
+									selectionChange="onSelectBook">
+								<columns>
+									<Column><Text text="Title"/></Column>
+									<Column><Text text="Author"/></Column>
+									<Column><Text text="Category"/></Column>
+									<Column><Text text="Language"/></Column>
+								</columns>
+								<items>
+									<ColumnListItem type="Navigation">
+										<cells>
+											<Text text="{book>title}"/>
+											<Text text="{book>author_name}"/>
+											<Text text="{book>category_name}"/>
+											<Text text="{book>language}"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+							<Toolbar design="Transparent">
+								<Button
+										text="Previous"
+										icon="sap-icon://slim-arrow-left"
+										press="onPreviousPage"
+										enabled="{= ${book>/page} > 1 }"/>
+								<Text
+										text="{= 'Page ' + ${book>/page} + ' of ' + ${book>/total_pages} }"
+										class="sapUiSmallMargin"/>
+								<Button
+										text="Next"
+										iconFirst="false"
+										icon="sap-icon://slim-arrow-right"
+										press="onNextPage"
+										enabled="{= ${book>/page} &lt; ${book>/total_pages} }"/>
+							</Toolbar>
+						</l:BlockLayoutCell>
+					</l:BlockLayoutRow>
+				</l:BlockLayout>
+			</Page>
+		</f:beginColumnPages>
+
+		<f:midColumnPages>
+			<Page showHeader="false">
+				<VBox class="sapUiSmallMargin">
+					<HBox alignItems="Center" justifyContent="Start" class="sapUiSmallMarginBottom">
+						<Button
+								icon="sap-icon://navigation-left-arrow"
+								tooltip="Back"
+								press="onNavBack"
+								type="Transparent" />
+						<Title text="Book Details" level="H2" class="sapUiTinyMarginBegin" />
+					</HBox>
+					<form:Form>
+						<form:layout>
+							<form:ResponsiveGridLayout
+								labelSpanXL="9"
+								labelSpanL="8"
+								labelSpanM="7"
+								labelSpanS="6"
+								adjustLabelSpan="false"
+								singleContainerFullSize="true"
+								/>
+						</form:layout>
+						<form:formContainers>
+							<form:FormContainer>
+								<form:formElements>
+									<form:FormElement label="Title">
+										<form:fields><Text text="{selectedBook>/title}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Author">
+										<form:fields><Text text="{selectedBook>/author_name}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Category">
+										<form:fields><Text text="{selectedBook>/category_name}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Language">
+										<form:fields><Text text="{selectedBook>/language}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Year">
+										<form:fields><Text text="{selectedBook>/year}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Total Copies">
+										<form:fields><Text text="{selectedBook>/total_copies}" /></form:fields>
+									</form:FormElement>
+									<form:FormElement label="Available Copies">
+										<form:fields><Text text="{selectedBook>/available_copies}" /></form:fields>
+									</form:FormElement>
+								</form:formElements>
+							</form:FormContainer>
+						</form:formContainers>
+					</form:Form>
+				</VBox>
+				<HBox justifyContent="Center">
+					<Button text="Edit"
+							icon="sap-icon://edit"
+							press="onEditBook"
+							class="sapUiTinyMarginEnd"
+							visible="{= ${userRoles>/book.edit} ? true: false }" />
+					<Button text="Delete"
+							icon="sap-icon://delete"
+							press="onDeleteBook"
+							class="sapUiTinyMarginEnd"
+							visible="{= ${userRoles>/book.delete} ? true: false }" />
+					<Button id="reserveBookButton"
+							text="Reserve"
+							icon="sap-icon://appointment"
+							press="onReserveBook"
+							type="Accept"
+							class="sapUiTinyMarginEnd"/>
+					<Button id="rateBookButton"
+							text="Rate"
+							icon="sap-icon://favorite"
+							press="onRateBook"
+							type="Emphasized"/>
+				</HBox>
+				<Title text="Ratings" level="H2" class="sapUiSmallMargin" />
+				<List
+						id="ratingsList"
+						items="{rating>/data}"
+						class="sapUiSmallMargin"
+						noData="There are not ratings for this book">
+					<items>
+						<CustomListItem>
+							<HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiSmallMarginTopBottom">
+								<HBox>
+									<core:Icon
+											size="2rem"
+											src="sap-icon://comment"
+											class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom"
+									/>
+									<VBox class="sapUiSmallMarginBegin sapUiSmallMarginTopBottom">
+										<Text text="{rating>user_name} rated {rating>value}/5" class="sapMTextBold" />
+										<Label text="{rating>content}" />
+									</VBox>
+								</HBox>
+								<Button
+										text="Delete"
+										icon="sap-icon://delete"
+										class="sapUiMediumMarginEnd"
+										press="onDeleteRating"
+										type="Ghost"
+										tooltip="Delete rating"
+										visible="{= ${userRoles>/mainrole.administrator} || ${userRoles>/mainrole.librarian} || ${userID>/value} === ${rating>user_id} }"
+								/>
+							</HBox>
+						</CustomListItem>
+					</items>
+				</List>
+				<Toolbar design="Transparent">
+					<Button
+							text="Previous"
+							icon="sap-icon://slim-arrow-left"
+							press="onPreviousPageRatings"
+							enabled="{= ${rating>/page} > 1 }"/>
+					<Text
+							text="{= 'Page ' + ${rating>/page} + ' of ' + ${rating>/total_pages} }"
+							class="sapUiSmallMargin"/>
+					<Button
+							text="Next"
+							iconFirst="false"
+							icon="sap-icon://slim-arrow-right"
+							press="onNextPageRatings"
+							enabled="{= ${rating>/page} &lt; ${rating>/total_pages} }"/>
+				</Toolbar>
+			</Page>
+		</f:midColumnPages>
+	</f:FlexibleColumnLayout>
+</mvc:View>
