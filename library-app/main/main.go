@@ -4,7 +4,6 @@ import (
 	"awesomeProject/library-app/global"
 	server2 "awesomeProject/library-app/server"
 	"context"
-	_ "github.com/lib/pq"
 	log "github.com/sirupsen/logrus"
 )
 
