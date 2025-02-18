@@ -170,12 +170,12 @@ func (server *Server) StartReservationCleanupTicker(ctx context.Context) {
 	ticker := time.NewTicker(global.ReservationCleanupInterval)
 
 	go func() {
-		defer ticker.Stop() // Stop the ticker when the goroutine exits
+		defer ticker.Stop()
 		for {
 			select {
 			case <-ticker.C:
 				server.ReservationManager.CleanupExpiredReservations()
-			case <-ctx.Done(): // Stop when the server context is canceled
+			case <-ctx.Done():
 				return
 			}
 		}

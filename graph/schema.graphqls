@@ -1,0 +1,100 @@
+#type Author {
+#  id: ID!
+#  firstName: String!
+#  lastName: String!
+#  nationality: String!
+#  birthDate: Date!
+#  deathDate: Date
+#  bio: String
+#  website: String
+#}
+#
+type Book {
+  id: ID!
+  title: String!
+  year: Int!
+  author: ID!
+  category: Category!
+  totalCopies: Int!
+  availableCopies: Int!
+  language: String!
+}
+#
+type Category {
+  id: ID!
+  name: String!
+  description: String
+}
+#
+#type Loan {
+#  id: ID!
+#  user: User!
+#  book: Book!
+#  startDate: String!
+#  dueDate: String!
+#  returnDate: String
+#  status: String!
+#}
+#
+#type Rating {
+#  id: ID!
+#  user: User!
+#  book: Book!
+#  content: String!
+#  value: Int!
+#}
+#
+#type Reservation {
+#  id: ID!
+#  user: User!
+#  book: Book!
+#  expiryDate: String!
+#}
+#
+#type User {
+#  id: ID!
+#  preferredUsername: String!
+#  givenName: String!
+#  familyName: String!
+#  email: String!
+#}
+
+type Query {
+#  authors: [Author!]!
+#  author(id: ID!): Author
+  books: [Book!]!
+  book(id: ID!): Book
+  categories: [Category!]!
+  category(id: ID!): Category
+#  loans: [Loan!]!
+#  loan(id: ID!): Loan
+#  ratings: [Rating!]!
+#  rating(id: ID!): Rating
+#  reservations: [Reservation!]!
+#  reservation(id: ID!): Reservation
+#  users: [User!]!
+#  user(id: ID!): User
+}
+
+type Mutation {
+#  createAuthor(firstName: String!, lastName: String!, nationality: String!, birthDate: String!): Author!
+#  updateAuthor(id: ID!, firstName: String, lastName: String, nationality: String, birthDate: String): Author!
+#  deleteAuthor(id: ID!): Boolean!
+#
+  createBook(title: String!, year: Int!, authorId: ID!, categoryId: ID!, totalCopies: Int!, language: String!): Book!
+  updateBook(id: ID!, title: String, year: Int, totalCopies: Int, language: String): Book!
+  deleteBook(id: ID!): Boolean!
+
+  createCategory(name: String!, description: String): Category!
+  updateCategory(id: ID!, name: String, description: String): Category!
+  deleteCategory(id: ID!): Boolean!
+#
+#  createLoan(userId: ID!, bookId: ID!, startDate: String!, dueDate: String!): Loan!
+#  returnLoan(id: ID!): Boolean!
+#
+#  createRating(userId: ID!, bookId: ID!, content: String!, value: Int!): Rating!
+#  deleteRating(id: ID!): Boolean!
+#
+#  createReservation(userId: ID!, bookId: ID!, expiryDate: String!): Reservation!
+#  deleteReservation(id: ID!): Boolean!
+}
