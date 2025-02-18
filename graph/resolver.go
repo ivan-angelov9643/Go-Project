@@ -1,11 +1,8 @@
 package graph
 
-import "awesomeProject/library-app/managers"
-
 type Resolver struct {
 	//AuthorManager managers.AuthorManagerInterface
-	BookManager     *managers.BookManagerInterface
-	CategoryManager *managers.CategoryManagerInterface
+	BookResolver *BookResolver
 	//LoanManager        *managers.LoanManagerInterface
 	//RatingManager      *managers.RatingManagerInterface
 	//ReservationManager *managers.ReservationManagerInterface

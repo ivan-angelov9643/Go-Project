@@ -6,6 +6,7 @@ package graph
 
 import (
 	"awesomeProject/graph/model"
+	"awesomeProject/library-app/managers"
 	"awesomeProject/library-app/models"
 	"context"
 	"fmt"
@@ -18,7 +19,7 @@ func (r *mutationResolver) CreateBook(ctx context.Context, title string, year in
 		return nil, err
 	}
 
-	newBook, err := r.BookManager.Create(*book)
+	newBook, err := r.BookResolver.BookManager.Create(*book)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +42,7 @@ func (r *mutationResolver) UpdateBook(ctx context.Context, id string, title *str
 		Language:    derefString(language),
 	}
 
-	book, err := r.BookManager.Update(updatedBook)
+	book, err := r.BookResolver.BookManager.Update(updatedBook)
 	if err != nil {
 		return nil, err
 	}
@@ -56,14 +57,14 @@ func (r *mutationResolver) DeleteBook(ctx context.Context, id string) (bool, err
 		return false, fmt.Errorf("invalid book ID: %w", err)
 	}
 
-	err = r.BookManager.Delete(bookID)
+	_, err = r.BookResolver.BookManager.Delete(bookID)
 	return err == nil, err
 }
 
 func (r *mutationResolver) CreateCategory(ctx context.Context, name string, description *string) (*model.Category, error) {
 	category := GORMCategoryModel(name, description)
 
-	newCategory, err := r.CategoryManager.Create(*category)
+	newCategory, err := r.BookResolver.CategoryManager.Create(*category)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func (r *mutationResolver) UpdateCategory(ctx context.Context, id string, name *
 		Description: description,
 	}
 
-	category, err := r.CategoryManager.Update(updatedCategory)
+	category, err := r.BookResolver.CategoryManager.Update(updatedCategory)
 	if err != nil {
 		return nil, err
 	}
@@ -99,12 +100,12 @@ func (r *mutationResolver) DeleteCategory(ctx context.Context, id string) (bool,
 		return false, fmt.Errorf("invalid category ID: %w", err)
 	}
 
-	err = r.CategoryManager.Delete(categoryID)
+	_, err = r.BookResolver.CategoryManager.Delete(categoryID)
 	return err == nil, err
 }
 
 func (r *queryResolver) Books(ctx context.Context) ([]*model.Book, error) {
-	books, err := r.BookManager.GetAll()
+	books, err := r.Resolver.BookResolver.BookManager.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +125,7 @@ func (r *queryResolver) Book(ctx context.Context, id string) (*model.Book, error
 		return nil, fmt.Errorf("invalid book ID: %w", err)
 	}
 
-	book, err := r.BookManager.Get(bookID)
+	book, err := r.Resolver.BookResolver.BookManager.Get(bookID)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (r *queryResolver) Book(ctx context.Context, id string) (*model.Book, error
 }
 
 func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
-	categories, err := r.CategoryManager.GetAll()
+	categories, err := r.BookResolver.CategoryManager.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -154,7 +155,7 @@ func (r *queryResolver) Category(ctx context.Context, id string) (*model.Categor
 		return nil, fmt.Errorf("invalid category ID: %w", err)
 	}
 
-	category, err := r.CategoryManager.Get(categoryID)
+	category, err := r.BookResolver.CategoryManager.Get(categoryID)
 	if err != nil {
 		return nil, err
 	}
@@ -171,3 +172,27 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+type BookResolver struct {
+	CategoryManager managers.CategoryManagerInterface
+	BookManager     managers.BookManagerInterface
+}
+
+func (r *BookResolver) Category(ctx context.Context, obj *model.Book) (*model.Category, error) {
+	categoryID, err := uuid.Parse(obj.Category.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	category, err := r.CategoryManager.Get(categoryID)
+	if err != nil {
+		return nil, err
+	}
+
+	graphQLCategory := ToGraphQLCategoryModel(category)
+	return &graphQLCategory, nil
+}
+
+func (r *Resolver) Book() *BookResolver {
+	return &BookResolver{r.CategoryManager}
+}

@@ -25,7 +25,7 @@ func main() {
 		port = defaultPort
 	}
 
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable")
+	connStr := fmt.Sprintf("host=localhost port=5432 user=myuser password=mypassword dbname=mydb sslmode=disable")
 
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
@@ -33,7 +33,8 @@ func main() {
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		BookManager: *managers.NewBookManager(db),
+		BookResolver: &graph.BookResolver{BookManager: managers.NewBookManager(db), CategoryManager: managers.NewCategoryManager(db)},
+		//CategoryManager: managers.NewCategoryManager(db),
 	}}))
 
 	srv.AddTransport(transport.Options{})

@@ -34,7 +34,6 @@ func ToGraphQLBookModel(book models.Book) model.Book {
 		Title:           book.Title,
 		Year:            int32(book.Year),
 		Author:          book.AuthorID.String(),
-		Category:        &model.Category{ID: book.CategoryID.String(), Name: book.CategoryName},
 		TotalCopies:     int32(book.TotalCopies),
 		AvailableCopies: int32(book.AvailableCopies),
 		Language:        book.Language,

@@ -19,7 +19,7 @@ type Book {
   availableCopies: Int!
   language: String!
 }
-#
+
 type Category {
   id: ID!
   name: String!
