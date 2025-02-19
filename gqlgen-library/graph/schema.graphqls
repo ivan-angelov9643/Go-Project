@@ -1,0 +1,34 @@
+type Book {
+  id: ID!
+  title: String!
+  year: Int!
+  authorID: ID!
+  category: Category!
+  totalCopies: Int!
+  availableCopies: Int!
+  language: String!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  description: String
+}
+
+type Query {
+  books: [Book!]!
+  book(id: ID!): Book
+
+  categories: [Category!]!
+  category(id: ID!): Category
+}
+
+type Mutation {
+  createBook(title: String!, year: Int!, authorID: ID!, categoryID: ID!, totalCopies: Int!, language: String!): Book!
+  updateBook(id: ID!, title: String, year: Int, totalCopies: Int, language: String): Book!
+  deleteBook(id: ID!): Boolean!
+
+  createCategory(name: String!, description: String): Category!
+  updateCategory(id: ID!, name: String, description: String): Category!
+  deleteCategory(id: ID!): Boolean!
+}
