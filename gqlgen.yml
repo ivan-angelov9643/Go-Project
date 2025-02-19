@@ -8,7 +8,7 @@ exec:
   layout: single-file # Only other option is "follow-schema," ie multi-file.
 
   # Only for single-file layout:
-  filename: graph/generated.go
+  filename: graph/generated/generated.go
 
   # Only for follow-schema layout:
   # dir: graph
@@ -27,8 +27,8 @@ exec:
 
 # Where should any generated models go?
 model:
-  filename: graph/model/models_gen.go
-  package: model
+  filename: graph/generated/graphql/models_gen.go
+  package: graphql
 
   # Optional: Pass in a path to a new gotpl template to use for generating the models
   # model_template: [your/path/model.gotpl]
@@ -42,7 +42,7 @@ resolver:
   # filename: graph/resolver.go
 
   # Only for follow-schema layout:
-  dir: graph
+  dir: generated
   filename_template: "{name}.resolvers.go"
 
   # Optional: turn on to not generate template comments above resolvers

@@ -3,10 +3,9 @@
 package graph
 
 import (
-	"awesomeProject/graph/model"
+	graphql1 "awesomeProject/graph/generated/graphql"
 	"bytes"
 	"context"
-	"embed"
 	"errors"
 	"fmt"
 	"strconv"
@@ -39,6 +38,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Book() BookResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -81,19 +81,22 @@ type ComplexityRoot struct {
 	}
 }
 
+type BookResolver interface {
+	Category(ctx context.Context, obj *graphql1.Book) (*graphql1.Category, error)
+}
 type MutationResolver interface {
-	CreateBook(ctx context.Context, title string, year int32, authorID string, categoryID string, totalCopies int32, language string) (*model.Book, error)
-	UpdateBook(ctx context.Context, id string, title *string, year *int32, totalCopies *int32, language *string) (*model.Book, error)
+	CreateBook(ctx context.Context, title string, year int32, authorID string, categoryID string, totalCopies int32, language string) (*graphql1.Book, error)
+	UpdateBook(ctx context.Context, id string, title *string, year *int32, totalCopies *int32, language *string) (*graphql1.Book, error)
 	DeleteBook(ctx context.Context, id string) (bool, error)
-	CreateCategory(ctx context.Context, name string, description *string) (*model.Category, error)
-	UpdateCategory(ctx context.Context, id string, name *string, description *string) (*model.Category, error)
+	CreateCategory(ctx context.Context, name string, description *string) (*graphql1.Category, error)
+	UpdateCategory(ctx context.Context, id string, name *string, description *string) (*graphql1.Category, error)
 	DeleteCategory(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
-	Books(ctx context.Context) ([]*model.Book, error)
-	Book(ctx context.Context, id string) (*model.Book, error)
-	Categories(ctx context.Context) ([]*model.Category, error)
-	Category(ctx context.Context, id string) (*model.Category, error)
+	Books(ctx context.Context) ([]*graphql1.Book, error)
+	Book(ctx context.Context, id string) (*graphql1.Book, error)
+	Categories(ctx context.Context) ([]*graphql1.Category, error)
+	Category(ctx context.Context, id string) (*graphql1.Category, error)
 }
 
 type executableSchema struct {
@@ -405,19 +408,108 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema.graphqls"
-var sourcesFS embed.FS
-
-func sourceData(filename string) string {
-	data, err := sourcesFS.ReadFile(filename)
-	if err != nil {
-		panic(fmt.Sprintf("codegen problem: %s not available", filename))
-	}
-	return string(data)
+var sources = []*ast.Source{
+	{Name: "../schema.graphqls", Input: `#type Author {
+#  id: ID!
+#  firstName: String!
+#  lastName: String!
+#  nationality: String!
+#  birthDate: Date!
+#  deathDate: Date
+#  bio: String
+#  website: String
+#}
+#
+type Book {
+  id: ID!
+  title: String!
+  year: Int!
+  author: ID!
+  category: Category!
+  totalCopies: Int!
+  availableCopies: Int!
+  language: String!
 }
 
-var sources = []*ast.Source{
-	{Name: "schema.graphqls", Input: sourceData("schema.graphqls"), BuiltIn: false},
+type Category {
+  id: ID!
+  name: String!
+  description: String
+}
+#
+#type Loan {
+#  id: ID!
+#  user: User!
+#  book: Book!
+#  startDate: String!
+#  dueDate: String!
+#  returnDate: String
+#  status: String!
+#}
+#
+#type Rating {
+#  id: ID!
+#  user: User!
+#  book: Book!
+#  content: String!
+#  value: Int!
+#}
+#
+#type Reservation {
+#  id: ID!
+#  user: User!
+#  book: Book!
+#  expiryDate: String!
+#}
+#
+#type User {
+#  id: ID!
+#  preferredUsername: String!
+#  givenName: String!
+#  familyName: String!
+#  email: String!
+#}
+
+type Query {
+#  authors: [Author!]!
+#  author(id: ID!): Author
+  books: [Book!]!
+  book(id: ID!): Book
+  categories: [Category!]!
+  category(id: ID!): Category
+#  loans: [Loan!]!
+#  loan(id: ID!): Loan
+#  ratings: [Rating!]!
+#  rating(id: ID!): Rating
+#  reservations: [Reservation!]!
+#  reservation(id: ID!): Reservation
+#  users: [User!]!
+#  user(id: ID!): User
+}
+
+type Mutation {
+#  createAuthor(firstName: String!, lastName: String!, nationality: String!, birthDate: String!): Author!
+#  updateAuthor(id: ID!, firstName: String, lastName: String, nationality: String, birthDate: String): Author!
+#  deleteAuthor(id: ID!): Boolean!
+#
+  createBook(title: String!, year: Int!, authorId: ID!, categoryId: ID!, totalCopies: Int!, language: String!): Book!
+  updateBook(id: ID!, title: String, year: Int, totalCopies: Int, language: String): Book!
+  deleteBook(id: ID!): Boolean!
+
+  createCategory(name: String!, description: String): Category!
+  updateCategory(id: ID!, name: String, description: String): Category!
+  deleteCategory(id: ID!): Boolean!
+#
+#  createLoan(userId: ID!, bookId: ID!, startDate: String!, dueDate: String!): Loan!
+#  returnLoan(id: ID!): Boolean!
+#
+#  createRating(userId: ID!, bookId: ID!, content: String!, value: Int!): Rating!
+#  deleteRating(id: ID!): Boolean!
+#
+#  createReservation(userId: ID!, bookId: ID!, expiryDate: String!): Reservation!
+#  deleteReservation(id: ID!): Boolean!
+}
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -948,7 +1040,7 @@ func (ec *executionContext) field___Type_fields_argsIncludeDeprecated(
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Book_id(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_id(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -992,7 +1084,7 @@ func (ec *executionContext) fieldContext_Book_id(_ context.Context, field graphq
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_title(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_title(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_title(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1036,7 +1128,7 @@ func (ec *executionContext) fieldContext_Book_title(_ context.Context, field gra
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_year(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_year(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_year(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1080,7 +1172,7 @@ func (ec *executionContext) fieldContext_Book_year(_ context.Context, field grap
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_author(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_author(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_author(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1124,7 +1216,7 @@ func (ec *executionContext) fieldContext_Book_author(_ context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_category(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_category(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_category(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1138,7 +1230,7 @@ func (ec *executionContext) _Book_category(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Category, nil
+		return ec.resolvers.Book().Category(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1150,17 +1242,17 @@ func (ec *executionContext) _Book_category(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Category)
+	res := resTmp.(*graphql1.Category)
 	fc.Result = res
-	return ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx, field.Selections, res)
+	return ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Book_category(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Book",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
@@ -1176,7 +1268,7 @@ func (ec *executionContext) fieldContext_Book_category(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_totalCopies(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_totalCopies(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_totalCopies(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1220,7 +1312,7 @@ func (ec *executionContext) fieldContext_Book_totalCopies(_ context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_availableCopies(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_availableCopies(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_availableCopies(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1264,7 +1356,7 @@ func (ec *executionContext) fieldContext_Book_availableCopies(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Book_language(ctx context.Context, field graphql.CollectedField, obj *model.Book) (ret graphql.Marshaler) {
+func (ec *executionContext) _Book_language(ctx context.Context, field graphql.CollectedField, obj *graphql1.Book) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Book_language(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1308,7 +1400,7 @@ func (ec *executionContext) fieldContext_Book_language(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Category_id(ctx context.Context, field graphql.CollectedField, obj *model.Category) (ret graphql.Marshaler) {
+func (ec *executionContext) _Category_id(ctx context.Context, field graphql.CollectedField, obj *graphql1.Category) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Category_id(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1352,7 +1444,7 @@ func (ec *executionContext) fieldContext_Category_id(_ context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Category_name(ctx context.Context, field graphql.CollectedField, obj *model.Category) (ret graphql.Marshaler) {
+func (ec *executionContext) _Category_name(ctx context.Context, field graphql.CollectedField, obj *graphql1.Category) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Category_name(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1396,7 +1488,7 @@ func (ec *executionContext) fieldContext_Category_name(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Category_description(ctx context.Context, field graphql.CollectedField, obj *model.Category) (ret graphql.Marshaler) {
+func (ec *executionContext) _Category_description(ctx context.Context, field graphql.CollectedField, obj *graphql1.Category) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Category_description(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -1463,9 +1555,9 @@ func (ec *executionContext) _Mutation_createBook(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Book)
+	res := resTmp.(*graphql1.Book)
 	fc.Result = res
-	return ec.marshalNBook2ᚖawesomeProjectᚋgraphᚋmodelᚐBook(ctx, field.Selections, res)
+	return ec.marshalNBook2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createBook(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1536,9 +1628,9 @@ func (ec *executionContext) _Mutation_updateBook(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Book)
+	res := resTmp.(*graphql1.Book)
 	fc.Result = res
-	return ec.marshalNBook2ᚖawesomeProjectᚋgraphᚋmodelᚐBook(ctx, field.Selections, res)
+	return ec.marshalNBook2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateBook(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1664,9 +1756,9 @@ func (ec *executionContext) _Mutation_createCategory(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Category)
+	res := resTmp.(*graphql1.Category)
 	fc.Result = res
-	return ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx, field.Selections, res)
+	return ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createCategory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1727,9 +1819,9 @@ func (ec *executionContext) _Mutation_updateCategory(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Category)
+	res := resTmp.(*graphql1.Category)
 	fc.Result = res
-	return ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx, field.Selections, res)
+	return ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateCategory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1845,9 +1937,9 @@ func (ec *executionContext) _Query_books(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Book)
+	res := resTmp.([]*graphql1.Book)
 	fc.Result = res
-	return ec.marshalNBook2ᚕᚖawesomeProjectᚋgraphᚋmodelᚐBookᚄ(ctx, field.Selections, res)
+	return ec.marshalNBook2ᚕᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBookᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_books(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1904,9 +1996,9 @@ func (ec *executionContext) _Query_book(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Book)
+	res := resTmp.(*graphql1.Book)
 	fc.Result = res
-	return ec.marshalOBook2ᚖawesomeProjectᚋgraphᚋmodelᚐBook(ctx, field.Selections, res)
+	return ec.marshalOBook2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_book(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1977,9 +2069,9 @@ func (ec *executionContext) _Query_categories(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Category)
+	res := resTmp.([]*graphql1.Category)
 	fc.Result = res
-	return ec.marshalNCategory2ᚕᚖawesomeProjectᚋgraphᚋmodelᚐCategoryᚄ(ctx, field.Selections, res)
+	return ec.marshalNCategory2ᚕᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategoryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_categories(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2026,9 +2118,9 @@ func (ec *executionContext) _Query_category(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Category)
+	res := resTmp.(*graphql1.Category)
 	fc.Result = res
-	return ec.marshalOCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx, field.Selections, res)
+	return ec.marshalOCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_category(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4155,7 +4247,7 @@ func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field
 
 var bookImplementors = []string{"Book"}
 
-func (ec *executionContext) _Book(ctx context.Context, sel ast.SelectionSet, obj *model.Book) graphql.Marshaler {
+func (ec *executionContext) _Book(ctx context.Context, sel ast.SelectionSet, obj *graphql1.Book) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, bookImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4167,42 +4259,73 @@ func (ec *executionContext) _Book(ctx context.Context, sel ast.SelectionSet, obj
 		case "id":
 			out.Values[i] = ec._Book_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "title":
 			out.Values[i] = ec._Book_title(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "year":
 			out.Values[i] = ec._Book_year(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "author":
 			out.Values[i] = ec._Book_author(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "category":
-			out.Values[i] = ec._Book_category(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Book_category(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "totalCopies":
 			out.Values[i] = ec._Book_totalCopies(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "availableCopies":
 			out.Values[i] = ec._Book_availableCopies(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "language":
 			out.Values[i] = ec._Book_language(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -4229,7 +4352,7 @@ func (ec *executionContext) _Book(ctx context.Context, sel ast.SelectionSet, obj
 
 var categoryImplementors = []string{"Category"}
 
-func (ec *executionContext) _Category(ctx context.Context, sel ast.SelectionSet, obj *model.Category) graphql.Marshaler {
+func (ec *executionContext) _Category(ctx context.Context, sel ast.SelectionSet, obj *graphql1.Category) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, categoryImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4824,11 +4947,11 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNBook2awesomeProjectᚋgraphᚋmodelᚐBook(ctx context.Context, sel ast.SelectionSet, v model.Book) graphql.Marshaler {
+func (ec *executionContext) marshalNBook2awesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx context.Context, sel ast.SelectionSet, v graphql1.Book) graphql.Marshaler {
 	return ec._Book(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNBook2ᚕᚖawesomeProjectᚋgraphᚋmodelᚐBookᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Book) graphql.Marshaler {
+func (ec *executionContext) marshalNBook2ᚕᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBookᚄ(ctx context.Context, sel ast.SelectionSet, v []*graphql1.Book) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4852,7 +4975,7 @@ func (ec *executionContext) marshalNBook2ᚕᚖawesomeProjectᚋgraphᚋmodelᚐ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNBook2ᚖawesomeProjectᚋgraphᚋmodelᚐBook(ctx, sel, v[i])
+			ret[i] = ec.marshalNBook2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4872,7 +4995,7 @@ func (ec *executionContext) marshalNBook2ᚕᚖawesomeProjectᚋgraphᚋmodelᚐ
 	return ret
 }
 
-func (ec *executionContext) marshalNBook2ᚖawesomeProjectᚋgraphᚋmodelᚐBook(ctx context.Context, sel ast.SelectionSet, v *model.Book) graphql.Marshaler {
+func (ec *executionContext) marshalNBook2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx context.Context, sel ast.SelectionSet, v *graphql1.Book) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -4897,11 +5020,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNCategory2awesomeProjectᚋgraphᚋmodelᚐCategory(ctx context.Context, sel ast.SelectionSet, v model.Category) graphql.Marshaler {
+func (ec *executionContext) marshalNCategory2awesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx context.Context, sel ast.SelectionSet, v graphql1.Category) graphql.Marshaler {
 	return ec._Category(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCategory2ᚕᚖawesomeProjectᚋgraphᚋmodelᚐCategoryᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Category) graphql.Marshaler {
+func (ec *executionContext) marshalNCategory2ᚕᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategoryᚄ(ctx context.Context, sel ast.SelectionSet, v []*graphql1.Category) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4925,7 +5048,7 @@ func (ec *executionContext) marshalNCategory2ᚕᚖawesomeProjectᚋgraphᚋmode
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx, sel, v[i])
+			ret[i] = ec.marshalNCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4945,7 +5068,7 @@ func (ec *executionContext) marshalNCategory2ᚕᚖawesomeProjectᚋgraphᚋmode
 	return ret
 }
 
-func (ec *executionContext) marshalNCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx context.Context, sel ast.SelectionSet, v *model.Category) graphql.Marshaler {
+func (ec *executionContext) marshalNCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx context.Context, sel ast.SelectionSet, v *graphql1.Category) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -5253,7 +5376,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOBook2ᚖawesomeProjectᚋgraphᚋmodelᚐBook(ctx context.Context, sel ast.SelectionSet, v *model.Book) graphql.Marshaler {
+func (ec *executionContext) marshalOBook2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐBook(ctx context.Context, sel ast.SelectionSet, v *graphql1.Book) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5286,7 +5409,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) marshalOCategory2ᚖawesomeProjectᚋgraphᚋmodelᚐCategory(ctx context.Context, sel ast.SelectionSet, v *model.Category) graphql.Marshaler {
+func (ec *executionContext) marshalOCategory2ᚖawesomeProjectᚋgraphᚋgeneratedᚋgraphqlᚐCategory(ctx context.Context, sel ast.SelectionSet, v *graphql1.Category) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"awesomeProject/graph"
-	"awesomeProject/library-app/managers"
+	"awesomeProject/graph/generated"
+	"awesomeProject/graph/resolvers"
 	"fmt"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -32,10 +32,12 @@ func main() {
 		log.Printf("[Server.InitializeDatabase] Failed to connect to database: %v", err)
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		BookResolver: &graph.BookResolver{BookManager: managers.NewBookManager(db), CategoryManager: managers.NewCategoryManager(db)},
-		//CategoryManager: managers.NewCategoryManager(db),
-	}}))
+	rootResolver := resolvers.NewRootResolver(db)
+	gqlCfg := graph.Config{
+		Resolvers: rootResolver,
+	}
+
+	srv := handler.New(graph.NewExecutableSchema(gqlCfg))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
