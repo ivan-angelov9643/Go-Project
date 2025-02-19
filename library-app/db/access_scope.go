@@ -1,7 +1,7 @@
 package db
 
 import (
-	"awesomeProject/library-app/global"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
 	"gorm.io/gorm"
 	"net/http"
 )

@@ -1,11 +1,11 @@
 package security
 
 import (
-	"awesomeProject/library-app/models"
 	"context"
 	"errors"
 	"github.com/Nerzal/gocloak/v13"
 	"github.com/google/uuid"
+	"github.com/ivan-angelov9643/go-project/library-app/models"
 
 	"github.com/Nerzal/gocloak/v13/pkg/jwx"
 )

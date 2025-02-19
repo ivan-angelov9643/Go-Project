@@ -1,14 +1,14 @@
 package server
 
 import (
-	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/handlers"
-	"awesomeProject/library-app/managers"
-	"awesomeProject/library-app/middlewares"
-	"awesomeProject/library-app/security"
 	"context"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
+	"github.com/ivan-angelov9643/go-project/library-app/handlers"
+	"github.com/ivan-angelov9643/go-project/library-app/managers"
+	"github.com/ivan-angelov9643/go-project/library-app/middlewares"
+	"github.com/ivan-angelov9643/go-project/library-app/security"
 	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
@@ -170,12 +170,12 @@ func (server *Server) StartReservationCleanupTicker(ctx context.Context) {
 	ticker := time.NewTicker(global.ReservationCleanupInterval)
 
 	go func() {
-		defer ticker.Stop() // Stop the ticker when the goroutine exits
+		defer ticker.Stop()
 		for {
 			select {
 			case <-ticker.C:
 				server.ReservationManager.CleanupExpiredReservations()
-			case <-ctx.Done(): // Stop when the server context is canceled
+			case <-ctx.Done():
 				return
 			}
 		}

@@ -1,9 +1,9 @@
 package errors
 
 import (
-	"awesomeProject/library-app/db"
 	"encoding/json"
 	"errors"
+	"github.com/ivan-angelov9643/go-project/library-app/db"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
