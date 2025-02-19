@@ -1,9 +1,9 @@
 package models
 
 import (
-	"awesomeProject/library-app/validation"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/ivan-angelov9643/go-project/library-app/validation"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )

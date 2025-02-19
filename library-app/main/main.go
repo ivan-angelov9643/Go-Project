@@ -1,9 +1,9 @@
 package main
 
 import (
-	"awesomeProject/library-app/global"
-	server2 "awesomeProject/library-app/server"
 	"context"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
+	server2 "github.com/ivan-angelov9643/go-project/library-app/server"
 	log "github.com/sirupsen/logrus"
 )
 

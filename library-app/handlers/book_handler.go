@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"awesomeProject/library-app/db"
-	"awesomeProject/library-app/errors"
-	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/managers"
-	"awesomeProject/library-app/models"
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/ivan-angelov9643/go-project/library-app/db"
+	"github.com/ivan-angelov9643/go-project/library-app/errors"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
+	"github.com/ivan-angelov9643/go-project/library-app/managers"
+	"github.com/ivan-angelov9643/go-project/library-app/models"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )

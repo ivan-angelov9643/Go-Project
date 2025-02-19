@@ -1,10 +1,10 @@
 package managers
 
 import (
-	"awesomeProject/library-app/db"
-	"awesomeProject/library-app/models"
 	"errors"
 	"github.com/google/uuid"
+	"github.com/ivan-angelov9643/go-project/library-app/db"
+	"github.com/ivan-angelov9643/go-project/library-app/models"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )

@@ -1,9 +1,9 @@
 package server
 
 import (
-	"awesomeProject/library-app/global"
 	"errors"
 	"fmt"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"

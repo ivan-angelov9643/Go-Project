@@ -1,12 +1,12 @@
 package server
 
 import (
-	"awesomeProject/library-app/errors"
-	"awesomeProject/library-app/global"
-	"awesomeProject/library-app/models"
 	"context"
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/ivan-angelov9643/go-project/library-app/errors"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
+	"github.com/ivan-angelov9643/go-project/library-app/models"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strings"

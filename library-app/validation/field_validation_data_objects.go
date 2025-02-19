@@ -1,7 +1,7 @@
 package validation
 
 import (
-	"awesomeProject/library-app/global"
+	"github.com/ivan-angelov9643/go-project/library-app/global"
 	"regexp"
 	"time"
 )
