@@ -53,7 +53,7 @@ function cleanup() {
     fi
 }
 
-#trap cleanup EXIT
+trap cleanup EXIT
 
 if [[ ${REUSE_DB} = true ]]; then
     echo "DB is reused."
@@ -103,7 +103,6 @@ fi
 
 echo "Migration version: $(migrate -path ${ROOT_PATH}/db/migrations -database "${CONNECTION_STRING}" version 2>&1)"
 
-exit 0
 
 echo "Create Keycloak container ${KEYCLOAK_CONTAINER} on ${KEYCLOAK_PORT} ..."
 docker run -d --name ${KEYCLOAK_CONTAINER} \
