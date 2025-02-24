@@ -3,5 +3,7 @@ The Library Management System (LMS) offers a solution for managing books, author
 The system's security and authentication are handled using Keycloak, ensuring robust role-based access control and secure user management. This integration allows for centralized authentication and fine-grained permission control across different user roles. The main roles in the system include:
 
 ●	Member – can view books, authors, and categories, make reservations, create ratings, and track loan history.
+
 ●	Librarian – can manage books, authors, categories, reservations, loans and ratings.
+
 ●	Administrator – has full control over books, authors, categories, loans, reservations, ratings and users.
